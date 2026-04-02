@@ -12,6 +12,14 @@ import {
   createDebugPanel,
   registerLiveMonitorTicker,
 } from "./debug/debug-panel";
+import {
+  createBubbleText,
+  positionBubbleAboveTarget,
+} from "./renderer/ui/bubble-text";
+import {
+  createChoiceBox,
+  positionChoiceBoxAboveTarget,
+} from "./renderer/ui/choice-box";
 import type { CollidableSprite } from "./renderer/collision";
 
 const PLAYER_COLOR = 0xffffff;
@@ -63,6 +71,41 @@ const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
   );
 
   setCameraFollowTarget(cameraState, playerSprite);
+
+  // --- Debug: preview bubble-text on NPC red ---
+  const debugBubble = createBubbleText(
+    {
+      speakerName: "Red Bunny",
+      dialogueText:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
+    },
+    pixiApplication,
+  );
+  worldContainer.addChild(debugBubble);
+  positionBubbleAboveTarget(
+    debugBubble,
+    npcObstacles[0].sprite.x,
+    npcObstacles[0].sprite.y,
+  );
+
+  // --- Debug: preview choice-box on NPC teal ---
+  const debugChoiceBox = createChoiceBox(
+    [
+      { choiceUuid: "a", text: "Tell me more about the quest" },
+      { choiceUuid: "b", text: "I need to go now" },
+      { choiceUuid: "c", text: "What happened to the village?" },
+    ],
+    (choiceUuid) => {
+      console.log("Choice selected:", choiceUuid);
+    },
+    pixiApplication,
+  );
+  worldContainer.addChild(debugChoiceBox);
+  positionChoiceBoxAboveTarget(
+    debugChoiceBox,
+    npcObstacles[1].sprite.x,
+    npcObstacles[1].sprite.y,
+  );
 
   const debugPanelState = createDebugPanel();
   registerLiveMonitorTicker(debugPanelState, pixiApplication);

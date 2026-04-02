@@ -13,6 +13,9 @@ export async function createPixiApplication(
   await pixiApplication.init({
     background: PIXI_BACKGROUND_COLOR,
     resizeTo: canvasContainer,
+    antialias: true,
+    resolution: window.devicePixelRatio || 1,
+    autoDensity: true,
   });
 
   canvasContainer.appendChild(pixiApplication.canvas);
