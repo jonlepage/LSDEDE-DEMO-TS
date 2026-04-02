@@ -1,42 +1,63 @@
 import { createApplicationLayout } from "./app/layout";
-import { renderDemoNavigation } from "./app/navigation";
 import { createPixiApplication } from "./renderer/stage";
-import { DEMO_MANIFEST as DEMO_01_MANIFEST } from "./demos/demo-01/index";
-import type { DemoManifestEntry } from "./shared/types";
-import type { Application } from "pixi.js";
+import { createCharacterSprite } from "./renderer/characters";
+import {
+  createMovementState,
+  setMovementTarget,
+  registerMovementTicker,
+} from "./renderer/movement";
+import { createCollidable, resolveCollisions } from "./renderer/collision";
+import type { CollidableSprite } from "./renderer/collision";
 
-const ALL_DEMO_MANIFESTS: DemoManifestEntry[] = [
-  DEMO_01_MANIFEST,
-  // Add demo-02 through demo-05 manifests here as they are created
-];
+const PLAYER_COLOR = 0xffffff;
+const NPC_COLORS = [0xff6b6b, 0x4ecdc4, 0xffe66d];
+const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
 
 (async () => {
-  const { sidebarContainer, canvasContainer } = createApplicationLayout();
+  const { canvasContainer } = createApplicationLayout();
+  const pixiApplication = await createPixiApplication(canvasContainer);
 
-  const pixiApplication: Application =
-    await createPixiApplication(canvasContainer);
+  const screenCenterX = pixiApplication.screen.width / 2;
+  const screenCenterY = pixiApplication.screen.height / 2;
 
-  renderDemoNavigation(
-    sidebarContainer,
-    ALL_DEMO_MANIFESTS,
-    (selectedDemoId: string) => {
-      const selectedManifest = ALL_DEMO_MANIFESTS.find(
-        (entry) => entry.id === selectedDemoId,
-      );
-      if (selectedManifest) {
-        loadAndRunDemo(selectedManifest, pixiApplication);
-      }
-    },
+  const playerSprite = await createCharacterSprite({
+    characterId: "player",
+    displayName: "Player",
+    tintColor: PLAYER_COLOR,
+    startX: screenCenterX,
+    startY: screenCenterY,
+  });
+  pixiApplication.stage.addChild(playerSprite);
+
+  const npcObstacles: CollidableSprite[] = [];
+
+  for (let npcIndex = 0; npcIndex < 3; npcIndex++) {
+    const npcSprite = await createCharacterSprite({
+      characterId: NPC_NAMES[npcIndex],
+      displayName: NPC_NAMES[npcIndex],
+      tintColor: NPC_COLORS[npcIndex],
+      startX: screenCenterX - 200 + npcIndex * 200,
+      startY: screenCenterY - 100 + npcIndex * 60,
+    });
+    pixiApplication.stage.addChild(npcSprite);
+    npcObstacles.push(createCollidable(npcSprite));
+  }
+
+  const playerCollidable = createCollidable(playerSprite);
+  const playerMovementState = createMovementState();
+
+  registerMovementTicker(
+    pixiApplication,
+    playerSprite,
+    playerMovementState,
+    (proposedX: number, proposedY: number) =>
+      resolveCollisions(playerCollidable, proposedX, proposedY, npcObstacles),
   );
+
+  pixiApplication.stage.eventMode = "static";
+  pixiApplication.stage.hitArea = pixiApplication.screen;
+
+  pixiApplication.stage.on("pointerdown", (event) => {
+    setMovementTarget(playerMovementState, event.globalX, event.globalY);
+  });
 })();
-
-async function loadAndRunDemo(
-  demoManifest: DemoManifestEntry,
-  pixiApplication: Application,
-): Promise<void> {
-  pixiApplication.stage.removeChildren();
-
-  // Dynamic import to load only the selected demo
-  const demoModule = await import(`./demos/${demoManifest.id}/index.ts`);
-  await demoModule.runDemo(pixiApplication);
-}
