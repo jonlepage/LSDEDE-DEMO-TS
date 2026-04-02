@@ -27,3 +27,6 @@ LSDEDE-api-doc.txt
 LSDEDE-doc.txt
 pixijs-doc.txt
 LSDEDE-DEMO-TS.lsde
+_bmad-output/*
+_bmad/*
+.claude/*
