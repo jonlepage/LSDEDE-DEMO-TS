@@ -1,35 +1,42 @@
-import { Application, Assets, Sprite } from "pixi.js";
+import { createApplicationLayout } from "./app/layout";
+import { renderDemoNavigation } from "./app/navigation";
+import { createPixiApplication } from "./renderer/stage";
+import { DEMO_MANIFEST as DEMO_01_MANIFEST } from "./demos/demo-01/index";
+import type { DemoManifestEntry } from "./shared/types";
+import type { Application } from "pixi.js";
+
+const ALL_DEMO_MANIFESTS: DemoManifestEntry[] = [
+  DEMO_01_MANIFEST,
+  // Add demo-02 through demo-05 manifests here as they are created
+];
 
 (async () => {
-  // Create a new application
-  const app = new Application();
+  const { sidebarContainer, canvasContainer } = createApplicationLayout();
 
-  // Initialize the application
-  await app.init({ background: "#1099bb", resizeTo: window });
+  const pixiApplication: Application =
+    await createPixiApplication(canvasContainer);
 
-  // Append the application canvas to the document body
-  document.getElementById("pixi-container")!.appendChild(app.canvas);
-
-  // Load the bunny texture
-  const texture = await Assets.load("/assets/bunny.png");
-
-  // Create a bunny Sprite
-  const bunny = new Sprite(texture);
-
-  // Center the sprite's anchor point
-  bunny.anchor.set(0.5);
-
-  // Move the sprite to the center of the screen
-  bunny.position.set(app.screen.width / 2, app.screen.height / 2);
-
-  // Add the bunny to the stage
-  app.stage.addChild(bunny);
-
-  // Listen for animate update
-  app.ticker.add((time) => {
-    // Just for fun, let's rotate mr rabbit a little.
-    // * Delta is 1 if running at 100% performance *
-    // * Creates frame-independent transformation *
-    bunny.rotation += 0.1 * time.deltaTime;
-  });
+  renderDemoNavigation(
+    sidebarContainer,
+    ALL_DEMO_MANIFESTS,
+    (selectedDemoId: string) => {
+      const selectedManifest = ALL_DEMO_MANIFESTS.find(
+        (entry) => entry.id === selectedDemoId,
+      );
+      if (selectedManifest) {
+        loadAndRunDemo(selectedManifest, pixiApplication);
+      }
+    },
+  );
 })();
+
+async function loadAndRunDemo(
+  demoManifest: DemoManifestEntry,
+  pixiApplication: Application,
+): Promise<void> {
+  pixiApplication.stage.removeChildren();
+
+  // Dynamic import to load only the selected demo
+  const demoModule = await import(`./demos/${demoManifest.id}/index.ts`);
+  await demoModule.runDemo(pixiApplication);
+}
