@@ -7,6 +7,7 @@ import {
   registerMovementTicker,
 } from "./renderer/movement";
 import { createCollidable, resolveCollisions } from "./renderer/collision";
+import { createCamera, setCameraFollowTarget } from "./renderer/camera";
 import type { CollidableSprite } from "./renderer/collision";
 
 const PLAYER_COLOR = 0xffffff;
@@ -16,6 +17,9 @@ const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
 (async () => {
   const { canvasContainer } = createApplicationLayout();
   const pixiApplication = await createPixiApplication(canvasContainer);
+
+  const cameraState = createCamera(pixiApplication);
+  const worldContainer = cameraState.worldContainer;
 
   const screenCenterX = pixiApplication.screen.width / 2;
   const screenCenterY = pixiApplication.screen.height / 2;
@@ -27,7 +31,7 @@ const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
     startX: screenCenterX,
     startY: screenCenterY,
   });
-  pixiApplication.stage.addChild(playerSprite);
+  worldContainer.addChild(playerSprite);
 
   const npcObstacles: CollidableSprite[] = [];
 
@@ -39,7 +43,7 @@ const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
       startX: screenCenterX - 200 + npcIndex * 200,
       startY: screenCenterY - 100 + npcIndex * 60,
     });
-    pixiApplication.stage.addChild(npcSprite);
+    worldContainer.addChild(npcSprite);
     npcObstacles.push(createCollidable(npcSprite));
   }
 
@@ -54,10 +58,13 @@ const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
       resolveCollisions(playerCollidable, proposedX, proposedY, npcObstacles),
   );
 
+  setCameraFollowTarget(cameraState, playerSprite);
+
   pixiApplication.stage.eventMode = "static";
   pixiApplication.stage.hitArea = pixiApplication.screen;
 
   pixiApplication.stage.on("pointerdown", (event) => {
-    setMovementTarget(playerMovementState, event.globalX, event.globalY);
+    const worldPosition = worldContainer.toLocal(event.global);
+    setMovementTarget(playerMovementState, worldPosition.x, worldPosition.y);
   });
 })();
