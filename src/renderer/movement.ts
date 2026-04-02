@@ -9,6 +9,11 @@ import type { Application, Sprite } from "pixi.js";
 const DEFAULT_MOVEMENT_SPEED = 4;
 const ARRIVAL_THRESHOLD = 2;
 
+const HOP_MAX_HEIGHT = 5;
+const HOP_FREQUENCY = 10;
+const HOP_SPEED_FLOOR = 0.8;
+const HOP_SPEED_CEILING = 3.0;
+
 export interface MovementTarget {
   targetX: number;
   targetY: number;
@@ -17,6 +22,7 @@ export interface MovementTarget {
 export interface MovementState {
   currentTarget: MovementTarget | null;
   movementSpeed: number;
+  hopPhase: number;
 }
 
 export function createMovementState(
@@ -25,6 +31,7 @@ export function createMovementState(
   return {
     currentTarget: null,
     movementSpeed,
+    hopPhase: 0,
   };
 }
 
@@ -87,7 +94,10 @@ export function registerMovementTicker(
   ) => { allowedX: number; allowedY: number },
 ): void {
   pixiApplication.ticker.add((time) => {
-    if (!movementState.currentTarget) return;
+    if (!movementState.currentTarget) {
+      characterSprite.pivot.y = 0;
+      return;
+    }
 
     const { targetX, targetY } = movementState.currentTarget;
     const deltaX = targetX - characterSprite.x;
@@ -97,6 +107,8 @@ export function registerMovementTicker(
     if (distanceRemaining < ARRIVAL_THRESHOLD) {
       characterSprite.x = targetX;
       characterSprite.y = targetY;
+      characterSprite.pivot.y = 0;
+      movementState.hopPhase = 0;
       clearMovementTarget(movementState);
       return;
     }
@@ -116,6 +128,9 @@ export function registerMovementTicker(
       totalStepSize,
     );
 
+    const previousX = characterSprite.x;
+    const previousY = characterSprite.y;
+
     if (onBeforeMove) {
       const corrected = onBeforeMove(proposedX, proposedY);
       characterSprite.x = corrected.allowedX;
@@ -123,6 +138,28 @@ export function registerMovementTicker(
     } else {
       characterSprite.x = proposedX;
       characterSprite.y = proposedY;
+    }
+
+    const frameDeltaX = characterSprite.x - previousX;
+    const frameDeltaY = characterSprite.y - previousY;
+    const frameSpeed = Math.sqrt(
+      frameDeltaX * frameDeltaX + frameDeltaY * frameDeltaY,
+    );
+
+    if (frameSpeed < HOP_SPEED_FLOOR) {
+      characterSprite.pivot.y *= 0.85;
+      if (characterSprite.pivot.y < 0.5) characterSprite.pivot.y = 0;
+    } else {
+      const speedRatio = Math.min(
+        (frameSpeed - HOP_SPEED_FLOOR) / (HOP_SPEED_CEILING - HOP_SPEED_FLOOR),
+        1,
+      );
+      movementState.hopPhase += HOP_FREQUENCY * time.deltaTime;
+      const hopOffset =
+        Math.abs(Math.sin(movementState.hopPhase)) *
+        HOP_MAX_HEIGHT *
+        speedRatio;
+      characterSprite.pivot.y = hopOffset;
     }
   });
 }
