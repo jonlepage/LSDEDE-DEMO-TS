@@ -13,6 +13,7 @@ import type { Application, Sprite } from "pixi.js";
 const DEFAULT_FOLLOW_LERP_FACTOR = 0.003;
 const COMMAND_EASING_SPEED = 0.03;
 const COMMAND_ARRIVAL_THRESHOLD = 1;
+const FOLLOW_VERTICAL_OFFSET = -120;
 
 /**
  * Dead zone: camera does not move at all when the target is within this radius (in pixels)
@@ -148,7 +149,7 @@ function snapCameraToFollowTarget(cameraState: CameraState): void {
   if (!cameraState.followTarget) return;
   cameraState.worldContainer.pivot.set(
     cameraState.followTarget.x,
-    cameraState.followTarget.y,
+    cameraState.followTarget.y + FOLLOW_VERTICAL_OFFSET,
   );
   cameraState.worldContainer.position.set(
     cameraState.pixiApplication.screen.width / 2,
@@ -187,7 +188,9 @@ function updateCamera(cameraState: CameraState, deltaTime: number): void {
     const deltaX =
       cameraState.followTarget.x - cameraState.worldContainer.pivot.x;
     const deltaY =
-      cameraState.followTarget.y - cameraState.worldContainer.pivot.y;
+      cameraState.followTarget.y +
+      FOLLOW_VERTICAL_OFFSET -
+      cameraState.worldContainer.pivot.y;
     const distanceFromCenter = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
     if (distanceFromCenter > DEAD_ZONE_RADIUS) {
