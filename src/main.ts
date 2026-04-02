@@ -11,15 +11,13 @@ import { createCamera, setCameraFollowTarget } from "./renderer/camera";
 import {
   createDebugPanel,
   registerLiveMonitorTicker,
+  registerActionButtons,
 } from "./debug/debug-panel";
 import {
-  createBubbleText,
-  positionBubbleAboveTarget,
-} from "./renderer/ui/bubble-text";
-import {
-  createChoiceBox,
-  positionChoiceBoxAboveTarget,
-} from "./renderer/ui/choice-box";
+  createGameActionFacade,
+  type CharacterReference,
+} from "./game/game-actions";
+import { createGameStore } from "./game/game-store";
 import type { CollidableSprite } from "./renderer/collision";
 
 const PLAYER_COLOR = 0xffffff;
@@ -32,10 +30,13 @@ const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
 
   const cameraState = createCamera(pixiApplication);
   const worldContainer = cameraState.worldContainer;
+  const gameStore = createGameStore();
+  const characters = new Map<string, CharacterReference>();
 
   const screenCenterX = pixiApplication.screen.width / 2;
   const screenCenterY = pixiApplication.screen.height / 2;
 
+  const playerMovementState = createMovementState();
   const playerSprite = await createCharacterSprite({
     characterId: "player",
     displayName: "Player",
@@ -44,10 +45,16 @@ const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
     startY: screenCenterY,
   });
   worldContainer.addChild(playerSprite);
+  characters.set("player", {
+    characterId: "player",
+    sprite: playerSprite,
+    movementState: playerMovementState,
+  });
 
   const npcObstacles: CollidableSprite[] = [];
 
   for (let npcIndex = 0; npcIndex < 3; npcIndex++) {
+    const npcMovementState = createMovementState();
     const npcSprite = await createCharacterSprite({
       characterId: NPC_NAMES[npcIndex],
       displayName: NPC_NAMES[npcIndex],
@@ -57,10 +64,14 @@ const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
     });
     worldContainer.addChild(npcSprite);
     npcObstacles.push(createCollidable(npcSprite));
+    characters.set(NPC_NAMES[npcIndex], {
+      characterId: NPC_NAMES[npcIndex],
+      sprite: npcSprite,
+      movementState: npcMovementState,
+    });
   }
 
   const playerCollidable = createCollidable(playerSprite);
-  const playerMovementState = createMovementState();
 
   registerMovementTicker(
     pixiApplication,
@@ -72,43 +83,17 @@ const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
 
   setCameraFollowTarget(cameraState, playerSprite);
 
-  // --- Debug: preview bubble-text on NPC red ---
-  const debugBubble = createBubbleText(
-    {
-      speakerName: "Red Bunny",
-      dialogueText:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
-    },
+  const gameActions = createGameActionFacade({
     pixiApplication,
-  );
-  worldContainer.addChild(debugBubble);
-  positionBubbleAboveTarget(
-    debugBubble,
-    npcObstacles[0].sprite.x,
-    npcObstacles[0].sprite.y,
-  );
-
-  // --- Debug: preview choice-box on NPC teal ---
-  const debugChoiceBox = createChoiceBox(
-    [
-      { choiceUuid: "a", text: "Tell me more about the quest" },
-      { choiceUuid: "b", text: "I need to go now" },
-      { choiceUuid: "c", text: "What happened to the village?" },
-    ],
-    (choiceUuid) => {
-      console.log("Choice selected:", choiceUuid);
-    },
-    pixiApplication,
-  );
-  worldContainer.addChild(debugChoiceBox);
-  positionChoiceBoxAboveTarget(
-    debugChoiceBox,
-    npcObstacles[1].sprite.x,
-    npcObstacles[1].sprite.y,
-  );
+    cameraState,
+    worldContainer,
+    gameStore,
+    characters,
+  });
 
   const debugPanelState = createDebugPanel();
   registerLiveMonitorTicker(debugPanelState, pixiApplication);
+  registerActionButtons(debugPanelState, gameActions, "npc-red");
 
   pixiApplication.stage.eventMode = "static";
   pixiApplication.stage.hitArea = pixiApplication.screen;

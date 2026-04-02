@@ -27,12 +27,25 @@ export interface CameraCommandTarget {
   onComplete?: () => void;
 }
 
+export interface CameraShakeState {
+  remainingDuration: number;
+  intensity: number;
+}
+
+export interface CameraZoomTarget {
+  targetScale: number;
+  easingSpeed: number;
+  onComplete?: () => void;
+}
+
 export interface CameraState {
   readonly worldContainer: Container;
   readonly pixiApplication: Application;
   followTarget: Sprite | null;
   followLerpFactor: number;
   commandTarget: CameraCommandTarget | null;
+  shakeState: CameraShakeState | null;
+  zoomTarget: CameraZoomTarget | null;
 }
 
 export function createCamera(pixiApplication: Application): CameraState {
@@ -46,6 +59,8 @@ export function createCamera(pixiApplication: Application): CameraState {
     followTarget: null,
     followLerpFactor: DEFAULT_FOLLOW_LERP_FACTOR,
     commandTarget: null,
+    shakeState: null,
+    zoomTarget: null,
   };
 
   pixiApplication.ticker.add((time) => {
@@ -66,6 +81,7 @@ export function setCameraFollowTarget(
 ): void {
   cameraState.followTarget = targetSprite;
   cameraState.followLerpFactor = lerpFactor;
+  snapCameraToFollowTarget(cameraState);
 }
 
 /**
@@ -88,6 +104,30 @@ export function moveCameraToPosition(
 
 export function cancelCameraCommand(cameraState: CameraState): void {
   cameraState.commandTarget = null;
+}
+
+export function shakeCamera(
+  cameraState: CameraState,
+  intensity: number = 6,
+  durationInSeconds: number = 0.4,
+): void {
+  cameraState.shakeState = {
+    remainingDuration: durationInSeconds,
+    intensity,
+  };
+}
+
+export function zoomCamera(
+  cameraState: CameraState,
+  targetScale: number,
+  easingSpeed: number = 0.04,
+  onComplete?: () => void,
+): void {
+  cameraState.zoomTarget = {
+    targetScale,
+    easingSpeed,
+    onComplete,
+  };
 }
 
 function snapCameraToFollowTarget(cameraState: CameraState): void {
@@ -151,5 +191,38 @@ function updateCamera(cameraState: CameraState, deltaTime: number): void {
     }
 
     cameraState.worldContainer.position.set(halfViewportX, halfViewportY);
+  }
+
+  // --- Shake offset ---
+  if (cameraState.shakeState) {
+    const deltaSeconds = deltaTime / 60;
+    cameraState.shakeState.remainingDuration -= deltaSeconds;
+
+    if (cameraState.shakeState.remainingDuration <= 0) {
+      cameraState.shakeState = null;
+    } else {
+      const shakeIntensity = cameraState.shakeState.intensity;
+      cameraState.worldContainer.position.x +=
+        (Math.random() - 0.5) * shakeIntensity * 2;
+      cameraState.worldContainer.position.y +=
+        (Math.random() - 0.5) * shakeIntensity * 2;
+    }
+  }
+
+  // --- Zoom ---
+  if (cameraState.zoomTarget) {
+    const currentScale = cameraState.worldContainer.scale.x;
+    const { targetScale, easingSpeed, onComplete } = cameraState.zoomTarget;
+    const diff = targetScale - currentScale;
+
+    if (Math.abs(diff) < 0.005) {
+      cameraState.worldContainer.scale.set(targetScale);
+      cameraState.zoomTarget = null;
+      onComplete?.();
+    } else {
+      const lerpAmount = 1 - Math.pow(1 - easingSpeed, deltaTime);
+      const newScale = currentScale + diff * lerpAmount;
+      cameraState.worldContainer.scale.set(newScale);
+    }
   }
 }

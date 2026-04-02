@@ -2,10 +2,18 @@
  * Speech bubble — organic, cloud-like shape that gently wobbles like jelly.
  * Control points around the perimeter oscillate with sine waves at different
  * phases, redrawn each frame for a living, breathing effect.
+ * Text reveals letter by letter via the typewriter engine.
  */
 
 import { Container, Graphics, Text } from "pixi.js";
 import type { Application } from "pixi.js";
+import {
+  createTypewriterState,
+  advanceTypewriter,
+  getVisibleText,
+  skipToEnd,
+} from "../../shared/typewriter";
+import type { TypewriterState } from "../../shared/typewriter";
 
 const BUBBLE_PADDING_HORIZONTAL = 36;
 const BUBBLE_PADDING_VERTICAL = 26;
@@ -18,12 +26,7 @@ const WOBBLE_AMPLITUDE = 3;
 const WOBBLE_SPEED = 0.8;
 const CONTROL_POINT_COUNT = 12;
 
-const SPEAKER_NAME_STYLE = {
-  fill: "#333333",
-  fontSize: 14,
-  fontWeight: "bold" as const,
-  fontFamily: "Arial, sans-serif",
-};
+const DEFAULT_SPEAKER_NAME_COLOR = "#333333";
 
 const DIALOGUE_TEXT_STYLE = {
   fill: "#222222",
@@ -35,8 +38,17 @@ const DIALOGUE_TEXT_STYLE = {
 };
 
 export interface BubbleTextOptions {
+  readonly pixiApplication: Application;
   readonly speakerName: string;
   readonly dialogueText: string;
+  readonly speakerNameColor?: string;
+  readonly showTail?: boolean;
+}
+
+export interface BubbleTextHandle {
+  readonly container: Container;
+  readonly typewriterState: TypewriterState;
+  skipTypewriter: () => void;
 }
 
 interface ControlPoint {
@@ -110,22 +122,18 @@ function drawCloudBody(
   graphics.closePath();
 }
 
-function drawAnimatedBubble(
+function drawTail(
   graphics: Graphics,
-  controlPoints: ControlPoint[],
   centerX: number,
   bottomY: number,
   time: number,
+  fillColor: number,
+  strokeColor: number,
+  strokeWidth: number,
 ): void {
-  graphics.clear();
-
-  const positions = computeAnimatedPositions(controlPoints, time);
   const tailWobble = Math.sin(time * WOBBLE_SPEED * 0.5 + 2.0) * 4;
-
   const tailBaseLeftX = centerX - 3;
   const tailBaseRightX = centerX + 8;
-
-  // --- Tail: drawn first, body covers junction ---
   const tailAttachY = bottomY - 4;
   const tailTipX = centerX + 22 + tailWobble;
   const tailTipY = tailAttachY + 44;
@@ -148,25 +156,59 @@ function drawAnimatedBubble(
     tailAttachY,
   );
   graphics.closePath();
-  graphics.fill(BUBBLE_FILL_COLOR);
-  graphics.stroke({ color: BUBBLE_STROKE_COLOR, width: BUBBLE_STROKE_WIDTH });
+  graphics.fill(fillColor);
+  graphics.stroke({ color: strokeColor, width: strokeWidth });
+}
 
-  // --- Body: drawn on top, covers tail attachment ---
+function drawAnimatedBubble(
+  graphics: Graphics,
+  controlPoints: ControlPoint[],
+  centerX: number,
+  bottomY: number,
+  time: number,
+  showTail: boolean,
+): void {
+  graphics.clear();
+
+  const positions = computeAnimatedPositions(controlPoints, time);
+
+  if (showTail) {
+    drawTail(
+      graphics,
+      centerX,
+      bottomY,
+      time,
+      BUBBLE_FILL_COLOR,
+      BUBBLE_STROKE_COLOR,
+      BUBBLE_STROKE_WIDTH,
+    );
+  }
+
   drawCloudBody(graphics, positions);
   graphics.fill(BUBBLE_FILL_COLOR);
   graphics.stroke({ color: BUBBLE_STROKE_COLOR, width: BUBBLE_STROKE_WIDTH });
 }
 
-export function createBubbleText(
-  options: BubbleTextOptions,
-  pixiApplication: Application,
-): Container {
+export function createBubbleText(options: BubbleTextOptions): BubbleTextHandle {
+  const {
+    pixiApplication,
+    speakerName,
+    dialogueText,
+    speakerNameColor = DEFAULT_SPEAKER_NAME_COLOR,
+    showTail = true,
+  } = options;
+
   const bubbleContainer = new Container();
   bubbleContainer.label = "bubble-text";
 
   const speakerNameLabel = new Text({
-    text: options.speakerName,
-    style: SPEAKER_NAME_STYLE,
+    text: speakerName,
+    style: {
+      fill: speakerNameColor,
+      fontSize: 14,
+      fontWeight: "bold" as const,
+      fontFamily: "Arial, sans-serif",
+    },
   });
   speakerNameLabel.label = "speaker-name";
   speakerNameLabel.position.set(
@@ -175,7 +217,7 @@ export function createBubbleText(
   );
 
   const dialogueContentLabel = new Text({
-    text: options.dialogueText,
+    text: dialogueText,
     style: DIALOGUE_TEXT_STYLE,
   });
   dialogueContentLabel.label = "dialogue-content";
@@ -184,6 +226,7 @@ export function createBubbleText(
     BUBBLE_PADDING_VERTICAL + speakerNameLabel.height + 6,
   );
 
+  // Measure full text for bubble sizing, then start empty for typewriter
   const contentWidth = Math.max(
     speakerNameLabel.width,
     dialogueContentLabel.width,
@@ -195,10 +238,14 @@ export function createBubbleText(
     6 +
     dialogueContentLabel.height;
 
+  const typewriterState = createTypewriterState(dialogueText);
+  dialogueContentLabel.text = "";
+
   const centerX = bubbleWidth / 2;
   const centerY = bubbleHeight / 2;
   const radiusX = bubbleWidth / 2 + 6;
   const radiusY = bubbleHeight / 2 + 6;
+  const bubbleBottomY = centerY + radiusY;
 
   const controlPoints = generateControlPoints(
     centerX,
@@ -210,8 +257,6 @@ export function createBubbleText(
   const bubbleGraphics = new Graphics();
   bubbleGraphics.label = "bubble-background";
 
-  const bubbleBottomY = centerY + radiusY;
-
   let elapsedTime = 0;
   drawAnimatedBubble(
     bubbleGraphics,
@@ -219,6 +264,7 @@ export function createBubbleText(
     centerX,
     bubbleBottomY,
     elapsedTime,
+    showTail,
   );
 
   pixiApplication.ticker.add((time) => {
@@ -229,7 +275,12 @@ export function createBubbleText(
       centerX,
       bubbleBottomY,
       elapsedTime,
+      showTail,
     );
+
+    const deltaTimeInSeconds = time.deltaTime / 60;
+    advanceTypewriter(typewriterState, deltaTimeInSeconds);
+    dialogueContentLabel.text = getVisibleText(typewriterState);
   });
 
   bubbleContainer.addChild(
@@ -238,7 +289,14 @@ export function createBubbleText(
     dialogueContentLabel,
   );
 
-  return bubbleContainer;
+  return {
+    container: bubbleContainer,
+    typewriterState,
+    skipTypewriter: () => {
+      skipToEnd(typewriterState);
+      dialogueContentLabel.text = getVisibleText(typewriterState);
+    },
+  };
 }
 
 export function positionBubbleAboveTarget(

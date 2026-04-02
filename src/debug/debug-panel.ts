@@ -5,9 +5,10 @@
  */
 
 import { Pane } from "tweakpane";
-import type { FolderApi, ListBladeApi } from "tweakpane";
+import type { ButtonApi, FolderApi, ListBladeApi } from "tweakpane";
 import type { Application } from "pixi.js";
 import type { GameStore } from "../game/game-store";
+import type { GameActionFacade } from "../game/game-actions";
 import type { SupportedLanguage } from "../engine/i18n";
 
 export interface DebugPanelState {
@@ -57,6 +58,87 @@ export function createDebugPanel(
   });
 
   return { pane, gameStoreFolder, engineFolder, liveMonitor };
+}
+
+function addButton(
+  folder: FolderApi,
+  title: string,
+  onClick: () => void,
+): void {
+  (folder.addBlade({ view: "button", title }) as ButtonApi).on(
+    "click",
+    onClick,
+  );
+}
+
+export function registerActionButtons(
+  debugPanelState: DebugPanelState,
+  gameActions: GameActionFacade,
+  firstNpcCharacterId: string,
+): void {
+  const actionsFolder = debugPanelState.pane.addFolder({
+    title: "Actions",
+    expanded: true,
+  });
+
+  const cameraFolder = actionsFolder.addFolder({
+    title: "Camera",
+    expanded: false,
+  });
+  addButton(cameraFolder, "Shake", () => gameActions.shakeCamera());
+  addButton(cameraFolder, "Zoom In (1.5x)", () => gameActions.zoomCamera(1.5));
+  addButton(cameraFolder, "Zoom Reset (1x)", () => gameActions.zoomCamera(1));
+  addButton(cameraFolder, "Move to 0,0", () =>
+    gameActions.moveCameraToPosition(0, 0),
+  );
+
+  const characterFolder = actionsFolder.addFolder({
+    title: "Character",
+    expanded: false,
+  });
+  addButton(characterFolder, "Jump NPC", () =>
+    gameActions.jumpCharacter(firstNpcCharacterId),
+  );
+  addButton(characterFolder, "Spin NPC", () =>
+    gameActions.playCharacterAnimation(firstNpcCharacterId, "spin"),
+  );
+  addButton(characterFolder, "Bounce NPC", () =>
+    gameActions.playCharacterAnimation(firstNpcCharacterId, "bounce"),
+  );
+
+  const dialogueFolder = actionsFolder.addFolder({
+    title: "Dialogue",
+    expanded: false,
+  });
+  addButton(dialogueFolder, "Show Bubble on NPC", () =>
+    gameActions.showBubbleOnCharacter(
+      firstNpcCharacterId,
+      "Red Bunny",
+      "Hello! This is a test bubble from the debug panel.",
+      "#cc3333",
+    ),
+  );
+  addButton(dialogueFolder, "Show Choices on NPC", () =>
+    gameActions.showChoicesOnCharacter(
+      firstNpcCharacterId,
+      [
+        { choiceUuid: "a", text: "Option A" },
+        { choiceUuid: "b", text: "Option B" },
+      ],
+      (uuid) => console.log("Debug choice:", uuid),
+    ),
+  );
+
+  const stateFolder = actionsFolder.addFolder({
+    title: "Game State",
+    expanded: false,
+  });
+  addButton(stateFolder, "Set testVar = 42", () =>
+    gameActions.setVariable("testVar", 42),
+  );
+  addButton(stateFolder, "Toggle testSwitch", () =>
+    gameActions.setSwitch("testSwitch", true),
+  );
 }
 
 export function registerLiveMonitorTicker(

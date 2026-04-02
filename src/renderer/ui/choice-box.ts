@@ -36,6 +36,13 @@ export interface ChoiceEntry {
 
 export type ChoiceSelectedCallback = (choiceUuid: string) => void;
 
+export interface ChoiceBoxOptions {
+  readonly pixiApplication: Application;
+  readonly choiceEntries: ReadonlyArray<ChoiceEntry>;
+  readonly onChoiceSelected: ChoiceSelectedCallback;
+  readonly showTail?: boolean;
+}
+
 interface ControlPoint {
   readonly baseX: number;
   readonly baseY: number;
@@ -107,25 +114,19 @@ function drawCloudBody(
   graphics.closePath();
 }
 
-function drawAnimatedShape(
+function drawTail(
   graphics: Graphics,
-  controlPoints: ControlPoint[],
   centerX: number,
   bottomY: number,
   time: number,
 ): void {
-  graphics.clear();
-
-  const positions = computeAnimatedPositions(controlPoints, time);
   const tailWobble = Math.sin(time * WOBBLE_SPEED * 0.5 + 2.0) * 4;
-
   const tailBaseLeftX = centerX - 3;
   const tailBaseRightX = centerX + 8;
   const tailAttachY = bottomY - 4;
   const tailTipX = centerX + 22 + tailWobble;
   const tailTipY = tailAttachY + 44;
 
-  // --- Tail first ---
   graphics.moveTo(tailBaseRightX, tailAttachY);
   graphics.bezierCurveTo(
     tailBaseRightX + 12,
@@ -149,8 +150,24 @@ function drawAnimatedShape(
     color: CHOICE_BOX_STROKE_COLOR,
     width: CHOICE_BOX_STROKE_WIDTH,
   });
+}
 
-  // --- Body on top ---
+function drawAnimatedShape(
+  graphics: Graphics,
+  controlPoints: ControlPoint[],
+  centerX: number,
+  bottomY: number,
+  time: number,
+  showTail: boolean,
+): void {
+  graphics.clear();
+
+  const positions = computeAnimatedPositions(controlPoints, time);
+
+  if (showTail) {
+    drawTail(graphics, centerX, bottomY, time);
+  }
+
   drawCloudBody(graphics, positions);
   graphics.fill(CHOICE_BOX_FILL_COLOR);
   graphics.stroke({
@@ -159,11 +176,14 @@ function drawAnimatedShape(
   });
 }
 
-export function createChoiceBox(
-  choiceEntries: ReadonlyArray<ChoiceEntry>,
-  onChoiceSelected: ChoiceSelectedCallback,
-  pixiApplication: Application,
-): Container {
+export function createChoiceBox(options: ChoiceBoxOptions): Container {
+  const {
+    pixiApplication,
+    choiceEntries,
+    onChoiceSelected,
+    showTail = true,
+  } = options;
+
   const choiceBoxContainer = new Container();
   choiceBoxContainer.label = "choice-box";
 
@@ -215,6 +235,7 @@ export function createChoiceBox(
   const centerY = boxHeight / 2;
   const radiusX = boxWidth / 2 + 6;
   const radiusY = boxHeight / 2 + 6;
+  const boxBottomY = centerY + radiusY;
 
   const controlPoints = generateControlPoints(
     centerX,
@@ -226,8 +247,6 @@ export function createChoiceBox(
   const boxGraphics = new Graphics();
   boxGraphics.label = "choice-box-background";
 
-  const boxBottomY = centerY + radiusY;
-
   let elapsedTime = Math.PI;
   drawAnimatedShape(
     boxGraphics,
@@ -235,6 +254,7 @@ export function createChoiceBox(
     centerX,
     boxBottomY,
     elapsedTime,
+    showTail,
   );
 
   pixiApplication.ticker.add((time) => {
@@ -245,6 +265,7 @@ export function createChoiceBox(
       centerX,
       boxBottomY,
       elapsedTime,
+      showTail,
     );
   });
 
