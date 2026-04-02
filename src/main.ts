@@ -8,6 +8,10 @@ import {
 } from "./renderer/movement";
 import { createCollidable, resolveCollisions } from "./renderer/collision";
 import { createCamera, setCameraFollowTarget } from "./renderer/camera";
+import {
+  createDebugPanel,
+  registerLiveMonitorTicker,
+} from "./debug/debug-panel";
 import type { CollidableSprite } from "./renderer/collision";
 
 const PLAYER_COLOR = 0xffffff;
@@ -59,6 +63,9 @@ const NPC_NAMES = ["npc-red", "npc-teal", "npc-yellow"];
   );
 
   setCameraFollowTarget(cameraState, playerSprite);
+
+  const debugPanelState = createDebugPanel();
+  registerLiveMonitorTicker(debugPanelState, pixiApplication);
 
   pixiApplication.stage.eventMode = "static";
   pixiApplication.stage.hitArea = pixiApplication.screen;
