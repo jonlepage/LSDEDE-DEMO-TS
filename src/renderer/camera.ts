@@ -29,11 +29,10 @@ export interface CameraCommandTarget {
 
 export interface CameraState {
   readonly worldContainer: Container;
+  readonly pixiApplication: Application;
   followTarget: Sprite | null;
   followLerpFactor: number;
   commandTarget: CameraCommandTarget | null;
-  viewportWidth: number;
-  viewportHeight: number;
 }
 
 export function createCamera(pixiApplication: Application): CameraState {
@@ -43,15 +42,18 @@ export function createCamera(pixiApplication: Application): CameraState {
 
   const cameraState: CameraState = {
     worldContainer,
+    pixiApplication,
     followTarget: null,
     followLerpFactor: DEFAULT_FOLLOW_LERP_FACTOR,
     commandTarget: null,
-    viewportWidth: pixiApplication.screen.width,
-    viewportHeight: pixiApplication.screen.height,
   };
 
   pixiApplication.ticker.add((time) => {
     updateCamera(cameraState, time.deltaTime);
+  });
+
+  pixiApplication.renderer.on("resize", () => {
+    snapCameraToFollowTarget(cameraState);
   });
 
   return cameraState;
@@ -88,9 +90,21 @@ export function cancelCameraCommand(cameraState: CameraState): void {
   cameraState.commandTarget = null;
 }
 
+function snapCameraToFollowTarget(cameraState: CameraState): void {
+  if (!cameraState.followTarget) return;
+  cameraState.worldContainer.pivot.set(
+    cameraState.followTarget.x,
+    cameraState.followTarget.y,
+  );
+  cameraState.worldContainer.position.set(
+    cameraState.pixiApplication.screen.width / 2,
+    cameraState.pixiApplication.screen.height / 2,
+  );
+}
+
 function updateCamera(cameraState: CameraState, deltaTime: number): void {
-  const halfViewportX = cameraState.viewportWidth / 2;
-  const halfViewportY = cameraState.viewportHeight / 2;
+  const halfViewportX = cameraState.pixiApplication.screen.width / 2;
+  const halfViewportY = cameraState.pixiApplication.screen.height / 2;
 
   if (cameraState.commandTarget) {
     const { targetX, targetY, onComplete } = cameraState.commandTarget;
