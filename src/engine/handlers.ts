@@ -12,27 +12,41 @@ import type {
   ChoiceBlock,
   ChoiceContext,
   RuntimeChoiceItem,
+  CleanupFn,
 } from "@lsde/dialog-engine";
 
 export interface DialogueDisplayRequest {
+  readonly characterId: string | undefined;
   readonly characterName: string;
+  readonly blockLabel: string | undefined;
   readonly dialogueText: string;
   readonly advanceToNextBlock: () => void;
 }
 
 export interface ChoiceDisplayRequest {
+  readonly characterId: string | undefined;
   readonly choices: ReadonlyArray<RuntimeChoiceItem>;
   readonly selectChoiceAndAdvance: (choiceUuid: string) => void;
 }
 
-export type OnDialogueBlockReceived = (request: DialogueDisplayRequest) => void;
-export type OnChoiceBlockReceived = (request: ChoiceDisplayRequest) => void;
+export type OnDialogueBlockReceived = (
+  request: DialogueDisplayRequest,
+) => CleanupFn | void;
+export type OnChoiceBlockReceived = (
+  request: ChoiceDisplayRequest,
+) => CleanupFn | void;
 export type OnSceneCompleted = () => void;
 
 export interface HandlerCallbacks {
   readonly onDialogueBlockReceived: OnDialogueBlockReceived;
   readonly onChoiceBlockReceived: OnChoiceBlockReceived;
   readonly onSceneCompleted: OnSceneCompleted;
+}
+
+export function registerCharacterResolver(
+  dialogueEngine: DialogueEngine,
+): void {
+  dialogueEngine.onResolveCharacter((characters) => characters[0]);
 }
 
 export function registerGlobalHandlers(
@@ -47,10 +61,14 @@ export function registerGlobalHandlers(
       next,
     }: BlockHandlerArgs<DialogBlock, DialogContext>) => {
       const dialogueText = block.dialogueText?.[locale] ?? "";
+      const characterId = context.character?.id;
       const characterName = context.character?.name ?? "???";
+      const blockLabel = block.label;
 
-      callbacks.onDialogueBlockReceived({
+      return callbacks.onDialogueBlockReceived({
+        characterId,
         characterName,
+        blockLabel,
         dialogueText,
         advanceToNextBlock: next,
       });
@@ -59,7 +77,10 @@ export function registerGlobalHandlers(
 
   dialogueEngine.onChoice(
     ({ context, next }: BlockHandlerArgs<ChoiceBlock, ChoiceContext>) => {
-      callbacks.onChoiceBlockReceived({
+      const characterId = context.character?.id;
+
+      return callbacks.onChoiceBlockReceived({
+        characterId,
         choices: context.choices,
         selectChoiceAndAdvance: (choiceUuid: string) => {
           context.selectChoice(choiceUuid);

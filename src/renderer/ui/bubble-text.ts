@@ -49,6 +49,7 @@ export interface BubbleTextHandle {
   readonly container: Container;
   readonly typewriterState: TypewriterState;
   skipTypewriter: () => void;
+  destroy: () => void;
 }
 
 interface ControlPoint {
@@ -267,7 +268,7 @@ export function createBubbleText(options: BubbleTextOptions): BubbleTextHandle {
     showTail,
   );
 
-  pixiApplication.ticker.add((time) => {
+  const tickerCallback = (time: { deltaTime: number }) => {
     elapsedTime += time.deltaTime * 0.05;
     drawAnimatedBubble(
       bubbleGraphics,
@@ -281,7 +282,9 @@ export function createBubbleText(options: BubbleTextOptions): BubbleTextHandle {
     const deltaTimeInSeconds = time.deltaTime / 60;
     advanceTypewriter(typewriterState, deltaTimeInSeconds);
     dialogueContentLabel.text = getVisibleText(typewriterState);
-  });
+  };
+
+  pixiApplication.ticker.add(tickerCallback);
 
   bubbleContainer.addChild(
     bubbleGraphics,
@@ -295,6 +298,13 @@ export function createBubbleText(options: BubbleTextOptions): BubbleTextHandle {
     skipTypewriter: () => {
       skipToEnd(typewriterState);
       dialogueContentLabel.text = getVisibleText(typewriterState);
+    },
+    destroy: () => {
+      pixiApplication.ticker.remove(tickerCallback);
+      if (bubbleContainer.parent) {
+        bubbleContainer.parent.removeChild(bubbleContainer);
+      }
+      bubbleContainer.destroy({ children: true });
     },
   };
 }

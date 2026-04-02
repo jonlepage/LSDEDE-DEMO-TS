@@ -106,6 +106,20 @@ export function cancelCameraCommand(cameraState: CameraState): void {
   cameraState.commandTarget = null;
 }
 
+export function resetCameraState(cameraState: CameraState): void {
+  cameraState.followTarget = null;
+  cameraState.followLerpFactor = DEFAULT_FOLLOW_LERP_FACTOR;
+  cameraState.commandTarget = null;
+  cameraState.shakeState = null;
+  cameraState.zoomTarget = null;
+  cameraState.worldContainer.scale.set(1);
+  cameraState.worldContainer.pivot.set(0, 0);
+  cameraState.worldContainer.position.set(
+    cameraState.pixiApplication.screen.width / 2,
+    cameraState.pixiApplication.screen.height / 2,
+  );
+}
+
 export function shakeCamera(
   cameraState: CameraState,
   intensity: number = 6,

@@ -93,8 +93,8 @@ export function registerMovementTicker(
     proposedX: number,
     proposedY: number,
   ) => { allowedX: number; allowedY: number },
-): void {
-  pixiApplication.ticker.add((time) => {
+): () => void {
+  const tickerCallback = (time: { deltaTime: number }) => {
     if (!movementState.currentTarget) {
       characterSprite.pivot.y = 0;
       return;
@@ -175,5 +175,9 @@ export function registerMovementTicker(
         }
       }
     }
-  });
+  };
+
+  pixiApplication.ticker.add(tickerCallback);
+
+  return () => pixiApplication.ticker.remove(tickerCallback);
 }

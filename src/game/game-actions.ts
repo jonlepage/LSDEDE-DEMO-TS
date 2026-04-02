@@ -68,6 +68,7 @@ export interface GameActionFacade {
     choices: ReadonlyArray<ChoiceEntry>,
     onChoiceSelected: ChoiceSelectedCallback,
   ): Container;
+  removeBubbleFromWorld(bubbleHandle: BubbleTextHandle): void;
   setVariable(variableName: string, value: number): void;
   setSwitch(switchName: string, isEnabled: boolean): void;
 }
@@ -174,6 +175,10 @@ export function createGameActionFacade(
 
     setVariable(variableName: string, value: number): void {
       setGameVariable(gameStore, variableName, value);
+    },
+
+    removeBubbleFromWorld(bubbleHandle: BubbleTextHandle): void {
+      bubbleHandle.destroy();
     },
 
     setSwitch(switchName: string, isEnabled: boolean): void {
