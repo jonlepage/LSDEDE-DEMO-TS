@@ -3,7 +3,10 @@ import { createPixiApplication } from "./renderer/stage";
 import { createCamera, resetCameraState } from "./renderer/camera";
 import { renderDemoNavigation } from "./app/navigation";
 import { loadBlueprintFromPath, createDialogueEngine } from "./engine/setup";
-import { registerCharacterResolver } from "./engine/handlers";
+import {
+  registerCharacterResolver,
+  registerGlobalHandlers,
+} from "./engine/handlers";
 
 const BLUEPRINT_FILE_PATH = "/blueprints/blueprint.json";
 
@@ -16,6 +19,15 @@ const BLUEPRINT_FILE_PATH = "/blueprints/blueprint.json";
   const dialogueEngine = createDialogueEngine();
   dialogueEngine.init({ data: blueprintData });
   registerCharacterResolver(dialogueEngine);
+  registerGlobalHandlers(
+    dialogueEngine,
+    {
+      onDialogueBlockReceived: () => {},
+      onChoiceBlockReceived: () => {},
+      onSceneCompleted: () => {},
+    },
+    blueprintData.primaryLanguage ?? "fr",
+  );
 
   const sceneNavigationEntries = blueprintData.scenes.map((scene) => ({
     id: scene.label,

@@ -90,6 +90,16 @@ export function registerGlobalHandlers(
     },
   );
 
+  dialogueEngine.onCondition(({ context, next }) => {
+    context.resolve(true);
+    next();
+  });
+
+  dialogueEngine.onAction(({ context, next }) => {
+    context.resolve();
+    next();
+  });
+
   dialogueEngine.onSceneExit(() => {
     callbacks.onSceneCompleted();
   });

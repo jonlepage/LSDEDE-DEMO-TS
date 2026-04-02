@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-02T19:25:20.661Z",
+  "exportDate": "2026-04-02T22:13:59.728Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -14,25 +14,8 @@
       "uuid": "268a4c3e-7693-4ce7-8d36-4b0fd2e4a052",
       "label": "simple-dialog-flow",
       "date": "02/04/2026",
-      "entryBlockId": "bc539792-e166-4d37-b2c4-fc5c901c7f24",
+      "entryBlockId": "c39d69d1-f508-45a8-8084-09a68f6916e1",
       "blocks": [
-        {
-          "uuid": "bc539792-e166-4d37-b2c4-fc5c901c7f24",
-          "type": "DIALOG",
-          "properties": [],
-          "label": "DIALOG-001",
-          "isStartBlock": true,
-          "structureKey": "__blueprints__.simple-dialog-flow.DIALOG-001",
-          "content": "",
-          "dialogueText": {
-            "en": "",
-            "fr": ""
-          },
-          "parentLabels": [
-            "__blueprints__"
-          ],
-          "metadata": {}
-        },
         {
           "uuid": "39a5f6d9-59cb-479f-bd17-28bfda31663a",
           "type": "DIALOG",
@@ -158,6 +141,7 @@
           "type": "DIALOG",
           "properties": [],
           "label": "rabbit_rumor-AI",
+          "isStartBlock": true,
           "structureKey": "__blueprints__.simple-dialog-flow.rabbit_rumor-AI",
           "content": "Les copains, vous n'allez pas me croire, mais j'ai déniché le scoop du siècle : il y aurait une carotte de la taille d'un chêne juste derrière la colline de l'Est. On l'appelle la Carotte Sacrée et elle brille apparemment d'un éclat doré dans le noir total !",
           "dialogueText": {

@@ -152,7 +152,7 @@ export async function runScene(
     if (isSceneTriggered) return;
     isSceneTriggered = true;
 
-    console.log("[simple-dialog-flow] Scene triggered!");
+    console.log("❤[simple-dialog-flow] Scene triggered!");
 
     const sceneHandle = dialogueEngine.scene(SCENE_UUID);
 
@@ -197,7 +197,7 @@ export async function runScene(
       currentAdvanceFunction = null;
       currentBubbleHandle = null;
       isSceneTriggered = false;
-      console.log("[simple-dialog-flow] Scene completed.");
+      console.log("✅[simple-dialog-flow] Scene completed.");
     });
 
     sceneHandle.start();
