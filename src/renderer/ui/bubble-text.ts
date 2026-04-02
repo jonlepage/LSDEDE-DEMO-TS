@@ -1,12 +1,12 @@
 /**
  * Speech bubble — organic, cloud-like shape that gently wobbles like jelly.
- * Control points around the perimeter oscillate with sine waves at different
- * phases, redrawn each frame for a living, breathing effect.
- * Text reveals letter by letter via the typewriter engine.
+ * Outline and shadow are handled by pixi-filters on the container,
+ * not by stroke() on individual graphics.
  */
 
 import { Container, Graphics, Text } from "pixi.js";
 import type { Application } from "pixi.js";
+import { OutlineFilter, DropShadowFilter } from "pixi-filters";
 import {
   createTypewriterState,
   advanceTypewriter,
@@ -18,9 +18,20 @@ import type { TypewriterState } from "../../shared/typewriter";
 const BUBBLE_PADDING_HORIZONTAL = 36;
 const BUBBLE_PADDING_VERTICAL = 26;
 const BUBBLE_FILL_COLOR = 0xffffff;
-const BUBBLE_STROKE_COLOR = 0x222222;
-const BUBBLE_STROKE_WIDTH = 2.5;
 const BUBBLE_MAX_TEXT_WIDTH = 220;
+
+const OUTLINE_COLOR = 0x222222;
+const OUTLINE_THICKNESS = 3;
+const SHADOW_OFFSET_X = 3;
+const SHADOW_OFFSET_Y = 3;
+const SHADOW_BLUR = 4;
+const SHADOW_ALPHA = 0.25;
+const SHADOW_COLOR = 0x000000;
+
+const NAME_BACKGROUND_PADDING_HORIZONTAL = 8;
+const NAME_BACKGROUND_PADDING_VERTICAL = 3;
+const NAME_BACKGROUND_COLOR = 0xffffff;
+const NAME_BACKGROUND_BORDER_RADIUS = 6;
 
 const WOBBLE_AMPLITUDE = 3;
 const WOBBLE_SPEED = 0.8;
@@ -129,8 +140,6 @@ function drawTail(
   bottomY: number,
   time: number,
   fillColor: number,
-  strokeColor: number,
-  strokeWidth: number,
 ): void {
   const tailWobble = Math.sin(time * WOBBLE_SPEED * 0.5 + 2.0) * 4;
   const tailBaseLeftX = centerX - 3;
@@ -158,7 +167,6 @@ function drawTail(
   );
   graphics.closePath();
   graphics.fill(fillColor);
-  graphics.stroke({ color: strokeColor, width: strokeWidth });
 }
 
 function drawAnimatedBubble(
@@ -174,20 +182,11 @@ function drawAnimatedBubble(
   const positions = computeAnimatedPositions(controlPoints, time);
 
   if (showTail) {
-    drawTail(
-      graphics,
-      centerX,
-      bottomY,
-      time,
-      BUBBLE_FILL_COLOR,
-      BUBBLE_STROKE_COLOR,
-      BUBBLE_STROKE_WIDTH,
-    );
+    drawTail(graphics, centerX, bottomY, time, BUBBLE_FILL_COLOR);
   }
 
   drawCloudBody(graphics, positions);
   graphics.fill(BUBBLE_FILL_COLOR);
-  graphics.stroke({ color: BUBBLE_STROKE_COLOR, width: BUBBLE_STROKE_WIDTH });
 }
 
 export function createBubbleText(options: BubbleTextOptions): BubbleTextHandle {
@@ -202,6 +201,7 @@ export function createBubbleText(options: BubbleTextOptions): BubbleTextHandle {
   const bubbleContainer = new Container();
   bubbleContainer.label = "bubble-text";
 
+  // --- Speaker name with white background ---
   const speakerNameLabel = new Text({
     text: speakerName,
     style: {
@@ -212,11 +212,32 @@ export function createBubbleText(options: BubbleTextOptions): BubbleTextHandle {
     },
   });
   speakerNameLabel.label = "speaker-name";
+
+  const nameBackgroundGraphics = new Graphics();
+  nameBackgroundGraphics.label = "name-background";
+  nameBackgroundGraphics
+    .roundRect(
+      0,
+      0,
+      speakerNameLabel.width + NAME_BACKGROUND_PADDING_HORIZONTAL * 2,
+      speakerNameLabel.height + NAME_BACKGROUND_PADDING_VERTICAL * 2,
+      NAME_BACKGROUND_BORDER_RADIUS,
+    )
+    .fill(NAME_BACKGROUND_COLOR);
+
+  const nameContainer = new Container();
+  nameContainer.label = "name-container";
+  nameContainer.addChild(nameBackgroundGraphics, speakerNameLabel);
   speakerNameLabel.position.set(
-    BUBBLE_PADDING_HORIZONTAL,
-    BUBBLE_PADDING_VERTICAL,
+    NAME_BACKGROUND_PADDING_HORIZONTAL,
+    NAME_BACKGROUND_PADDING_VERTICAL,
+  );
+  nameContainer.position.set(
+    BUBBLE_PADDING_HORIZONTAL - NAME_BACKGROUND_PADDING_HORIZONTAL,
+    BUBBLE_PADDING_VERTICAL - NAME_BACKGROUND_PADDING_VERTICAL,
   );
 
+  // --- Dialogue text ---
   const dialogueContentLabel = new Text({
     text: dialogueText,
     style: DIALOGUE_TEXT_STYLE,
@@ -224,10 +245,10 @@ export function createBubbleText(options: BubbleTextOptions): BubbleTextHandle {
   dialogueContentLabel.label = "dialogue-content";
   dialogueContentLabel.position.set(
     BUBBLE_PADDING_HORIZONTAL,
-    BUBBLE_PADDING_VERTICAL + speakerNameLabel.height + 6,
+    BUBBLE_PADDING_VERTICAL + speakerNameLabel.height + 10,
   );
 
-  // Measure full text for bubble sizing, then start empty for typewriter
+  // --- Bubble sizing ---
   const contentWidth = Math.max(
     speakerNameLabel.width,
     dialogueContentLabel.width,
@@ -236,7 +257,7 @@ export function createBubbleText(options: BubbleTextOptions): BubbleTextHandle {
   const bubbleHeight =
     BUBBLE_PADDING_VERTICAL * 2 +
     speakerNameLabel.height +
-    6 +
+    10 +
     dialogueContentLabel.height;
 
   const typewriterState = createTypewriterState(dialogueText);
@@ -286,11 +307,21 @@ export function createBubbleText(options: BubbleTextOptions): BubbleTextHandle {
 
   pixiApplication.ticker.add(tickerCallback);
 
-  bubbleContainer.addChild(
-    bubbleGraphics,
-    speakerNameLabel,
-    dialogueContentLabel,
-  );
+  bubbleContainer.addChild(bubbleGraphics, nameContainer, dialogueContentLabel);
+
+  // --- Filters: outline + drop shadow on the whole container ---
+  bubbleContainer.filters = [
+    new OutlineFilter({
+      thickness: OUTLINE_THICKNESS,
+      color: OUTLINE_COLOR,
+    }),
+    new DropShadowFilter({
+      offset: { x: SHADOW_OFFSET_X, y: SHADOW_OFFSET_Y },
+      blur: SHADOW_BLUR,
+      alpha: SHADOW_ALPHA,
+      color: SHADOW_COLOR,
+    }),
+  ];
 
   return {
     container: bubbleContainer,
