@@ -31,6 +31,7 @@ export interface CameraCommandTarget {
 export interface CameraShakeState {
   remainingDuration: number;
   intensity: number;
+  onComplete?: () => void;
 }
 
 export interface CameraZoomTarget {
@@ -125,10 +126,12 @@ export function shakeCamera(
   cameraState: CameraState,
   intensity: number = 6,
   durationInSeconds: number = 0.4,
+  onComplete?: () => void,
 ): void {
   cameraState.shakeState = {
     remainingDuration: durationInSeconds,
     intensity,
+    onComplete,
   };
 }
 
@@ -216,7 +219,9 @@ function updateCamera(cameraState: CameraState, deltaTime: number): void {
     cameraState.shakeState.remainingDuration -= deltaSeconds;
 
     if (cameraState.shakeState.remainingDuration <= 0) {
+      const { onComplete } = cameraState.shakeState;
       cameraState.shakeState = null;
+      onComplete?.();
     } else {
       const shakeIntensity = cameraState.shakeState.intensity;
       cameraState.worldContainer.position.x +=

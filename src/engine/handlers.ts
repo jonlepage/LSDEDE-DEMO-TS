@@ -90,6 +90,14 @@ export function registerGlobalHandlers(
     },
   );
 
+  // onBeforeBlock: honor the delay nativeProperty before dispatching each block.
+  // The engine does NOT enforce delay — it's the developer's responsibility.
+  // A timeout of 0ms still defers to the next microtask, keeping the flow async-safe.
+  dialogueEngine.onBeforeBlock(({ block, resolve }) => {
+    const delayMs = block.nativeProperties?.delay ?? 0;
+    setTimeout(() => resolve(), delayMs);
+  });
+
   dialogueEngine.onCondition(({ context, next }) => {
     context.resolve(true);
     next();

@@ -45,13 +45,19 @@ export interface GameActionFacadeDependencies {
 
 export interface GameActionFacade {
   moveCameraToPosition(worldX: number, worldY: number): Promise<void>;
-  shakeCamera(intensity?: number, durationInSeconds?: number): void;
+  moveCameraToCharacter(characterId: string): Promise<void>;
+  shakeCamera(intensity?: number, durationInSeconds?: number): Promise<void>;
   zoomCamera(targetScale: number): Promise<void>;
   moveCharacterToPosition(
     characterId: string,
     worldX: number,
     worldY: number,
   ): void;
+  moveCharacterRelative(
+    characterId: string,
+    offsetX: number,
+    offsetY?: number,
+  ): Promise<void>;
   jumpCharacter(characterId: string): void;
   playCharacterAnimation(
     characterId: string,
@@ -99,8 +105,22 @@ export function createGameActionFacade(
       });
     },
 
-    shakeCamera(intensity?: number, durationInSeconds?: number): void {
-      shakeCamera(cameraState, intensity, durationInSeconds);
+    moveCameraToCharacter(characterId: string): Promise<void> {
+      const character = findCharacterOrThrow(characterId);
+      return new Promise((resolve) => {
+        moveCameraToPosition(
+          cameraState,
+          character.sprite.x,
+          character.sprite.y,
+          resolve,
+        );
+      });
+    },
+
+    shakeCamera(intensity?: number, durationInSeconds?: number): Promise<void> {
+      return new Promise((resolve) => {
+        shakeCamera(cameraState, intensity, durationInSeconds, resolve);
+      });
     },
 
     zoomCamera(targetScale: number): Promise<void> {
@@ -116,6 +136,28 @@ export function createGameActionFacade(
     ): void {
       const character = findCharacterOrThrow(characterId);
       setMovementTarget(character.movementState, worldX, worldY);
+    },
+
+    moveCharacterRelative(
+      characterId: string,
+      offsetX: number,
+      offsetY: number = 0,
+    ): Promise<void> {
+      const character = findCharacterOrThrow(characterId);
+      const destinationX = character.sprite.x + offsetX;
+      const destinationY = character.sprite.y + offsetY;
+      setMovementTarget(character.movementState, destinationX, destinationY);
+
+      // Resolve when the character reaches the destination.
+      return new Promise((resolve) => {
+        const checkArrival = () => {
+          if (!character.movementState.currentTarget) {
+            pixiApplication.ticker.remove(checkArrival);
+            resolve();
+          }
+        };
+        pixiApplication.ticker.add(checkArrival);
+      });
     },
 
     jumpCharacter(characterId: string): void {

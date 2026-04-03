@@ -17,6 +17,7 @@ export interface CharacterConfiguration {
   readonly tintColor: number;
   readonly startX: number;
   readonly startY: number;
+  readonly scale?: number;
 }
 
 export interface SetupCharactersOptions {
@@ -53,6 +54,7 @@ export async function setupCharacters(
       tintColor: config.tintColor,
       startX: config.startX,
       startY: config.startY,
+      scale: config.scale ?? undefined,
     });
 
     sceneContext.addSprite(sprite, worldContainer);

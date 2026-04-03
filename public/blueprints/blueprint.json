@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T04:00:42.816Z",
+  "exportDate": "2026-04-03T04:30:50.491Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -1134,7 +1134,7 @@
               "actionId": "shakeCamera",
               "params": [
                 5,
-                0.5
+                1000
               ]
             }
           ],

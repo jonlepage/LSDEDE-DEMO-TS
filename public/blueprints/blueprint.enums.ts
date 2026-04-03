@@ -386,7 +386,7 @@ export enum LSDE_BLOCKS {
 	 * - Scene: `simple-action`
 	 * - In: `l1_alert-AI`
 	 * - Out: `l4_terror-AI`
-	 * `shakeCamera`(5, 0.5)
+	 * `shakeCamera`(5, 1000)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */

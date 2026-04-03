@@ -151,12 +151,6 @@ export async function runScene(
 
   const locale = blueprintData.primaryLanguage ?? "fr";
 
-  // you choose how handle delay if you want support it in your game
-  dialogueEngine.onBeforeBlock(({ block, resolve }) => {
-    const { nativeProperties } = block;
-    setTimeout(() => resolve(), nativeProperties?.delay ?? 0);
-  });
-
   function startDialogueScene(): void {
     console.log("[multi-tracks] Scene triggered!");
 

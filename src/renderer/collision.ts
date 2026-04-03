@@ -5,7 +5,7 @@
 
 import type { Sprite } from "pixi.js";
 
-const DEFAULT_COLLISION_RADIUS = 26;
+const DEFAULT_COLLISION_RADIUS = 10;
 
 export interface CollidableSprite {
   readonly sprite: Sprite;
@@ -14,7 +14,7 @@ export interface CollidableSprite {
 
 export function createCollidable(
   sprite: Sprite,
-  collisionRadius: number = DEFAULT_COLLISION_RADIUS,
+  collisionRadius: number = DEFAULT_COLLISION_RADIUS * sprite.scale.x,
 ): CollidableSprite {
   return { sprite, collisionRadius };
 }

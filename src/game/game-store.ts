@@ -16,6 +16,7 @@ export const GAME_ACTORS = {
   l2: "l2",
   l3: "l3",
   l4: "l4",
+  boss: "boss",
 } as const satisfies Record<lsdeCharacter, lsdeCharacter>;
 
 export interface GameItem {
