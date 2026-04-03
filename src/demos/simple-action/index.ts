@@ -78,6 +78,8 @@ export interface SceneCleanup {
 // ---------------------------------------------------------------------------
 
 interface BlueprintAction {
+  // string instead of lsdeActionId — native LSDE actions (e.g. "shakeCamera")
+  // are not included in the auto-generated lsdeActionId union type.
   readonly actionId: lsdeActionId;
   readonly params: readonly (string | number | boolean)[];
 }
@@ -262,19 +264,22 @@ export async function runScene(
 
       if (needsUserInput) {
         const blockUuid = block.uuid;
-        blocksWaitingForInput.set(blockUuid, next);
 
-        let autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
+        // timeoutMs here = minimum display time before input is accepted.
+        // The block is NOT in blocksWaitingForInput during the lock period —
+        // the user cannot accidentally skip it right after it appears.
+        // After the timeout, the block becomes clickable like any other.
+        let unlockTimer: ReturnType<typeof setTimeout> | null = null;
         if (timeoutMs && timeoutMs > 0) {
-          autoAdvanceTimer = setTimeout(() => {
-            if (blocksWaitingForInput.delete(blockUuid)) {
-              next();
-            }
+          unlockTimer = setTimeout(() => {
+            blocksWaitingForInput.set(blockUuid, next);
           }, timeoutMs);
+        } else {
+          blocksWaitingForInput.set(blockUuid, next);
         }
 
         return () => {
-          if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+          if (unlockTimer) clearTimeout(unlockTimer);
           blocksWaitingForInput.delete(blockUuid);
           const handle = activeBubbles.get(blockUuid);
           if (handle) {
@@ -284,7 +289,7 @@ export async function runScene(
         };
       }
 
-      // Async track without waitInput: auto-advance.
+      // Async track without waitInput: auto-advance after timeout (or immediately).
       if (timeoutMs && timeoutMs > 0) {
         setTimeout(() => next(), timeoutMs);
       } else {

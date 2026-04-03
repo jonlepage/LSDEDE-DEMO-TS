@@ -4,7 +4,10 @@
  * Inspired by RPG Maker's data model, kept intentionally simple.
  */
 
-import type { lsdeCharacter } from "../../public/blueprints/blueprint.types";
+import type {
+  lsdeCharacter,
+  lsdeDictionaryinventory,
+} from "../../public/blueprints/blueprint.types";
 
 /**
  * Type-safe character ID dictionary.
@@ -20,7 +23,7 @@ export const GAME_ACTORS = {
 } as const satisfies Record<lsdeCharacter, lsdeCharacter>;
 
 export interface GameItem {
-  readonly itemId: string;
+  readonly itemId: ({} & string) | lsdeDictionaryinventory;
   readonly displayName: string;
   readonly quantity: number;
 }

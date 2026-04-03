@@ -1,13 +1,23 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T05:49:47.951Z",
+  "exportDate": "2026-04-03T06:30:47.831Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
     "en",
     "fr"
   ],
-  "dictionaries": [],
+  "dictionaries": [
+    {
+      "uuid": "89871280-7933-49f5-8522-82f5c9371d0f",
+      "id": "inventory",
+      "rows": [
+        {
+          "key": "carrot"
+        }
+      ]
+    }
+  ],
   "signatures": [
     {
       "uuid": "060dfc91-5cec-4777-9460-84ae00f404b7",
@@ -38,19 +48,15 @@
       ]
     },
     {
-      "uuid": "62d9470a-cd91-4c6c-aba0-ba261f554182",
-      "id": "moveCharacterAt",
+      "uuid": "7404e9c3-2cb3-4a55-92ce-ddb6de07f29f",
+      "id": "shakeCamera",
       "params": [
         {
-          "label": "id",
-          "type": "string"
-        },
-        {
-          "label": "x",
+          "label": "intensity",
           "type": "number"
         },
         {
-          "label": "y",
+          "label": "duration",
           "type": "number"
         }
       ]
@@ -1031,8 +1037,8 @@
           "actions": [
             {
               "uuid": "6ac7ac9c-d216-4edd-aac8-6f29250644d6",
-              "signatureUuid": "7a8db8b4-8874-4bdc-ae0d-9e82f4da0828",
-              "actionId": "7a8db8b4-8874-4bdc-ae0d-9e82f4da0828",
+              "signatureUuid": "7404e9c3-2cb3-4a55-92ce-ddb6de07f29f",
+              "actionId": "shakeCamera",
               "params": [
                 16,
                 2
@@ -1054,17 +1060,17 @@
           "actions": [
             {
               "uuid": "dbae5556-dd3c-453f-9c9d-f16c4bf1636b",
-              "signatureUuid": "7a8db8b4-8874-4bdc-ae0d-9e82f4da0828",
-              "actionId": "7a8db8b4-8874-4bdc-ae0d-9e82f4da0828",
+              "signatureUuid": "7404e9c3-2cb3-4a55-92ce-ddb6de07f29f",
+              "actionId": "shakeCamera",
               "params": [
-                4,
+                5,
                 2
               ]
             },
             {
               "uuid": "729b989f-53c3-42ee-a099-0cc04aa6fd64",
               "signatureUuid": "62d9470a-cd91-4c6c-aba0-ba261f554182",
-              "actionId": "moveCharacterAt",
+              "actionId": "62d9470a-cd91-4c6c-aba0-ba261f554182",
               "params": [
                 "l1",
                 -800
@@ -1089,6 +1095,38 @@
               "params": [
                 "l1",
                 1.3
+              ]
+            }
+          ],
+          "parentLabels": [
+            "__blueprints__"
+          ]
+        },
+        {
+          "uuid": "26bc6b08-22b3-4ed5-bd6a-d4c955adff63",
+          "type": "ACTION",
+          "properties": [],
+          "label": "ACTION-008",
+          "nativeProperties": {
+            "isAsync": true
+          },
+          "actions": [
+            {
+              "uuid": "6719756c-4ebf-4434-8cd8-d0f5aa452ca6",
+              "signatureUuid": "060dfc91-5cec-4777-9460-84ae00f404b7",
+              "actionId": "moveCameraToLabel",
+              "params": [
+                "l1",
+                2
+              ]
+            },
+            {
+              "uuid": "f423e8e3-aef2-415e-b9a7-106932148c42",
+              "signatureUuid": "62d9470a-cd91-4c6c-aba0-ba261f554182",
+              "actionId": "62d9470a-cd91-4c6c-aba0-ba261f554182",
+              "params": [
+                "l1",
+                800
               ]
             }
           ],
@@ -1150,8 +1188,8 @@
           "actions": [
             {
               "uuid": "2973e234-4ff0-46ff-a193-11fec2d26a12",
-              "signatureUuid": "7a8db8b4-8874-4bdc-ae0d-9e82f4da0828",
-              "actionId": "7a8db8b4-8874-4bdc-ae0d-9e82f4da0828",
+              "signatureUuid": "7404e9c3-2cb3-4a55-92ce-ddb6de07f29f",
+              "actionId": "shakeCamera",
               "params": [
                 5,
                 0.3
@@ -1171,8 +1209,8 @@
           "actions": [
             {
               "uuid": "2e17ab2a-635b-4027-b575-4d6991b873f8",
-              "signatureUuid": "7a8db8b4-8874-4bdc-ae0d-9e82f4da0828",
-              "actionId": "7a8db8b4-8874-4bdc-ae0d-9e82f4da0828",
+              "signatureUuid": "7404e9c3-2cb3-4a55-92ce-ddb6de07f29f",
+              "actionId": "shakeCamera",
               "params": [
                 8,
                 0.4
@@ -1237,13 +1275,15 @@
           "properties": [],
           "label": "climax_moment-AI",
           "structureKey": "__blueprints__.simple-action.climax_moment-AI",
-          "content": "Le destin de la prairie se jouera ici, dans la poussière.",
+          "content": "whaaaaaaa",
           "nativeProperties": {
-            "delay": 200
+            "isAsync": true,
+            "delay": 209,
+            "timeout": 2000
           },
           "dialogueText": {
             "en": "",
-            "fr": "Le destin de la prairie se jouera ici, dans la poussière."
+            "fr": "whaaaaaaa"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1318,6 +1358,7 @@
           "structureKey": "__blueprints__.simple-action.DIALOG-009",
           "content": "J'aime les carotte mais pas a ce points !",
           "nativeProperties": {
+            "isAsync": true,
             "delay": 200,
             "timeout": 3000
           },
@@ -1346,13 +1387,42 @@
           "structureKey": "__blueprints__.simple-action.DIALOG-010",
           "content": "Tes un gros lapin mouillé l1 ..... traitre !",
           "nativeProperties": {
-            "isAsync": true,
-            "delay": 500,
-            "timeout": 3000
+            "isAsync": false,
+            "delay": 2500,
+            "timeout": 3500
           },
           "dialogueText": {
             "en": "",
             "fr": "Tes un gros lapin mouillé l1 ..... traitre !"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "bce3aa3f-e3e9-4a7e-88a7-a74d5f5a4b58",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-011",
+          "structureKey": "__blueprints__.simple-action.DIALOG-011",
+          "content": "whaaaa",
+          "nativeProperties": {
+            "isAsync": false,
+            "delay": 1600,
+            "timeout": 4000
+          },
+          "dialogueText": {
+            "en": "",
+            "fr": "whaaaa"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1534,14 +1604,6 @@
           "fromPortIndex": 1
         },
         {
-          "id": "46a44d22-9e89-41f8-b28b-9bfdac88d154",
-          "fromId": "3af36f94-0b76-40dc-9681-1bb360a03897",
-          "toId": "b22c8172-a63d-486b-b07d-37ab1832fee6",
-          "fromPort": "out",
-          "toPort": "in",
-          "fromPortIndex": 0
-        },
-        {
           "id": "3a437cc0-4493-42b7-9fd7-27a4c00f9242",
           "fromId": "dc58f326-8e8c-4837-beb1-e8ba04410b84",
           "toId": "f12afa3e-7d89-497c-8f2e-585187f3b55a",
@@ -1602,6 +1664,245 @@
           "fromId": "b50008c7-348b-4bf4-b7cd-cec16ae727d0",
           "toId": "da5a321e-10b2-44b6-8632-39b737d65a5c",
           "fromPort": "then",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "c7ee7150-2003-4161-b302-9b117fa5782a",
+          "fromId": "3af36f94-0b76-40dc-9681-1bb360a03897",
+          "toId": "26bc6b08-22b3-4ed5-bd6a-d4c955adff63",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "cd406882-103f-430e-acb9-b45e276febff",
+          "fromId": "3af36f94-0b76-40dc-9681-1bb360a03897",
+          "toId": "b22c8172-a63d-486b-b07d-37ab1832fee6",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "3e426ecd-c748-48f2-8cb0-c01d9471cb38",
+          "fromId": "3af36f94-0b76-40dc-9681-1bb360a03897",
+          "toId": "bce3aa3f-e3e9-4a7e-88a7-a74d5f5a4b58",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        }
+      ]
+    },
+    {
+      "uuid": "a037a98b-ffec-40d3-8092-4eedb9857501",
+      "label": "simple-condition",
+      "date": "03/04/2026",
+      "entryBlockId": "3c688020-6886-4fc6-842e-4e4bb9a689d2",
+      "blocks": [
+        {
+          "uuid": "6e270a8d-688c-4101-9d2b-97876b09e301",
+          "type": "CONDITION",
+          "properties": [],
+          "label": "check_carrot_inventory-AI",
+          "note": "inventory.carrot >= 1",
+          "conditions": [
+            [
+              {
+                "uuid": "f8645e30-1775-4399-9107-b670bbf8fa96",
+                "key": "inventory.carrot",
+                "operator": ">=",
+                "value": "1"
+              }
+            ]
+          ],
+          "parentLabels": [
+            "__blueprints__"
+          ]
+        },
+        {
+          "uuid": "3c688020-6886-4fc6-842e-4e4bb9a689d2",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-001",
+          "isStartBlock": true,
+          "structureKey": "__blueprints__.simple-condition.DIALOG-001",
+          "content": "",
+          "dialogueText": {
+            "en": "",
+            "fr": ""
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {}
+        },
+        {
+          "uuid": "4d8f4766-5c11-4a5d-bbc7-223a5bc4fc52",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l1_carrot_found-AI",
+          "structureKey": "__blueprints__.simple-condition.l1_carrot_found-AI",
+          "content": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !",
+          "dialogueText": {
+            "en": "",
+            "fr": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "bde6483a-c9e6-4ca1-94b5-14a8a8e0f36c",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l1_carrot_missing_demand-AI",
+          "structureKey": "__blueprints__.simple-condition.l1_carrot_missing_demand-AI",
+          "content": "Pourquoi restes-tu là à brouter ? Cherche-la sur le champ, avant que le malheur ne nous frappe !",
+          "dialogueText": {
+            "en": "",
+            "fr": "Pourquoi restes-tu là à brouter ? Cherche-la sur le champ, avant que le malheur ne nous frappe !"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "cb342290-3616-42d2-ba58-620290dfa45a",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l1_lost_carrot_distress-AI",
+          "structureKey": "__blueprints__.simple-condition.l1_lost_carrot_distress-AI",
+          "content": "Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !",
+          "dialogueText": {
+            "en": "",
+            "fr": "Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "61ad4724-2845-426f-b4e2-581c670a3c60",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l4_comfort_response-AI",
+          "structureKey": "__blueprints__.simple-condition.l4_comfort_response-AI",
+          "content": "Calme-toi, l1. Ce n'est qu'une racine séchée. On finira par la retrouver dans ce champ.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Calme-toi, l1. Ce n'est qu'une racine séchée. On finira par la retrouver dans ce champ."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "1690e771-7627-4abd-9944-84721b40567d",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l4_final_thought-AI",
+          "structureKey": "__blueprints__.simple-condition.l4_final_thought-AI",
+          "content": "D'accord, d'accord. Ne faisons pas un drame pour un légume, même s'il est porte-bonheur.",
+          "dialogueText": {
+            "en": "",
+            "fr": "D'accord, d'accord. Ne faisons pas un drame pour un légume, même s'il est porte-bonheur."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        }
+      ],
+      "connections": [
+        {
+          "id": "ff27b1e3-e428-4476-940a-71dabcaef185",
+          "fromId": "cb342290-3616-42d2-ba58-620290dfa45a",
+          "toId": "61ad4724-2845-426f-b4e2-581c670a3c60",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "14e29c27-a32f-4fae-9e73-9787cb5a80df",
+          "fromId": "61ad4724-2845-426f-b4e2-581c670a3c60",
+          "toId": "6e270a8d-688c-4101-9d2b-97876b09e301",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "758a6b31-920d-45e1-8491-d7abf467745a",
+          "fromId": "6e270a8d-688c-4101-9d2b-97876b09e301",
+          "toId": "4d8f4766-5c11-4a5d-bbc7-223a5bc4fc52",
+          "fromPort": "true",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "5b4d4f81-a2b8-4ea0-a56e-c83e2f46e6bc",
+          "fromId": "6e270a8d-688c-4101-9d2b-97876b09e301",
+          "toId": "bde6483a-c9e6-4ca1-94b5-14a8a8e0f36c",
+          "fromPort": "false",
+          "toPort": "in",
+          "fromPortIndex": 1
+        },
+        {
+          "id": "a47d2ad7-9d4b-43ec-ac3e-22e6ddda2861",
+          "fromId": "4d8f4766-5c11-4a5d-bbc7-223a5bc4fc52",
+          "toId": "1690e771-7627-4abd-9944-84721b40567d",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "7a4f3b9a-a838-41ba-ba92-55f72837d371",
+          "fromId": "bde6483a-c9e6-4ca1-94b5-14a8a8e0f36c",
+          "toId": "1690e771-7627-4abd-9944-84721b40567d",
+          "fromPort": "out",
           "toPort": "in",
           "fromPortIndex": 0
         }
