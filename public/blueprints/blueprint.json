@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T00:40:25.197Z",
+  "exportDate": "2026-04-03T01:58:33.792Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -460,7 +460,8 @@
           "structureKey": "__blueprints__.multi-tracks.noise_2-AI",
           "content": "*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !",
           "nativeProperties": {
-            "isAsync": true
+            "isAsync": true,
+            "waitInput": true
           },
           "dialogueText": {
             "en": "",

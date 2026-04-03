@@ -6,20 +6,20 @@
  * Each value maps to the scene's UUID — stable even if the scene is renamed.
  */
 export enum LSDE_SCENES {
-  /**
-   * ### Scene: simple-dialog-flow
-   * 8 DIALOG
-   * Entry: `rabbit_rumor-AI` ⭐
-   * - Characters: `l1`, `l2`, `l3`, `l4`
-   */
-  simpleDialogFlow = "268a4c3e-7693-4ce7-8d36-4b0fd2e4a052",
-  /**
-   * ### Scene: multi-tracks
-   * 9 DIALOG
-   * Entry: `start_discussion-AI` ⭐
-   * - Characters: `l1`, `l2`, `l3`, `l4`
-   */
-  multiTracks = "511c0cba-f9c8-4b9b-a0d1-91a36241a920",
+	/**
+	 * ### Scene: simple-dialog-flow
+	 * 8 DIALOG
+	 * Entry: `rabbit_rumor-AI` ⭐
+	 * - Characters: `l1`, `l2`, `l3`, `l4`
+	 */
+	simpleDialogFlow = '268a4c3e-7693-4ce7-8d36-4b0fd2e4a052',
+	/**
+	 * ### Scene: multi-tracks
+	 * 9 DIALOG
+	 * Entry: `start_discussion-AI` ⭐
+	 * - Characters: `l1`, `l2`, `l3`, `l4`
+	 */
+	multiTracks = '511c0cba-f9c8-4b9b-a0d1-91a36241a920',
 }
 
 /**
@@ -29,185 +29,185 @@ export enum LSDE_SCENES {
  * Each value maps to the block's UUID — stable even if the block is renamed.
  */
 export enum LSDE_BLOCKS {
-  /**
-   * ### 🟦[DIALOG] player_suggestion-AI
-   * _"Restons calmes les amis. Si cette carotte géante est réelle, ce serait le festin du siècle pour tout notre clan. Si c'es..."_
-   * - Characters: `l4`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_philosophy-AI`
-   * - Out: `rabbit_hype-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowPlayerSuggestionAi = "39a5f6d9-59cb-479f-bd17-28bfda31663a",
-  /**
-   * ### 🟦[DIALOG] player_warning-AI
-   * _"C'est ça, l3, on essaiera ta technique de distraction métaphysique si on croise un prédateur affamé. En attendant, on av..."_
-   * - Characters: `l4`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_wisdom-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowPlayerWarningAi = "d13045ac-a103-4e10-acb8-12399c11a2c1",
-  /**
-   * ### 🟦[DIALOG] rabbit_hype-AI
-   * _"C'est exactement l'esprit d'aventure qu'il nous fallait, l4 ! On va devenir des légendes vivantes, les lapins qui ont dé..."_
-   * - Characters: `l1`
-   * - Scene: `simple-dialog-flow`
-   * - In: `player_suggestion-AI`
-   * - Out: `rabbit_resignation-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitHypeAi = "6ed885e4-eb2d-4916-979d-339a30ae36ae",
-  /**
-   * ### 🟦[DIALOG] rabbit_philosophy-AI
-   * _"Mais le temps n'est qu'une construction mentale, l2. Est-ce que la carotte existe vraiment si personne n'est là pour la ..."_
-   * - Characters: `l3`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_skepticism-AI`
-   * - Out: `player_suggestion-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitPhilosophyAi = "067e705a-7696-45da-8a74-16f681dc83a3",
-  /**
-   * ### 🟦[DIALOG] rabbit_resignation-AI
-   * _"Ton nez nous a déjà conduits dans une mare de boue malodorante la semaine dernière, triple idiot. Mais bon, je suppose q..."_
-   * - Characters: `l2`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_hype-AI`
-   * - Out: `rabbit_wisdom-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitResignationAi = "cb1663f1-5833-456e-b033-e325d6077d71",
-  /**
-   * ### 🟦[DIALOG] rabbit_rumor-AI ⭐
-   * _"Les copains, vous n'allez pas me croire, mais j'ai déniché le scoop du siècle : il y aurait une carotte de la taille d'u..."_
-   * - Characters: `l1`
-   * - Scene: `simple-dialog-flow`
-   * - Out: `rabbit_skepticism-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitRumorAi = "c39d69d1-f508-45a8-8084-09a68f6916e1",
-  /**
-   * ### 🟦[DIALOG] rabbit_skepticism-AI
-   * _"Encore une de tes inventions débiles, l1 ! La dernière fois, ta fameuse montagne de trèfles n'était qu'un vieux pull ver..."_
-   * - Characters: `l2`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_rumor-AI`
-   * - Out: `rabbit_philosophy-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitSkepticismAi = "187ddb4f-1321-4255-a3dd-2cef59309af6",
-  /**
-   * ### 🟦[DIALOG] rabbit_wisdom-AI
-   * _"Saviez-vous que les renards ne sont que des chiens qui ont fait des études de philosophie ? Si on leur pose une question..."_
-   * - Characters: `l3`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_resignation-AI`
-   * - Out: `player_warning-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitWisdomAi = "95144722-b4eb-46c9-ba1e-54434cacda5f",
-  /**
-   * ### 🟦[DIALOG] DIALOG-001
-   * _"hey!"_
-   * - Characters: `l3`
-   * - Scene: `multi-tracks`
-   * - In: `start_discussion-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksDialog001 = "ad8a7573-500c-4038-bfef-a7ed4550ac8e",
-  /**
-   * ### 🟦[DIALOG] DIALOG-009
-   * _"oufff, je pu !!!"_
-   * - Characters: `l3`
-   * - Scene: `multi-tracks`
-   * - In: `noise_2-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksDialog009 = "f38215d6-f0ef-4dc1-bee7-7dccf258ee2a",
-  /**
-   * ### 🟦[DIALOG] final_decision-AI
-   * _"Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus."_
-   * - Characters: `l2`
-   * - Scene: `multi-tracks`
-   * - In: `l4_comment-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksFinalDecisionAi = "36f0ba66-dfb8-4084-bf10-370a5e6c671b",
-  /**
-   * ### 🟦[DIALOG] l1_irritation-AI
-   * _"L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro."_
-   * - Characters: `l1`
-   * - Scene: `multi-tracks`
-   * - In: `l2_response-AI`
-   * - Out: `l4_comment-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksL1IrritationAi = "a0f83f4a-271d-468a-821b-a881fe4a6058",
-  /**
-   * ### 🟦[DIALOG] l2_response-AI
-   * _"Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner."_
-   * - Characters: `l2`
-   * - Scene: `multi-tracks`
-   * - In: `noise_1-AI`
-   * - Out: `noise_2-AI`, `l1_irritation-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksL2ResponseAi = "be6f47c5-13f3-4c1a-ba43-80d1820067af",
-  /**
-   * ### 🟦[DIALOG] l4_comment-AI
-   * _"Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer."_
-   * - Characters: `l4`
-   * - Scene: `multi-tracks`
-   * - In: `l1_irritation-AI`
-   * - Out: `final_decision-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksL4CommentAi = "80bf4972-7375-4b51-829d-d8481ace6b45",
-  /**
-   * ### 🟦[DIALOG] noise_1-AI
-   * _"*Scratch scratch scratch* !"_
-   * - Characters: `l2`
-   * - Scene: `multi-tracks`
-   * - In: `start_discussion-AI`
-   * - Out: `l2_response-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksNoise1Ai = "7e045b7b-58a0-4b23-a6a0-c24352237680",
-  /**
-   * ### 🟦[DIALOG] noise_2-AI
-   * _"*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !"_
-   * - Characters: `l3`
-   * - Scene: `multi-tracks`
-   * - In: `l2_response-AI`
-   * - Out: `DIALOG-009`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksNoise2Ai = "9ffa9849-4e64-4982-849a-754ee6b67475",
-  /**
-   * ### 🟦[DIALOG] start_discussion-AI ⭐
-   * _"Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret."_
-   * - Characters: `l1`
-   * - Scene: `multi-tracks`
-   * - Out: `noise_1-AI`, `DIALOG-001`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksStartDiscussionAi = "4604c8d0-c4cb-411a-a878-0d498bae868f",
+	/**
+	 * ### 🟦[DIALOG] player_suggestion-AI
+	 * _"Restons calmes les amis. Si cette carotte géante est réelle, ce serait le festin du siècle pour tout notre clan. Si c'es..."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_philosophy-AI`
+	 * - Out: `rabbit_hype-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowPlayerSuggestionAi = '39a5f6d9-59cb-479f-bd17-28bfda31663a',
+	/**
+	 * ### 🟦[DIALOG] player_warning-AI
+	 * _"C'est ça, l3, on essaiera ta technique de distraction métaphysique si on croise un prédateur affamé. En attendant, on av..."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_wisdom-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowPlayerWarningAi = 'd13045ac-a103-4e10-acb8-12399c11a2c1',
+	/**
+	 * ### 🟦[DIALOG] rabbit_hype-AI
+	 * _"C'est exactement l'esprit d'aventure qu'il nous fallait, l4 ! On va devenir des légendes vivantes, les lapins qui ont dé..."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `player_suggestion-AI`
+	 * - Out: `rabbit_resignation-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitHypeAi = '6ed885e4-eb2d-4916-979d-339a30ae36ae',
+	/**
+	 * ### 🟦[DIALOG] rabbit_philosophy-AI
+	 * _"Mais le temps n'est qu'une construction mentale, l2. Est-ce que la carotte existe vraiment si personne n'est là pour la ..."_
+	 * - Characters: `l3`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_skepticism-AI`
+	 * - Out: `player_suggestion-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitPhilosophyAi = '067e705a-7696-45da-8a74-16f681dc83a3',
+	/**
+	 * ### 🟦[DIALOG] rabbit_resignation-AI
+	 * _"Ton nez nous a déjà conduits dans une mare de boue malodorante la semaine dernière, triple idiot. Mais bon, je suppose q..."_
+	 * - Characters: `l2`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_hype-AI`
+	 * - Out: `rabbit_wisdom-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitResignationAi = 'cb1663f1-5833-456e-b033-e325d6077d71',
+	/**
+	 * ### 🟦[DIALOG] rabbit_rumor-AI ⭐
+	 * _"Les copains, vous n'allez pas me croire, mais j'ai déniché le scoop du siècle : il y aurait une carotte de la taille d'u..."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-dialog-flow`
+	 * - Out: `rabbit_skepticism-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitRumorAi = 'c39d69d1-f508-45a8-8084-09a68f6916e1',
+	/**
+	 * ### 🟦[DIALOG] rabbit_skepticism-AI
+	 * _"Encore une de tes inventions débiles, l1 ! La dernière fois, ta fameuse montagne de trèfles n'était qu'un vieux pull ver..."_
+	 * - Characters: `l2`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_rumor-AI`
+	 * - Out: `rabbit_philosophy-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitSkepticismAi = '187ddb4f-1321-4255-a3dd-2cef59309af6',
+	/**
+	 * ### 🟦[DIALOG] rabbit_wisdom-AI
+	 * _"Saviez-vous que les renards ne sont que des chiens qui ont fait des études de philosophie ? Si on leur pose une question..."_
+	 * - Characters: `l3`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_resignation-AI`
+	 * - Out: `player_warning-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitWisdomAi = '95144722-b4eb-46c9-ba1e-54434cacda5f',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-001
+	 * _"hey!"_
+	 * - Characters: `l3`
+	 * - Scene: `multi-tracks`
+	 * - In: `start_discussion-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksDialog001 = 'ad8a7573-500c-4038-bfef-a7ed4550ac8e',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-009
+	 * _"oufff, je pu !!!"_
+	 * - Characters: `l3`
+	 * - Scene: `multi-tracks`
+	 * - In: `noise_2-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksDialog009 = 'f38215d6-f0ef-4dc1-bee7-7dccf258ee2a',
+	/**
+	 * ### 🟦[DIALOG] final_decision-AI
+	 * _"Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus."_
+	 * - Characters: `l2`
+	 * - Scene: `multi-tracks`
+	 * - In: `l4_comment-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksFinalDecisionAi = '36f0ba66-dfb8-4084-bf10-370a5e6c671b',
+	/**
+	 * ### 🟦[DIALOG] l1_irritation-AI
+	 * _"L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro."_
+	 * - Characters: `l1`
+	 * - Scene: `multi-tracks`
+	 * - In: `l2_response-AI`
+	 * - Out: `l4_comment-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksL1IrritationAi = 'a0f83f4a-271d-468a-821b-a881fe4a6058',
+	/**
+	 * ### 🟦[DIALOG] l2_response-AI
+	 * _"Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner."_
+	 * - Characters: `l2`
+	 * - Scene: `multi-tracks`
+	 * - In: `noise_1-AI`
+	 * - Out: `noise_2-AI`, `l1_irritation-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksL2ResponseAi = 'be6f47c5-13f3-4c1a-ba43-80d1820067af',
+	/**
+	 * ### 🟦[DIALOG] l4_comment-AI
+	 * _"Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer."_
+	 * - Characters: `l4`
+	 * - Scene: `multi-tracks`
+	 * - In: `l1_irritation-AI`
+	 * - Out: `final_decision-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksL4CommentAi = '80bf4972-7375-4b51-829d-d8481ace6b45',
+	/**
+	 * ### 🟦[DIALOG] noise_1-AI
+	 * _"*Scratch scratch scratch* !"_
+	 * - Characters: `l2`
+	 * - Scene: `multi-tracks`
+	 * - In: `start_discussion-AI`
+	 * - Out: `l2_response-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksNoise1Ai = '7e045b7b-58a0-4b23-a6a0-c24352237680',
+	/**
+	 * ### 🟦[DIALOG] noise_2-AI
+	 * _"*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !"_
+	 * - Characters: `l3`
+	 * - Scene: `multi-tracks`
+	 * - In: `l2_response-AI`
+	 * - Out: `DIALOG-009`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksNoise2Ai = '9ffa9849-4e64-4982-849a-754ee6b67475',
+	/**
+	 * ### 🟦[DIALOG] start_discussion-AI ⭐
+	 * _"Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret."_
+	 * - Characters: `l1`
+	 * - Scene: `multi-tracks`
+	 * - Out: `noise_1-AI`, `DIALOG-001`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksStartDiscussionAi = '4604c8d0-c4cb-411a-a878-0d498bae868f',
 }

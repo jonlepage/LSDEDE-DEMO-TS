@@ -182,6 +182,7 @@ export async function runScene(
       // the engine calls our cleanup function when the track moves on).
       const isAsyncBlock = block.nativeProperties?.isAsync === true;
       const timeoutMs = block.nativeProperties?.timeout;
+      const waitInput = block.nativeProperties?.waitInput;
 
       if (isAsyncBlock) {
         // Async track: auto-advance. The bubble remains on screen until cleanup.
