@@ -10,7 +10,7 @@ import {
 import { LSDE_SCENES } from "../public/blueprints/blueprint.enums";
 
 const BLUEPRINT_FILE_PATH = "/blueprints/blueprint.json";
-const DEFAULT_SCENE_UUID = LSDE_SCENES.simpleAction;
+const DEFAULT_SCENE_UUID = LSDE_SCENES.simpleCondition;
 
 (async () => {
   const { sidebarContainer, canvasContainer } = createApplicationLayout();
