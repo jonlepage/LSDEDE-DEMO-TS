@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T04:30:50.491Z",
+  "exportDate": "2026-04-03T04:53:12.152Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -1134,7 +1134,7 @@
               "actionId": "shakeCamera",
               "params": [
                 5,
-                1000
+                0.3
               ]
             }
           ],
@@ -1155,7 +1155,7 @@
               "actionId": "shakeCamera",
               "params": [
                 8,
-                0.8
+                0.4
               ]
             }
           ],
@@ -1467,14 +1467,6 @@
           "fromPortIndex": 0
         },
         {
-          "id": "b4670cb5-baa7-4276-94f9-81b5d624283c",
-          "fromId": "dc58f326-8e8c-4837-beb1-e8ba04410b84",
-          "toId": "fa8ff197-0559-493a-b1a9-b4e0a1724b83",
-          "fromPort": "out",
-          "toPort": "in",
-          "fromPortIndex": 0
-        },
-        {
           "id": "3a437cc0-4493-42b7-9fd7-27a4c00f9242",
           "fromId": "dc58f326-8e8c-4837-beb1-e8ba04410b84",
           "toId": "f12afa3e-7d89-497c-8f2e-585187f3b55a",
@@ -1505,6 +1497,14 @@
           "fromPort": "cd1ae040-2421-41dd-8962-116a8a13ff78",
           "toPort": "in",
           "fromPortIndex": 1
+        },
+        {
+          "id": "f189b7c0-63f3-470c-9c01-6e16d20776aa",
+          "fromId": "9b5df0e4-0971-4639-8736-9442dcd52d8a",
+          "toId": "fa8ff197-0559-493a-b1a9-b4e0a1724b83",
+          "fromPort": "then",
+          "toPort": "in",
+          "fromPortIndex": 0
         }
       ]
     }

@@ -89,10 +89,7 @@ function executeAction(
     case "shakeCamera": {
       const intensity = action.params[0] as number;
       const duration = action.params[1] as number;
-      gameActions.shakeCamera(intensity, duration);
-      // shakeCamera is fire-and-forget in our engine — resolve immediately.
-      // A more advanced game might return a promise from shakeCamera itself.
-      return Promise.resolve();
+      return gameActions.shakeCamera(intensity, duration);
     }
 
     case "moveCameraToLabel": {
@@ -283,12 +280,24 @@ export async function runScene(
     // This means the dialogue flow PAUSES while camera moves, characters walk, etc.
     // If you wanted non-blocking actions, you'd call next() before awaiting.
     sceneHandle.onAction(({ block, context, next }) => {
+      // CRITICAL: prevent the global onAction handler from firing.
+      // Without this, the two-tier system runs BOTH handlers in sequence:
+      //   1. This scene handler fires (starts async work, returns immediately)
+      //   2. The global handler fires and calls context.resolve() + next() IMMEDIATELY
+      // That causes the flow to advance before our promises resolve.
+      context.preventGlobalHandler();
+
+      console.log(`[ACTION] started: ${block.label}`, block.actions);
+
       const actionPromises = (block.actions ?? []).map((action) =>
         executeAction(action as BlueprintAction, gameActions),
       );
 
       Promise.all(actionPromises)
-        .then(() => context.resolve())
+        .then(() => {
+          console.log(`[ACTION] completed: ${block.label}, calling next()`);
+          context.resolve();
+        })
         .catch((error) => {
           console.error("[simple-action] Action failed:", error);
           context.reject(error);
