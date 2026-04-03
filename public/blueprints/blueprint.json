@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T02:15:53.189Z",
+  "exportDate": "2026-04-03T02:38:25.797Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -311,6 +311,7 @@
           "structureKey": "__blueprints__.multi-tracks.DIALOG-009",
           "content": "oufff, je pu !!!",
           "nativeProperties": {
+            "delay": 1200,
             "waitForBlocks": [
               "80bf4972-7375-4b51-829d-d8481ace6b45"
             ]
@@ -604,6 +605,360 @@
           "id": "4aeea61a-34d1-42c8-93ff-f81cf1ffacf6",
           "fromId": "be6f47c5-13f3-4c1a-ba43-80d1820067af",
           "toId": "2b49d688-ae02-43e6-adf0-c57c9ddc6854",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        }
+      ]
+    },
+    {
+      "uuid": "169f7c4c-c3b1-4444-879c-060801cdcb1d",
+      "label": "simple-choices",
+      "date": "02/04/2026",
+      "entryBlockId": "1db618cd-3883-4caf-bcd2-591562aade49",
+      "blocks": [
+        {
+          "uuid": "4452e0e5-a494-4e40-b11e-13eee3fb93c7",
+          "type": "CHOICE",
+          "properties": [],
+          "label": "player_moral_choice-AI",
+          "choices": [
+            {
+              "uuid": "1db50a61-e40d-49a2-bf02-d8f5eee4ea84",
+              "structureKey": "",
+              "content": "Nous nous battrons !",
+              "visibilityConditions": []
+            },
+            {
+              "uuid": "189ecf6a-3f10-41d5-b4b0-78e35298ee4d",
+              "structureKey": "",
+              "content": "C'est un suicide.",
+              "visibilityConditions": []
+            },
+            {
+              "uuid": "3716cb04-2e54-4bf4-864d-28b6ce000786",
+              "structureKey": "",
+              "content": "Est-ce vraiment réel ?",
+              "visibilityConditions": []
+            }
+          ],
+          "note": "Nous nous battrons ! | C'est un suicide. | Est-ce vraiment réel ?",
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "b0012922-735a-45ba-b47c-8d9d03725c2c",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l1_brave_reaction-AI",
+          "structureKey": "__blueprints__.simple-choices.l1_brave_reaction-AI",
+          "content": "Ton feu intérieur nous guidera peut-être à travers les ombres qui rampent vers nous.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Ton feu intérieur nous guidera peut-être à travers les ombres qui rampent vers nous."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "d0c0a458-7933-4330-912a-3820ca222ecb",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l1_doubt_reaction-AI",
+          "structureKey": "__blueprints__.simple-choices.l1_doubt_reaction-AI",
+          "content": "Le déni ne changera pas le poids du silence qui s'abat désormais sur la prairie.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Le déni ne changera pas le poids du silence qui s'abat désormais sur la prairie."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "1db618cd-3883-4caf-bcd2-591562aade49",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l1_dramatic_intro-AI",
+          "isStartBlock": true,
+          "structureKey": "__blueprints__.simple-choices.l1_dramatic_intro-AI",
+          "content": "Le ciel s'assombrit, l4. La légende de la Carotte Éternelle n'était qu'un prélude à notre chute imminente.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Le ciel s'assombrit, l4. La légende de la Carotte Éternelle n'était qu'un prélude à notre chute imminente."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "50d0c209-6825-4cdd-9085-f8635f125a64",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l1_fear_reaction-AI",
+          "structureKey": "__blueprints__.simple-choices.l1_fear_reaction-AI",
+          "content": "La peur est un poison, mais elle est aussi le seul miroir de notre fragile vérité.",
+          "dialogueText": {
+            "en": "",
+            "fr": "La peur est un poison, mais elle est aussi le seul miroir de notre fragile vérité."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "20c774c7-597a-4d02-8730-afa033c20150",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l1_final_warning-AI",
+          "structureKey": "__blueprints__.simple-choices.l1_final_warning-AI",
+          "content": "Écoute... le vent hurle déjà le nom de notre perte. Nous n'avons plus d'autre choix que d'avancer.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Écoute... le vent hurle déjà le nom de notre perte. Nous n'avons plus d'autre choix que d'avancer."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "7d80327b-3a65-4be6-b8ed-76cf3cca57ee",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l4_brave_response-AI",
+          "structureKey": "__blueprints__.simple-choices.l4_brave_response-AI",
+          "content": "Je ne laisserai personne détruire notre foyer. Je me battrai jusqu'à mon dernier souffle s'il le faut.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Je ne laisserai personne détruire notre foyer. Je me battrai jusqu'à mon dernier souffle s'il le faut."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "50dce24b-b3f7-49a6-bfb8-906b7e55a940",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l4_doubt_response-AI",
+          "structureKey": "__blueprints__.simple-choices.l4_doubt_response-AI",
+          "content": "Tu parles comme un vieux prophète fatigué, l1. Et si ce n'était qu'un simple piège des renards ?",
+          "dialogueText": {
+            "en": "",
+            "fr": "Tu parles comme un vieux prophète fatigué, l1. Et si ce n'était qu'un simple piège des renards ?"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "c3b0cdee-d840-4bf4-a0f0-a11d5e6d0402",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l4_fear_response-AI",
+          "structureKey": "__blueprints__.simple-choices.l4_fear_response-AI",
+          "content": "Regarde-nous ! Nous ne sommes que des proies. Espérer vaincre ce destin est une folie pure.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Regarde-nous ! Nous ne sommes que des proies. Espérer vaincre ce destin est une folie pure."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "b630f2b9-85f5-4e26-aa86-cbc7427e88a1",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l4_final_resolution-AI",
+          "structureKey": "__blueprints__.simple-choices.l4_final_resolution-AI",
+          "content": "Alors qu'il en soit ainsi. Que le destin nous juge sur le champ de bataille, vers le terrier nord.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Alors qu'il en soit ainsi. Que le destin nous juge sur le champ de bataille, vers le terrier nord."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        }
+      ],
+      "connections": [
+        {
+          "id": "60508b26-8909-468f-93b4-2de1009b7bdb",
+          "fromId": "1db618cd-3883-4caf-bcd2-591562aade49",
+          "toId": "4452e0e5-a494-4e40-b11e-13eee3fb93c7",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "e8353ecb-8a0f-49b0-b6c1-08ca03ea3182",
+          "fromId": "4452e0e5-a494-4e40-b11e-13eee3fb93c7",
+          "toId": "7d80327b-3a65-4be6-b8ed-76cf3cca57ee",
+          "fromPort": "1db50a61-e40d-49a2-bf02-d8f5eee4ea84",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "b90209f4-7fe7-487f-b865-e98c38798298",
+          "fromId": "7d80327b-3a65-4be6-b8ed-76cf3cca57ee",
+          "toId": "b0012922-735a-45ba-b47c-8d9d03725c2c",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "66d720a6-5b76-48b0-9c5b-e4ec8d373ce5",
+          "fromId": "b0012922-735a-45ba-b47c-8d9d03725c2c",
+          "toId": "20c774c7-597a-4d02-8730-afa033c20150",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "6edec8c4-9843-4307-b041-fc859d1f9785",
+          "fromId": "4452e0e5-a494-4e40-b11e-13eee3fb93c7",
+          "toId": "c3b0cdee-d840-4bf4-a0f0-a11d5e6d0402",
+          "fromPort": "189ecf6a-3f10-41d5-b4b0-78e35298ee4d",
+          "toPort": "in",
+          "fromPortIndex": 1
+        },
+        {
+          "id": "42cd159f-fa04-4ac3-b05a-b72137164717",
+          "fromId": "c3b0cdee-d840-4bf4-a0f0-a11d5e6d0402",
+          "toId": "50d0c209-6825-4cdd-9085-f8635f125a64",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "482edb0b-f559-4f8e-86c7-6690e67a0325",
+          "fromId": "50d0c209-6825-4cdd-9085-f8635f125a64",
+          "toId": "20c774c7-597a-4d02-8730-afa033c20150",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "809d1648-f186-4aca-b538-5d4f85ef99fe",
+          "fromId": "4452e0e5-a494-4e40-b11e-13eee3fb93c7",
+          "toId": "50dce24b-b3f7-49a6-bfb8-906b7e55a940",
+          "fromPort": "3716cb04-2e54-4bf4-864d-28b6ce000786",
+          "toPort": "in",
+          "fromPortIndex": 2
+        },
+        {
+          "id": "e1255319-6130-4527-b0a3-f289b0cfa014",
+          "fromId": "50dce24b-b3f7-49a6-bfb8-906b7e55a940",
+          "toId": "d0c0a458-7933-4330-912a-3820ca222ecb",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "f35381ca-ec49-436b-bbee-da985831be3b",
+          "fromId": "d0c0a458-7933-4330-912a-3820ca222ecb",
+          "toId": "20c774c7-597a-4d02-8730-afa033c20150",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "25c64b0d-0165-43a6-b045-a66a7a51d855",
+          "fromId": "20c774c7-597a-4d02-8730-afa033c20150",
+          "toId": "b630f2b9-85f5-4e26-aa86-cbc7427e88a1",
           "fromPort": "out",
           "toPort": "in",
           "fromPortIndex": 0

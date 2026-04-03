@@ -150,6 +150,26 @@ export function createGameActionFacade(
         character.sprite.x,
         character.sprite.y,
       );
+
+      // Follow the character sprite each frame so the bubble moves with it.
+      const followTicker = () => {
+        if (!bubbleHandle.container.destroyed) {
+          positionBubbleAboveTarget(
+            bubbleHandle.container,
+            character.sprite.x,
+            character.sprite.y,
+          );
+        }
+      };
+      pixiApplication.ticker.add(followTicker);
+
+      // Wrap destroy to also remove the follow ticker.
+      const originalDestroy = bubbleHandle.destroy;
+      bubbleHandle.destroy = () => {
+        pixiApplication.ticker.remove(followTicker);
+        originalDestroy();
+      };
+
       return bubbleHandle;
     },
 

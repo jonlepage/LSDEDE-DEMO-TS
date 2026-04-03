@@ -20,6 +20,13 @@ export enum LSDE_SCENES {
 	 * - Characters: `l1`, `l2`, `l3`, `l4`
 	 */
 	multiTracks = '511c0cba-f9c8-4b9b-a0d1-91a36241a920',
+	/**
+	 * ### Scene: simple-choices
+	 * 1 CHOICE, 9 DIALOG
+	 * Entry: `l1_dramatic_intro-AI` ⭐
+	 * - Characters: `l1`, `l4`
+	 */
+	simpleChoices = '169f7c4c-c3b1-4444-879c-060801cdcb1d',
 }
 
 /**
@@ -220,4 +227,144 @@ export enum LSDE_BLOCKS {
 	 * <image url="./_images/dialog.webp" />
 	 */
 	multiTracksStartDiscussionAi = '4604c8d0-c4cb-411a-a878-0d498bae868f',
+	/**
+	 * ### ⬜[CHOICE] player_moral_choice-AI
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - In: `l1_dramatic_intro-AI`
+	 * - Out: `l4_brave_response-AI`, `l4_fear_response-AI`, `l4_doubt_response-AI`
+	 * - Choices: `Nous nous battrons !`, `C'est un suicide.`, `Est-ce vraiment réel ?`
+	 * ---
+	 * <image url="./_images/choice.webp" />
+	 */
+	simpleChoicesPlayerMoralChoiceAi = '4452e0e5-a494-4e40-b11e-13eee3fb93c7',
+	/**
+	 * ### 🟦[DIALOG] l1_brave_reaction-AI
+	 * _"Ton feu intérieur nous guidera peut-être à travers les ombres qui rampent vers nous."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - In: `l4_brave_response-AI`
+	 * - Out: `l1_final_warning-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL1BraveReactionAi = 'b0012922-735a-45ba-b47c-8d9d03725c2c',
+	/**
+	 * ### 🟦[DIALOG] l1_doubt_reaction-AI
+	 * _"Le déni ne changera pas le poids du silence qui s'abat désormais sur la prairie."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - In: `l4_doubt_response-AI`
+	 * - Out: `l1_final_warning-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL1DoubtReactionAi = 'd0c0a458-7933-4330-912a-3820ca222ecb',
+	/**
+	 * ### 🟦[DIALOG] l1_dramatic_intro-AI ⭐
+	 * _"Le ciel s'assombrit, l4. La légende de la Carotte Éternelle n'était qu'un prélude à notre chute imminente."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - Out: `player_moral_choice-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL1DramaticIntroAi = '1db618cd-3883-4caf-bcd2-591562aade49',
+	/**
+	 * ### 🟦[DIALOG] l1_fear_reaction-AI
+	 * _"La peur est un poison, mais elle est aussi le seul miroir de notre fragile vérité."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - In: `l4_fear_response-AI`
+	 * - Out: `l1_final_warning-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL1FearReactionAi = '50d0c209-6825-4cdd-9085-f8635f125a64',
+	/**
+	 * ### 🟦[DIALOG] l1_final_warning-AI
+	 * _"Écoute... le vent hurle déjà le nom de notre perte. Nous n'avons plus d'autre choix que d'avancer."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - In: `l1_brave_reaction-AI`, `l1_fear_reaction-AI`, `l1_doubt_reaction-AI`
+	 * - Out: `l4_final_resolution-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL1FinalWarningAi = '20c774c7-597a-4d02-8730-afa033c20150',
+	/**
+	 * ### 🟦[DIALOG] l4_brave_response-AI
+	 * _"Je ne laisserai personne détruire notre foyer. Je me battrai jusqu'à mon dernier souffle s'il le faut."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-choices`
+	 * - In: `player_moral_choice-AI`
+	 * - Out: `l1_brave_reaction-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL4BraveResponseAi = '7d80327b-3a65-4be6-b8ed-76cf3cca57ee',
+	/**
+	 * ### 🟦[DIALOG] l4_doubt_response-AI
+	 * _"Tu parles comme un vieux prophète fatigué, l1. Et si ce n'était qu'un simple piège des renards ?"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-choices`
+	 * - In: `player_moral_choice-AI`
+	 * - Out: `l1_doubt_reaction-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL4DoubtResponseAi = '50dce24b-b3f7-49a6-bfb8-906b7e55a940',
+	/**
+	 * ### 🟦[DIALOG] l4_fear_response-AI
+	 * _"Regarde-nous ! Nous ne sommes que des proies. Espérer vaincre ce destin est une folie pure."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-choices`
+	 * - In: `player_moral_choice-AI`
+	 * - Out: `l1_fear_reaction-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL4FearResponseAi = 'c3b0cdee-d840-4bf4-a0f0-a11d5e6d0402',
+	/**
+	 * ### 🟦[DIALOG] l4_final_resolution-AI
+	 * _"Alors qu'il en soit ainsi. Que le destin nous juge sur le champ de bataille, vers le terrier nord."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-choices`
+	 * - In: `l1_final_warning-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL4FinalResolutionAi = 'b630f2b9-85f5-4e26-aa86-cbc7427e88a1',
+}
+
+/**
+ * Choice item identifiers for type-safe access to individual player choices.
+ * Each value maps to a choice item's UUID within a CHOICE block.
+ * Use these for switch/case handling of specific player decisions.
+ */
+export enum LSDE_CHOICES {
+	/**
+	 * ### ⬜[CHOICE_ITEM] Nous nous battrons !
+	 * _"Nous nous battrons !"_
+	 * - Scene: `simple-choices`
+	 * - Parent: `player_moral_choice-AI`
+	 */
+	/** @see {@link LSDE_BLOCKS.simpleChoicesPlayerMoralChoiceAi} */
+	simpleChoicesNousNousBattrons = '1db50a61-e40d-49a2-bf02-d8f5eee4ea84',
+	/**
+	 * ### ⬜[CHOICE_ITEM] C'est un suicide.
+	 * _"C'est un suicide."_
+	 * - Scene: `simple-choices`
+	 * - Parent: `player_moral_choice-AI`
+	 */
+	/** @see {@link LSDE_BLOCKS.simpleChoicesPlayerMoralChoiceAi} */
+	simpleChoicesCEstUnSuicide = '189ecf6a-3f10-41d5-b4b0-78e35298ee4d',
+	/**
+	 * ### ⬜[CHOICE_ITEM] Est-ce vraiment réel ?
+	 * _"Est-ce vraiment réel ?"_
+	 * - Scene: `simple-choices`
+	 * - Parent: `player_moral_choice-AI`
+	 */
+	/** @see {@link LSDE_BLOCKS.simpleChoicesPlayerMoralChoiceAi} */
+	simpleChoicesEstCeVraimentREl = '3716cb04-2e54-4bf4-864d-28b6ce000786',
 }
