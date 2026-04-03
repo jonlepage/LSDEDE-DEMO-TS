@@ -36,7 +36,7 @@ export enum LSDE_SCENES {
 	simpleAction = '7e6e24b7-c08c-452c-9e11-0689d8c17b80',
 	/**
 	 * ### Scene: simple-condition
-	 * 1 CONDITION, 5 DIALOG
+	 * 1 CONDITION, 7 DIALOG
 	 * Entry: `l1_lost_carrot_distress-AI` ⭐
 	 * - Characters: `l1`, `l4`
 	 */
@@ -556,20 +556,41 @@ export enum LSDE_BLOCKS {
 	/**
 	 * ### 🟪[CONDITION] check_carrot_inventory-AI
 	 * - Scene: `simple-condition`
-	 * - In: `l4_comfort_response-AI`
-	 * - Out: `l1_carrot_found-AI`, `l1_carrot_missing_demand-AI`
+	 * - In: `l1_lost_carrot_distress-AI`
+	 * - Out: `l4_comfort_response-AI`, `DIALOG-006`
 	 * `inventory.carrot` >= `1`
 	 * ---
 	 * <image url="./_images/cond.webp" />
 	 */
 	simpleConditionCheckCarrotInventoryAi = '6e270a8d-688c-4101-9d2b-97876b09e301',
 	/**
-	 * ### 🟦[DIALOG] l1_carrot_found-AI
-	 * _"Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !"_
-	 * - Characters: `l1`
+	 * ### 🟦[DIALOG] DIALOG-006
+	 * _"J'ai trouvez ta carotte !"_
+	 * - Characters: `l4`
 	 * - Scene: `simple-condition`
 	 * - In: `check_carrot_inventory-AI`
-	 * - Out: `l4_final_thought-AI`
+	 * - Out: `l1_carrot_found-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleConditionDialog006 = 'd1670c06-ef2f-48db-8fef-df3bb4b63b05',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-007
+	 * _".... ok"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-condition`
+	 * - In: `l1_carrot_found-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleConditionDialog007 = '7d0cab65-96ed-4471-b7f6-5b060c12007b',
+	/**
+	 * ### 🟦[DIALOG] l1_carrot_found-AI
+	 * _"Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros ! Garde la, j'ai trop peur de la perde a nou..."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-condition`
+	 * - In: `DIALOG-006`
+	 * - Out: `DIALOG-007`
 	 * ---
 	 * <image url="./_images/dialog.webp" />
 	 */
@@ -579,7 +600,7 @@ export enum LSDE_BLOCKS {
 	 * _"Pourquoi restes-tu là à brouter ? Cherche-la sur le champ, avant que le malheur ne nous frappe !"_
 	 * - Characters: `l1`
 	 * - Scene: `simple-condition`
-	 * - In: `check_carrot_inventory-AI`
+	 * - In: `l4_comfort_response-AI`
 	 * - Out: `l4_final_thought-AI`
 	 * ---
 	 * <image url="./_images/dialog.webp" />
@@ -590,7 +611,7 @@ export enum LSDE_BLOCKS {
 	 * _"Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !"_
 	 * - Characters: `l1`
 	 * - Scene: `simple-condition`
-	 * - Out: `l4_comfort_response-AI`
+	 * - Out: `check_carrot_inventory-AI`
 	 * ---
 	 * <image url="./_images/dialog.webp" />
 	 */
@@ -600,8 +621,8 @@ export enum LSDE_BLOCKS {
 	 * _"Calme-toi, l1. Ce n'est qu'une racine séchée. On finira par la retrouver dans ce champ."_
 	 * - Characters: `l4`
 	 * - Scene: `simple-condition`
-	 * - In: `l1_lost_carrot_distress-AI`
-	 * - Out: `check_carrot_inventory-AI`
+	 * - In: `check_carrot_inventory-AI`
+	 * - Out: `l1_carrot_missing_demand-AI`
 	 * ---
 	 * <image url="./_images/dialog.webp" />
 	 */
@@ -611,7 +632,7 @@ export enum LSDE_BLOCKS {
 	 * _"D'accord, d'accord. Ne faisons pas un drame pour un légume, même s'il est porte-bonheur."_
 	 * - Characters: `l4`
 	 * - Scene: `simple-condition`
-	 * - In: `l1_carrot_found-AI`, `l1_carrot_missing_demand-AI`
+	 * - In: `l1_carrot_missing_demand-AI`
 	 * ---
 	 * <image url="./_images/dialog.webp" />
 	 */

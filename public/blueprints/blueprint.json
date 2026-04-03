@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T07:18:32.133Z",
+  "exportDate": "2026-04-03T07:26:20.830Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -1738,15 +1738,63 @@
           ]
         },
         {
+          "uuid": "d1670c06-ef2f-48db-8fef-df3bb4b63b05",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-006",
+          "structureKey": "__blueprints__.simple-condition.DIALOG-006",
+          "content": "J'ai trouvez ta carotte !",
+          "dialogueText": {
+            "en": "",
+            "fr": "J'ai trouvez ta carotte !"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "7d0cab65-96ed-4471-b7f6-5b060c12007b",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-007",
+          "structureKey": "__blueprints__.simple-condition.DIALOG-007",
+          "content": ".... ok",
+          "dialogueText": {
+            "en": "",
+            "fr": ".... ok"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
           "uuid": "4d8f4766-5c11-4a5d-bbc7-223a5bc4fc52",
           "type": "DIALOG",
           "properties": [],
           "label": "l1_carrot_found-AI",
           "structureKey": "__blueprints__.simple-condition.l1_carrot_found-AI",
-          "content": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !",
+          "content": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !\nGarde la, j'ai trop peur de la perde a nouveau finalement ! ",
           "dialogueText": {
             "en": "",
-            "fr": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !"
+            "fr": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !\nGarde la, j'ai trop peur de la perde a nouveau finalement ! "
           },
           "parentLabels": [
             "__blueprints__"
@@ -1861,49 +1909,57 @@
       ],
       "connections": [
         {
-          "id": "ff27b1e3-e428-4476-940a-71dabcaef185",
-          "fromId": "cb342290-3616-42d2-ba58-620290dfa45a",
-          "toId": "61ad4724-2845-426f-b4e2-581c670a3c60",
+          "id": "7a4f3b9a-a838-41ba-ba92-55f72837d371",
+          "fromId": "bde6483a-c9e6-4ca1-94b5-14a8a8e0f36c",
+          "toId": "1690e771-7627-4abd-9944-84721b40567d",
           "fromPort": "out",
           "toPort": "in",
           "fromPortIndex": 0
         },
         {
-          "id": "14e29c27-a32f-4fae-9e73-9787cb5a80df",
+          "id": "715f09fd-014d-4740-b3e4-611508d3612f",
+          "fromId": "6e270a8d-688c-4101-9d2b-97876b09e301",
+          "toId": "61ad4724-2845-426f-b4e2-581c670a3c60",
+          "fromPort": "false",
+          "toPort": "in",
+          "fromPortIndex": 1
+        },
+        {
+          "id": "b738cdab-7f88-4ddb-8e29-d0b52b9ec3c8",
           "fromId": "61ad4724-2845-426f-b4e2-581c670a3c60",
+          "toId": "bde6483a-c9e6-4ca1-94b5-14a8a8e0f36c",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "64ea6ba3-d586-450d-ac89-2d516f71661d",
+          "fromId": "6e270a8d-688c-4101-9d2b-97876b09e301",
+          "toId": "d1670c06-ef2f-48db-8fef-df3bb4b63b05",
+          "fromPort": "true",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "59fb9c18-eddb-4561-8f76-dc715558feea",
+          "fromId": "d1670c06-ef2f-48db-8fef-df3bb4b63b05",
+          "toId": "4d8f4766-5c11-4a5d-bbc7-223a5bc4fc52",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "675faf11-0462-4ce9-9a7a-2c79ff03621e",
+          "fromId": "cb342290-3616-42d2-ba58-620290dfa45a",
           "toId": "6e270a8d-688c-4101-9d2b-97876b09e301",
           "fromPort": "out",
           "toPort": "in",
           "fromPortIndex": 0
         },
         {
-          "id": "758a6b31-920d-45e1-8491-d7abf467745a",
-          "fromId": "6e270a8d-688c-4101-9d2b-97876b09e301",
-          "toId": "4d8f4766-5c11-4a5d-bbc7-223a5bc4fc52",
-          "fromPort": "true",
-          "toPort": "in",
-          "fromPortIndex": 0
-        },
-        {
-          "id": "5b4d4f81-a2b8-4ea0-a56e-c83e2f46e6bc",
-          "fromId": "6e270a8d-688c-4101-9d2b-97876b09e301",
-          "toId": "bde6483a-c9e6-4ca1-94b5-14a8a8e0f36c",
-          "fromPort": "false",
-          "toPort": "in",
-          "fromPortIndex": 1
-        },
-        {
-          "id": "a47d2ad7-9d4b-43ec-ac3e-22e6ddda2861",
+          "id": "e642bbbd-7d25-4c7e-8a51-3d1dfd666dce",
           "fromId": "4d8f4766-5c11-4a5d-bbc7-223a5bc4fc52",
-          "toId": "1690e771-7627-4abd-9944-84721b40567d",
-          "fromPort": "out",
-          "toPort": "in",
-          "fromPortIndex": 0
-        },
-        {
-          "id": "7a4f3b9a-a838-41ba-ba92-55f72837d371",
-          "fromId": "bde6483a-c9e6-4ca1-94b5-14a8a8e0f36c",
-          "toId": "1690e771-7627-4abd-9944-84721b40567d",
+          "toId": "7d0cab65-96ed-4471-b7f6-5b060c12007b",
           "fromPort": "out",
           "toPort": "in",
           "fromPortIndex": 0
