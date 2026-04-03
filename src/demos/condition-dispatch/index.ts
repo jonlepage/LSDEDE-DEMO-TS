@@ -60,11 +60,13 @@ import {
   type CharacterReference,
   type GameActionFacade,
 } from "../../game/game-actions";
-import {
-  registerMovementTicker,
-  setMovementTarget,
-} from "../../renderer/movement";
+import { registerMovementTicker } from "../../renderer/movement";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
+import { setupPartyRecruitment } from "../shared/setup-party-recruitment";
+import {
+  setupPartyFollow,
+  type FormationOffset,
+} from "../shared/setup-party-follow";
 import {
   createDebugPanel,
   registerLiveMonitorTicker,
@@ -78,16 +80,9 @@ import type { ExportCondition } from "../../../public/blueprints/blueprint.types
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const SCENE_UUID = LSDE_SCENES.conditionDispatch;
 const PARTY_NPC_IDS = [GAME_ACTORS.l1, GAME_ACTORS.l2, GAME_ACTORS.l3] as const;
-const PARTY_RECRUIT_DISTANCE = 80;
 const BIG_CARROT_INTERACT_DISTANCE = 90;
-// Minimum distance from slot before the follow target is refreshed.
-// Prevents constant target spam when the member is already close.
-const PARTY_FOLLOW_UPDATE_DISTANCE = 15;
 // V-formation slots: each member trails the player from a fixed offset.
-const PARTY_FOLLOW_OFFSETS: Record<
-  string,
-  { readonly x: number; readonly y: number }
-> = {
+const PARTY_FOLLOW_OFFSETS: Record<string, FormationOffset> = {
   [GAME_ACTORS.l1]: { x: -40, y: 18 },
   [GAME_ACTORS.l2]: { x: -70, y: 0 },
   [GAME_ACTORS.l3]: { x: -40, y: -18 },
@@ -277,7 +272,11 @@ export async function runScene(
   registerLiveMonitorTicker(debugPanelState, pixiApplication);
   registerActionButtons(debugPanelState, gameActions, GAME_ACTORS.l1);
 
-  const partyMonitor = { l1: false, l2: false, l3: false };
+  const partyMonitor: Record<string, boolean> = {
+    l1: false,
+    l2: false,
+    l3: false,
+  };
   const partyFolder = debugPanelState.pane.addFolder({
     title: "Party",
     expanded: true,
@@ -288,25 +287,14 @@ export async function runScene(
 
   sceneContext.addDisposable(() => debugPanelState.pane.dispose());
 
-  // --- Party follow ticker ---
-  // Each frame, if a member is recruited and is farther than the threshold
-  // from their slot, refresh their movement target.
-  sceneContext.addTickerCallback(() => {
-    for (const characterId of PARTY_NPC_IDS) {
-      if (!gameActions.isInParty(characterId)) continue;
-      const characterRef = characters.get(characterId) as CharacterReference;
-      const offset = PARTY_FOLLOW_OFFSETS[characterId];
-      const slotX = playerReference.sprite.x + offset.x;
-      const slotY = playerReference.sprite.y + offset.y;
-      const deltaX = slotX - characterRef.sprite.x;
-      const deltaY = slotY - characterRef.sprite.y;
-      if (
-        Math.sqrt(deltaX * deltaX + deltaY * deltaY) >
-        PARTY_FOLLOW_UPDATE_DISTANCE
-      ) {
-        setMovementTarget(characterRef.movementState, slotX, slotY);
-      }
-    }
+  // --- Party follow formation ---
+  setupPartyFollow({
+    playerReference,
+    partyNpcIds: PARTY_NPC_IDS,
+    characters,
+    formationOffsets: PARTY_FOLLOW_OFFSETS,
+    sceneContext,
+    gameActions,
   });
 
   // --- Big ritual carrot ---
@@ -352,55 +340,18 @@ export async function runScene(
   });
 
   // --- Party recruitment ---
-  // Walk near each NPC and click to add them to the party.
-  // Recruited NPCs are removed from npcObstacles so the player isn't blocked
-  // by their own followers, and they lose their collidable obstacle status.
-  for (const characterId of PARTY_NPC_IDS) {
-    const characterRef = characters.get(characterId) as CharacterReference;
-
-    const recruitHint = new Text({
-      text: "🐰 join!",
-      style: { fontSize: 12, fill: "#ffffff" },
-    });
-    recruitHint.anchor.set(0.5, 1);
-    recruitHint.position.set(0, -(characterRef.sprite.height / 2 + 4));
-    recruitHint.visible = false;
-    characterRef.sprite.addChild(recruitHint);
-
-    // Show hint only when player is in range and NPC is not yet recruited.
-    sceneContext.addTickerCallback(() => {
-      if (gameActions.isInParty(characterId)) return;
-      const deltaX = playerReference.sprite.x - characterRef.sprite.x;
-      const deltaY = playerReference.sprite.y - characterRef.sprite.y;
-      recruitHint.visible =
-        Math.sqrt(deltaX * deltaX + deltaY * deltaY) < PARTY_RECRUIT_DISTANCE;
-    });
-
-    characterRef.sprite.eventMode = "static";
-    characterRef.sprite.cursor = "pointer";
-    characterRef.sprite.on("pointerdown", () => {
-      if (gameActions.isInParty(characterId)) return;
-      const deltaX = playerReference.sprite.x - characterRef.sprite.x;
-      const deltaY = playerReference.sprite.y - characterRef.sprite.y;
-      if (
-        Math.sqrt(deltaX * deltaX + deltaY * deltaY) >= PARTY_RECRUIT_DISTANCE
-      )
-        return;
-
-      gameActions.addToParty(characterId);
-
-      // Remove from collision obstacles — followers shouldn't block the player.
-      const obstacleIndex = npcObstacles.findIndex(
-        (collidable) => collidable.sprite === characterRef.sprite,
-      );
-      if (obstacleIndex !== -1) npcObstacles.splice(obstacleIndex, 1);
-
-      recruitHint.visible = false;
-      recruitHint.destroy();
+  setupPartyRecruitment({
+    playerReference,
+    partyNpcIds: PARTY_NPC_IDS,
+    characters,
+    npcObstacles,
+    sceneContext,
+    gameActions,
+    onMemberRecruited: (characterId) => {
       partyMonitor[characterId] = true;
       console.log(`[condition-dispatch] ${characterId} joined the party!`);
-    });
-  }
+    },
+  });
 
   // --- Dialogue state ---
   let isDialogueActive = false;
