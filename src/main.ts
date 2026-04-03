@@ -42,6 +42,8 @@ const DEFAULT_SCENE_UUID = LSDE_SCENES.simpleCondition;
 
   async function loadScene(sceneUuid: string): Promise<void> {
     if (currentSceneTeardown) {
+      // Stop the dialogue engine FIRST so no block callbacks fire on destroyed resources.
+      dialogueEngine.stop();
       currentSceneTeardown();
       currentSceneTeardown = null;
     }
