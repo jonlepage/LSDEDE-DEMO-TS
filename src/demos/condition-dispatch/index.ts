@@ -64,6 +64,7 @@ import {
   registerMovementTicker,
   createMovementState,
 } from "../../renderer/movement";
+import { createCollidable, resolveCollisions } from "../../renderer/collision";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
 import { setupPartyRecruitment } from "../shared/setup-party-recruitment";
 import { setupPartyFollow } from "../shared/setup-party-follow";
@@ -291,8 +292,10 @@ export async function runScene(
     sceneContext,
   });
 
-  // --- NPC movement tickers (with per-character hop variation) ---
-  // Override default movementState with personality-specific values, then register.
+  // --- NPC movement tickers (with per-character hop variation + collision) ---
+  // Build per-NPC collidable list: each NPC collides with the player + other NPCs.
+  const playerCollidable = createCollidable(playerReference.sprite);
+
   for (const characterId of PARTY_NPC_IDS) {
     const characterRef = characters.get(characterId) as CharacterReference;
     const profile = NPC_MOVEMENT_PROFILES[characterId];
@@ -305,28 +308,38 @@ export async function runScene(
       // Seed a random distanceSinceLastHop so hops start at different phases.
       customMovementState.distanceSinceLastHop =
         Math.random() * customMovementState.hopStrideDistance;
-      // Replace the default movementState — CharacterReference is readonly but
-      // the map entry can be reassembled.
       characters.set(characterId, {
         characterId: characterRef.characterId,
         sprite: characterRef.sprite,
         movementState: customMovementState,
       });
-      const updatedRef = characters.get(characterId) as CharacterReference;
-      const unregisterNpcMovement = registerMovementTicker(
-        pixiApplication,
-        updatedRef.sprite,
-        updatedRef.movementState,
-      );
-      sceneContext.addDisposable(unregisterNpcMovement);
-    } else {
-      const unregisterNpcMovement = registerMovementTicker(
-        pixiApplication,
-        characterRef.sprite,
-        characterRef.movementState,
-      );
-      sceneContext.addDisposable(unregisterNpcMovement);
     }
+
+    const finalRef = characters.get(characterId) as CharacterReference;
+    const npcCollidable = createCollidable(finalRef.sprite);
+
+    // Obstacles for this NPC: every other NPC + the player.
+    const obstaclesForThisNpc = [
+      playerCollidable,
+      ...PARTY_NPC_IDS.filter((id) => id !== characterId)
+        .map((id) => characters.get(id))
+        .filter((ref): ref is CharacterReference => !!ref)
+        .map((ref) => createCollidable(ref.sprite)),
+    ];
+
+    const unregisterNpcMovement = registerMovementTicker(
+      pixiApplication,
+      finalRef.sprite,
+      finalRef.movementState,
+      (proposedX: number, proposedY: number) =>
+        resolveCollisions(
+          npcCollidable,
+          proposedX,
+          proposedY,
+          obstaclesForThisNpc,
+        ),
+    );
+    sceneContext.addDisposable(unregisterNpcMovement);
   }
 
   // --- Player movement + collision + camera ---
@@ -366,6 +379,17 @@ export async function runScene(
   partyFolder.addBinding(partyMonitor, "l1", { readonly: true });
   partyFolder.addBinding(partyMonitor, "l2", { readonly: true });
   partyFolder.addBinding(partyMonitor, "l3", { readonly: true });
+
+  const followToggle = { paused: false };
+  partyFolder
+    .addBinding(followToggle, "paused", { label: "pause follow" })
+    .on("change", ({ value }) => {
+      if (value) {
+        partyFollowHandle.pause();
+      } else {
+        partyFollowHandle.resume();
+      }
+    });
 
   sceneContext.addDisposable(() => debugPanelState.pane.dispose());
 
