@@ -35,6 +35,9 @@ export type lsdeCharacter = 'l1' | 'l2' | 'l3' | 'l4' | 'boss';
 /** Dictionary: inventory (1 values) */
 export type lsdeDictionaryinventory = 'carrot';
 
+/** Dictionary: party (3 values) */
+export type lsdeDictionaryparty = 'l1' | 'l2' | 'l3';
+
 /** Action signature IDs */
 export type lsdeActionId = 'moveCameraToLabel' | 'shakeCamera' | 'moveCharacterAt';
 

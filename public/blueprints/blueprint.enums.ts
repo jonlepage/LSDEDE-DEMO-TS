@@ -41,6 +41,13 @@ export enum LSDE_SCENES {
 	 * - Characters: `l1`, `l4`
 	 */
 	simpleCondition = 'a037a98b-ffec-40d3-8092-4eedb9857501',
+	/**
+	 * ### Scene: condition-dispatch
+	 * 2 CONDITION, 6 DIALOG
+	 * Entry: `DIALOG-001` ⭐
+	 * - Characters: `l1`, `l3`, `l4`
+	 */
+	conditionDispatch = 'c2e75db2-85c7-421b-91ab-f7ea1ea45284',
 }
 
 /**
@@ -637,6 +644,92 @@ export enum LSDE_BLOCKS {
 	 * <image url="./_images/dialog.webp" />
 	 */
 	simpleConditionL4FinalThoughtAi = '1690e771-7627-4abd-9944-84721b40567d',
+	/**
+	 * ### 🟪[CONDITION] CONDITION-001
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-002`
+	 * - Out: `DIALOG-003`, `DIALOG-004`, `DIALOG-005`, `DIALOG-006`
+	 * Case 0:
+	 * `party.l1` = `true`
+	 * Case 1:
+	 * `party.l2` = `true`
+	 * Case 2:
+	 * `party.l3` = `true`
+	 * ---
+	 * <image url="./_images/cond.webp" />
+	 */
+	conditionDispatchCondition001 = 'ab111d47-9fe0-41d9-afd9-e96f00a01d9a',
+	/**
+	 * ### 🟪[CONDITION] CONDITION-002
+	 * - Scene: `condition-dispatch`
+	 * - In: `DIALOG-001`
+	 * - Out: `CONDITION-001`, `DIALOG-002`
+	 * `party.l1` = `true`
+	 * `party.l2` = `true`
+	 * `party.l3` = `true`
+	 * ---
+	 * <image url="./_images/cond.webp" />
+	 */
+	conditionDispatchCondition002 = 'a004326b-fada-43fd-aae7-f6e1654fa02e',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-001 ⭐
+	 * _"ho... grand esprit des carotte ..."_
+	 * - Characters: `l4`
+	 * - Scene: `condition-dispatch`
+	 * - Out: `CONDITION-002`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog001 = '90a8c0a2-cb0e-4900-b974-c59d470f296e',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-002
+	 * _"Hey vien nous choisir avant dinvoquez les esprit de la carotte"_
+	 * - Characters: `l1`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-002`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog002 = 'a4610101-f256-4ce8-a622-566493a7ea36',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-003
+	 * _"Ho grande carotte rouge"_
+	 * - Characters: `l1`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog003 = 'f0d04478-f078-4284-bb29-84dde7f6745e',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-004
+	 * _"ho grande carotte jaune"_
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog004 = 'fd4a39f9-6aa7-4222-90b1-7e79f8eab245',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-005
+	 * _"ho grande carrote bleue"_
+	 * - Characters: `l3`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog005 = '802b6469-bf1d-4e17-8bb3-1443b0f32b38',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-006
+	 * _"ho grande carotte, merci de nous nourrire"_
+	 * - Characters: `l4`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog006 = 'f1de0bf3-65d8-4a0f-a26e-31562f349396',
 }
 
 /**

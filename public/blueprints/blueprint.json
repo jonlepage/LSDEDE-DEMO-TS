@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T07:26:20.830Z",
+  "exportDate": "2026-04-03T08:01:03.791Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -14,6 +14,21 @@
       "rows": [
         {
           "key": "carrot"
+        }
+      ]
+    },
+    {
+      "uuid": "d4cedb7f-78e1-490a-b982-94ef2727b43d",
+      "id": "party",
+      "rows": [
+        {
+          "key": "l1"
+        },
+        {
+          "key": "l2"
+        },
+        {
+          "key": "l3"
         }
       ]
     }
@@ -1963,6 +1978,295 @@
           "fromPort": "out",
           "toPort": "in",
           "fromPortIndex": 0
+        }
+      ]
+    },
+    {
+      "uuid": "c2e75db2-85c7-421b-91ab-f7ea1ea45284",
+      "label": "condition-dispatch",
+      "date": "03/04/2026",
+      "entryBlockId": "90a8c0a2-cb0e-4900-b974-c59d470f296e",
+      "blocks": [
+        {
+          "uuid": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "type": "CONDITION",
+          "properties": [],
+          "label": "CONDITION-001",
+          "nativeProperties": {
+            "enableDispatcher": true
+          },
+          "conditions": [
+            [
+              {
+                "uuid": "c684688f-049c-4b5b-b34e-bb18fcd49815",
+                "key": "party.l1",
+                "operator": "=",
+                "value": "true"
+              }
+            ],
+            [
+              {
+                "uuid": "08adadf8-204d-4eae-a9ac-fff5ada502f8",
+                "key": "party.l2",
+                "operator": "=",
+                "value": "true"
+              }
+            ],
+            [
+              {
+                "uuid": "c6905bfe-87e3-4bae-9e2b-c9e83b2b231b",
+                "key": "party.l3",
+                "operator": "=",
+                "value": "true"
+              }
+            ]
+          ],
+          "parentLabels": [
+            "__blueprints__"
+          ]
+        },
+        {
+          "uuid": "a004326b-fada-43fd-aae7-f6e1654fa02e",
+          "type": "CONDITION",
+          "properties": [],
+          "label": "CONDITION-002",
+          "conditions": [
+            [
+              {
+                "uuid": "915e8614-bf7b-474e-95e5-f2b374e8b2f5",
+                "key": "party.l1",
+                "operator": "=",
+                "value": "true"
+              },
+              {
+                "uuid": "46cd9f27-8674-4b97-b41e-e489ecc1b702",
+                "key": "party.l2",
+                "chain": "|",
+                "operator": "=",
+                "value": "true"
+              },
+              {
+                "uuid": "f06735c0-f001-49ab-bcdf-f04cfa79d1f7",
+                "key": "party.l3",
+                "chain": "|",
+                "operator": "=",
+                "value": "true"
+              }
+            ]
+          ],
+          "parentLabels": [
+            "__blueprints__"
+          ]
+        },
+        {
+          "uuid": "90a8c0a2-cb0e-4900-b974-c59d470f296e",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-001",
+          "isStartBlock": true,
+          "structureKey": "__blueprints__.condition-dispatch.DIALOG-001",
+          "content": "ho... grand esprit des carotte ...",
+          "dialogueText": {
+            "en": "",
+            "fr": "ho... grand esprit des carotte ..."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "a4610101-f256-4ce8-a622-566493a7ea36",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-002",
+          "structureKey": "__blueprints__.condition-dispatch.DIALOG-002",
+          "content": "Hey vien nous choisir avant dinvoquez les esprit de la carotte",
+          "dialogueText": {
+            "en": "",
+            "fr": "Hey vien nous choisir avant dinvoquez les esprit de la carotte"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "f0d04478-f078-4284-bb29-84dde7f6745e",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-003",
+          "structureKey": "__blueprints__.condition-dispatch.DIALOG-003",
+          "content": "Ho grande carotte rouge",
+          "nativeProperties": {
+            "isAsync": true,
+            "delay": 100
+          },
+          "dialogueText": {
+            "en": "",
+            "fr": "Ho grande carotte rouge"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "fd4a39f9-6aa7-4222-90b1-7e79f8eab245",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-004",
+          "structureKey": "__blueprints__.condition-dispatch.DIALOG-004",
+          "content": "ho grande carotte jaune ",
+          "nativeProperties": {
+            "isAsync": true,
+            "delay": 600
+          },
+          "dialogueText": {
+            "en": "",
+            "fr": "ho grande carotte jaune "
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {}
+        },
+        {
+          "uuid": "802b6469-bf1d-4e17-8bb3-1443b0f32b38",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-005",
+          "structureKey": "__blueprints__.condition-dispatch.DIALOG-005",
+          "content": "ho grande carrote bleue",
+          "nativeProperties": {
+            "isAsync": true,
+            "delay": 1300
+          },
+          "dialogueText": {
+            "en": "",
+            "fr": "ho grande carrote bleue"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0f16b34e-f9d5-493f-8bbc-8a2d1418f221",
+                "id": "l3",
+                "name": "l3"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "f1de0bf3-65d8-4a0f-a26e-31562f349396",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-006",
+          "structureKey": "__blueprints__.condition-dispatch.DIALOG-006",
+          "content": "ho grande carotte, merci de nous nourrire",
+          "nativeProperties": {
+            "delay": 2000
+          },
+          "dialogueText": {
+            "en": "",
+            "fr": "ho grande carotte, merci de nous nourrire"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        }
+      ],
+      "connections": [
+        {
+          "id": "f905eecf-2e1f-4445-ac3c-de4bafc2c730",
+          "fromId": "90a8c0a2-cb0e-4900-b974-c59d470f296e",
+          "toId": "a004326b-fada-43fd-aae7-f6e1654fa02e",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "0d09ac1b-2f78-43a0-bacb-fd07aa9dd55f",
+          "fromId": "a004326b-fada-43fd-aae7-f6e1654fa02e",
+          "toId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "fromPort": "true",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "24e0701c-40e9-43ba-8da9-75da1ef2928a",
+          "fromId": "a004326b-fada-43fd-aae7-f6e1654fa02e",
+          "toId": "a4610101-f256-4ce8-a622-566493a7ea36",
+          "fromPort": "false",
+          "toPort": "in",
+          "fromPortIndex": 1
+        },
+        {
+          "id": "cab7e087-48a6-4d8f-ac29-a366015126bd",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "f0d04478-f078-4284-bb29-84dde7f6745e",
+          "fromPort": "case_0",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "dfa75b8c-eaca-45e2-aae1-b8a828e04b0e",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "fd4a39f9-6aa7-4222-90b1-7e79f8eab245",
+          "fromPort": "case_1",
+          "toPort": "in",
+          "fromPortIndex": 1
+        },
+        {
+          "id": "2c819938-1208-4e8f-8c8c-8da5a9d484e2",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "802b6469-bf1d-4e17-8bb3-1443b0f32b38",
+          "fromPort": "case_2",
+          "toPort": "in",
+          "fromPortIndex": 2
+        },
+        {
+          "id": "c37c7448-8439-4a13-89b4-e52bb78d60ed",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "f1de0bf3-65d8-4a0f-a26e-31562f349396",
+          "fromPort": "default",
+          "toPort": "in",
+          "fromPortIndex": 3
         }
       ]
     }
