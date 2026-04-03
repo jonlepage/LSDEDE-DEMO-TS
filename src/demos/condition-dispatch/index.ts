@@ -77,6 +77,15 @@ import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import type { ExportCondition } from "../../../public/blueprints/blueprint.types";
+import {
+  trackDialogueShown,
+  trackDialogueAdvanced,
+  trackConditionEvaluated,
+  trackActionExecuted,
+  trackNpcInteraction,
+  trackPartyMemberRecruited,
+  trackSceneCompleted,
+} from "../../analytics/posthog";
 
 // ---------------------------------------------------------------------------
 // Lightweight action type — mirrors the shape LSDE puts in block.actions[].
@@ -455,6 +464,8 @@ export async function runScene(
     gameActions,
     onMemberRecruited: (characterId) => {
       partyMonitor[characterId] = true;
+      trackPartyMemberRecruited("condition-dispatch", characterId);
+      trackNpcInteraction("condition-dispatch", characterId, "recruitment");
       console.log(`[condition-dispatch] ${characterId} joined the party!`);
     },
   });
@@ -516,6 +527,8 @@ export async function runScene(
           );
           activeBubbles.set(blockUuid, bubbleHandle);
         }
+
+        trackDialogueShown("condition-dispatch", blockUuid, characterId);
 
         if (needsUserInput) {
           // Main track or waitInput=true: wait for user click.
@@ -580,6 +593,7 @@ export async function runScene(
       );
 
       context.resolve(result);
+      trackConditionEvaluated("condition-dispatch", block.uuid, result);
       next();
     });
 
@@ -588,6 +602,14 @@ export async function runScene(
     // and waits for all of them to complete before advancing.
     sceneHandle.onAction(({ block, context, next }) => {
       context.preventGlobalHandler();
+
+      trackActionExecuted(
+        "condition-dispatch",
+        block.uuid,
+        (block.actions ?? []).map(
+          (action) => (action as BlueprintAction).actionId,
+        ),
+      );
 
       const actionPromises = (block.actions ?? []).map((action) =>
         executeAction(action as BlueprintAction, gameActions),
@@ -609,6 +631,7 @@ export async function runScene(
       blocksWaitingForInput.clear();
       activeBubbles.clear();
       partyFollowHandle.resume();
+      trackSceneCompleted("condition-dispatch");
       console.log("[condition-dispatch] Ritual completed.");
     });
 
@@ -640,6 +663,7 @@ export async function runScene(
       }
     }
 
+    trackDialogueAdvanced("condition-dispatch", "broadcast");
     const toAdvance = [...blocksWaitingForInput.values()];
     blocksWaitingForInput.clear();
     for (const advance of toAdvance) {

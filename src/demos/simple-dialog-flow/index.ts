@@ -24,6 +24,11 @@ import {
 import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
+import {
+  trackDialogueShown,
+  trackDialogueAdvanced,
+  trackSceneCompleted,
+} from "../../analytics/posthog";
 
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
@@ -140,6 +145,8 @@ export async function runScene(
         return;
       }
 
+      trackDialogueShown("simple-dialog-flow", block.uuid, characterId);
+
       isDialogueActive = true;
       currentAdvanceFunction = next;
 
@@ -165,6 +172,7 @@ export async function runScene(
       isDialogueActive = false;
       currentAdvanceFunction = null;
       currentBubbleHandle = null;
+      trackSceneCompleted("simple-dialog-flow");
       console.log("[simple-dialog-flow] Scene completed.");
     });
 
@@ -193,6 +201,7 @@ export async function runScene(
     ) {
       currentBubbleHandle.skipTypewriter();
     } else {
+      trackDialogueAdvanced("simple-dialog-flow", "broadcast");
       currentAdvanceFunction();
     }
   };

@@ -25,6 +25,13 @@ import {
 import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
+import {
+  trackDialogueShown,
+  trackDialogueAdvanced,
+  trackChoicesPresented,
+  trackChoiceSelected,
+  trackSceneCompleted,
+} from "../../analytics/posthog";
 
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
@@ -140,6 +147,8 @@ export async function runScene(
 
       currentAdvanceFunction = next;
 
+      trackDialogueShown("simple-choices", block.uuid, characterId);
+
       if (characterId && characters.has(characterId)) {
         currentBubbleHandle = gameActions.showBubbleOnCharacter(
           characterId,
@@ -174,6 +183,12 @@ export async function runScene(
         (choice) => choice.visible !== false,
       );
 
+      trackChoicesPresented(
+        "simple-choices",
+        "choice-block",
+        visibleChoices.length,
+      );
+
       // RuntimeChoiceItem has dialogueText (localized map) and label.
       // Some blueprints only export "content" (raw text) without localized maps,
       // so we fall back through all available text sources.
@@ -194,6 +209,15 @@ export async function runScene(
           (selectedChoiceUuid: string) => {
             // Tell LSDE which choice was picked — the engine follows the
             // connection whose fromPort matches this UUID.
+            const choiceIndex = choiceEntries.findIndex(
+              (entry) => entry.choiceUuid === selectedChoiceUuid,
+            );
+            trackChoiceSelected(
+              "simple-choices",
+              "choice-block",
+              selectedChoiceUuid,
+              choiceIndex,
+            );
             context.selectChoice(selectedChoiceUuid);
             next();
           },
@@ -212,6 +236,7 @@ export async function runScene(
       currentAdvanceFunction = null;
       currentBubbleHandle = null;
       currentChoiceBoxContainer = null;
+      trackSceneCompleted("simple-choices");
       console.log("[simple-choices] Scene completed.");
     });
 
@@ -244,6 +269,7 @@ export async function runScene(
     ) {
       currentBubbleHandle.skipTypewriter();
     } else {
+      trackDialogueAdvanced("simple-choices", "broadcast");
       currentAdvanceFunction();
     }
   };

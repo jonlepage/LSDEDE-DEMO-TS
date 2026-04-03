@@ -216,8 +216,8 @@ body {
 	position: fixed;
 	bottom: 8px;
 	right: 12px;
-	font-size: 11px;
-	color: rgba(255, 255, 255, 0.15);
+	font-size: 13px;
+	color: rgba(255, 255, 255, 0.39);
 	text-decoration: none;
 	letter-spacing: 0.3px;
 	pointer-events: auto;
@@ -226,5 +226,71 @@ body {
 }
 
 #pixi-watermark:hover {
-	color: rgba(255, 255, 255, 0.4);
+	color: rgba(255, 255, 255, 0.889);
+}
+
+/* ------------------------------------------------------------------ */
+/* Blueprint preview button                                            */
+/* ------------------------------------------------------------------ */
+
+#blueprint-preview-button {
+	position: absolute;
+	top: 12px;
+	left: 50%;
+	z-index: 60;
+	width: 36px;
+	height: 36px;
+	border: 1px solid #444;
+	border-radius: 6px;
+	background: rgba(17, 17, 17, 0.85);
+	color: #fff;
+	font-size: 18px;
+	line-height: 1;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition:
+		background-color 0.15s,
+		border-color 0.15s;
+}
+
+#blueprint-preview-button:hover {
+	background: rgba(34, 34, 34, 0.95);
+	border-color: #4a9eff;
+}
+
+/* Thumbnail tooltip */
+#blueprint-preview-thumbnail {
+	display: none;
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	background: rgba(10, 10, 10, 0.95);
+	border: 1px solid #444;
+	border-radius: 6px;
+	padding: 6px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+	pointer-events: none;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	min-width: 220px;
+}
+
+#blueprint-preview-thumbnail.visible {
+	display: flex;
+}
+
+#blueprint-preview-thumbnail img {
+	max-width: 260px;
+	max-height: 180px;
+	border-radius: 4px;
+	object-fit: contain;
+}
+
+#blueprint-preview-thumbnail span {
+	font-size: 10px;
+	color: rgba(255, 255, 255, 0.5);
+	letter-spacing: 0.3px;
 }

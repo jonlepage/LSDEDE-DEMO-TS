@@ -54,6 +54,13 @@ import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import type { ExportCondition } from "../../../public/blueprints/blueprint.types";
+import {
+  trackDialogueShown,
+  trackDialogueAdvanced,
+  trackConditionEvaluated,
+  trackItemPickedUp,
+  trackSceneCompleted,
+} from "../../analytics/posthog";
 
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
@@ -267,6 +274,7 @@ export async function runScene(
     carrotPickedUp = true;
     gameActions.addItem(CARROT_ID, "Carrot");
     inventoryMonitor.carrot = gameActions.getItemQuantity(CARROT_ID);
+    trackItemPickedUp("simple-condition", CARROT_ID);
     characters.delete(CARROT_ID);
     carrotSprite.destroy({ children: true });
     console.log(
@@ -300,6 +308,8 @@ export async function runScene(
 
       isDialogueActive = true;
       currentAdvanceFunction = next;
+
+      trackDialogueShown("simple-condition", block.uuid, characterId);
 
       if (characterId && characters.has(characterId)) {
         currentBubbleHandle = gameActions.showBubbleOnCharacter(
@@ -347,6 +357,7 @@ export async function runScene(
       );
 
       context.resolve(result);
+      trackConditionEvaluated("simple-condition", block.uuid, result);
       next();
     });
 
@@ -355,6 +366,7 @@ export async function runScene(
       currentAdvanceFunction = null;
       currentBubbleHandle = null;
       dialogueTriggerHandle.resetTrigger();
+      trackSceneCompleted("simple-condition");
       console.log("[simple-condition] Scene completed.");
     });
 
@@ -383,6 +395,7 @@ export async function runScene(
     ) {
       currentBubbleHandle.skipTypewriter();
     } else {
+      trackDialogueAdvanced("simple-condition", "broadcast");
       currentAdvanceFunction();
     }
   };

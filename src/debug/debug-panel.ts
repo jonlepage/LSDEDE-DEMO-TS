@@ -10,6 +10,7 @@ import type { Application } from "pixi.js";
 import type { GameStore } from "../game/game-store";
 import type { GameActionFacade } from "../game/game-actions";
 import type { SupportedLanguage } from "../engine/i18n";
+import type { CrtFilterState } from "../renderer/stage";
 
 export interface DebugPanelState {
   readonly pane: Pane;
@@ -193,6 +194,32 @@ export function refreshGameStoreBindings(
       });
     }
   }
+}
+
+export function registerCrtFilterControls(
+  parentFolder: FolderApi | Pane,
+  crtFilterState: CrtFilterState,
+): void {
+  const crtFolder = parentFolder.addFolder({
+    title: "CRTFilter",
+    expanded: false,
+  });
+
+  crtFolder.addBinding(crtFilterState, "enabled");
+  crtFolder.addBinding(crtFilterState, "animating", { label: "(animating)" });
+
+  const filter = crtFilterState.filter;
+  crtFolder.addBinding(filter, "curvature", { min: 0, max: 10 });
+  crtFolder.addBinding(filter, "lineWidth", { min: 0, max: 5 });
+  crtFolder.addBinding(filter, "lineContrast", { min: 0, max: 1 });
+  crtFolder.addBinding(filter, "verticalLine");
+  crtFolder.addBinding(filter, "noise", { min: 0, max: 1 });
+  crtFolder.addBinding(filter, "noiseSize", { min: 1, max: 10 });
+  crtFolder.addBinding(filter, "vignetting", { min: 0, max: 1 });
+  crtFolder.addBinding(filter, "vignettingAlpha", { min: 0, max: 1 });
+  crtFolder.addBinding(filter, "vignettingBlur", { min: 0, max: 1 });
+  crtFolder.addBinding(filter, "seed", { min: 0, max: 1, readonly: true });
+  crtFolder.addBinding(filter, "time", { readonly: true });
 }
 
 export function disposeDebugPanel(debugPanelState: DebugPanelState): void {

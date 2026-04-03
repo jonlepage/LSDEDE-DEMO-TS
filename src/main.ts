@@ -1,5 +1,5 @@
 import { createApplicationLayout } from "./app/layout";
-import { createPixiApplication } from "./renderer/stage";
+import { createPixiApplication, applyCrtFilter } from "./renderer/stage";
 import { createCamera, resetCameraState } from "./renderer/camera";
 import { renderDemoNavigation } from "./app/navigation";
 import { loadBlueprintFromPath, createDialogueEngine } from "./engine/setup";
@@ -8,13 +8,37 @@ import {
   registerGlobalHandlers,
 } from "./engine/handlers";
 import { LSDE_SCENES } from "../public/blueprints/blueprint.enums";
+import { initAnalytics, trackSceneSelected } from "./analytics/posthog";
+import { Pane } from "tweakpane";
+import { registerCrtFilterControls } from "./debug/debug-panel";
+import { createBlueprintPreview } from "./app/blueprint-preview";
 
 const BLUEPRINT_FILE_PATH = "/blueprints/blueprint.json";
+
+/** Maps scene label → blueprint screenshot filename in public/blueprints/_images/ */
+const SCENE_BLUEPRINT_IMAGES: Record<string, string> = {
+  "simple-dialog-flow": "1.jpg",
+  "multi-tracks": "2.jpg",
+  "simple-choices": "choice.webp",
+  "simple-action": "action.webp",
+  "simple-condition": "cond.webp",
+  "condition-dispatch": "cond.webp",
+};
 const DEFAULT_SCENE_UUID = LSDE_SCENES.conditionDispatch;
 
+const POSTHOG_API_KEY = import.meta.env.VITE_POSTHOG_API_KEY as string;
+const POSTHOG_API_HOST =
+  (import.meta.env.VITE_POSTHOG_API_HOST as string) ||
+  "https://us.i.posthog.com";
+
 (async () => {
+  initAnalytics(POSTHOG_API_KEY, POSTHOG_API_HOST);
   const { sidebarContainer, canvasContainer } = createApplicationLayout();
   const pixiApplication = await createPixiApplication(canvasContainer);
+  const crtFilterState = applyCrtFilter(pixiApplication);
+  const crtPane = new Pane({ title: "CRTFilter", expanded: false });
+  registerCrtFilterControls(crtPane, crtFilterState);
+  const blueprintPreview = createBlueprintPreview(canvasContainer);
   const cameraState = createCamera(pixiApplication);
 
   const blueprintData = await loadBlueprintFromPath(BLUEPRINT_FILE_PATH);
@@ -59,6 +83,9 @@ const DEFAULT_SCENE_UUID = LSDE_SCENES.conditionDispatch;
       console.warn(`[LSDE] Scene UUID "${sceneUuid}" not found in blueprint.`);
       return;
     }
+
+    trackSceneSelected(sceneData.uuid, sceneData.label);
+    blueprintPreview.update(SCENE_BLUEPRINT_IMAGES[sceneData.label] ?? null);
 
     console.group(`[LSDE] Scene: ${sceneData.label}`);
     console.log("UUID:", sceneData.uuid);

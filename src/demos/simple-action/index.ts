@@ -48,6 +48,14 @@ import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import type { GameActionFacade } from "../../game/game-actions";
+import {
+  trackDialogueShown,
+  trackDialogueAdvanced,
+  trackChoicesPresented,
+  trackChoiceSelected,
+  trackActionExecuted,
+  trackSceneCompleted,
+} from "../../analytics/posthog";
 
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
@@ -148,7 +156,7 @@ export async function runScene(
         characterId: GAME_ACTORS.l4,
         displayName: GAME_ACTORS.l4,
         tintColor: 0x777777,
-        startX: screenCenterX - 260,
+        startX: screenCenterX - 390,
         startY: screenCenterY + 40,
       },
       {
@@ -252,6 +260,8 @@ export async function runScene(
         activeBubbles.set(block.uuid, bubbleHandle);
       }
 
+      trackDialogueShown("simple-action", block.uuid, characterId);
+
       // Decide how to advance based on block properties:
       //   • isAsync + no waitInput → auto-advance (immediately or after timeout)
       //   • isAsync + waitInput    → joins the input queue, user click advances it
@@ -317,6 +327,12 @@ export async function runScene(
         (choice) => choice.visible !== false,
       );
 
+      trackChoicesPresented(
+        "simple-action",
+        "choice-block",
+        visibleChoices.length,
+      );
+
       const choiceEntries = visibleChoices.map((choice) => ({
         choiceUuid: choice.uuid,
         text:
@@ -331,6 +347,15 @@ export async function runScene(
           characterId,
           choiceEntries,
           (selectedChoiceUuid: string) => {
+            const choiceIndex = choiceEntries.findIndex(
+              (entry) => entry.choiceUuid === selectedChoiceUuid,
+            );
+            trackChoiceSelected(
+              "simple-action",
+              "choice-block",
+              selectedChoiceUuid,
+              choiceIndex,
+            );
             context.selectChoice(selectedChoiceUuid);
             next();
           },
@@ -367,6 +392,14 @@ export async function runScene(
 
       console.log(`[ACTION] started: ${block.label}`, block.actions);
 
+      trackActionExecuted(
+        "simple-action",
+        block.uuid,
+        (block.actions ?? []).map(
+          (action) => (action as BlueprintAction).actionId,
+        ),
+      );
+
       const actionPromises = (block.actions ?? []).map((action) =>
         executeAction(action as BlueprintAction, gameActions),
       );
@@ -387,6 +420,7 @@ export async function runScene(
       blocksWaitingForInput.clear();
       activeBubbles.clear();
       currentChoiceBoxContainer = null;
+      trackSceneCompleted("simple-action");
       console.log("[simple-action] Scene completed.");
     });
 
@@ -427,6 +461,7 @@ export async function runScene(
     // Second pass: advance every waiting block at once.
     // Snapshot first, then clear, then call advance() — calling advance()
     // may synchronously dispatch new blocks that add fresh entries.
+    trackDialogueAdvanced("simple-action", "broadcast");
     const toAdvance = [...blocksWaitingForInput.values()];
     blocksWaitingForInput.clear();
     for (const advance of toAdvance) {

@@ -24,6 +24,11 @@ import {
 import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
+import {
+  trackDialogueShown,
+  trackDialogueAdvanced,
+  trackSceneCompleted,
+} from "../../analytics/posthog";
 
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
@@ -176,6 +181,8 @@ export async function runScene(
         activeBubbles.set(block.uuid, bubbleHandle);
       }
 
+      trackDialogueShown("multi-tracks", block.uuid, characterId);
+
       // --- Decide how to advance based on block properties ---
       //
       // Three cases determine when next() is called:
@@ -249,6 +256,7 @@ export async function runScene(
       // local references should be cleaned up for good measure.
       blocksWaitingForInput.clear();
       activeBubbles.clear();
+      trackSceneCompleted("multi-tracks");
       console.log("[multi-tracks] Scene completed.");
     });
 
@@ -296,6 +304,7 @@ export async function runScene(
     // Calling advance() may synchronously dispatch the next blocks,
     // which would add new entries to blocksWaitingForInput.
     // If we clear() after advancing, we'd wipe those fresh entries.
+    trackDialogueAdvanced("multi-tracks", "broadcast");
     const toAdvance = [...blocksWaitingForInput.values()];
     blocksWaitingForInput.clear();
     for (const advance of toAdvance) {
