@@ -9,66 +9,222 @@ body {
 		sans-serif;
 }
 
+/* ------------------------------------------------------------------ */
+/* Layout                                                              */
+/* ------------------------------------------------------------------ */
+
 #app {
 	width: 100%;
 	height: 100vh;
 	overflow: hidden;
 	display: flex;
+	position: relative;
 }
+
+/* ------------------------------------------------------------------ */
+/* Sidebar                                                             */
+/* ------------------------------------------------------------------ */
 
 #sidebar-navigation {
-	width: 240px;
-	min-width: 240px;
+	width: 260px;
+	min-width: 260px;
 	height: 100vh;
 	overflow-y: auto;
-	background-color: #111111;
-	border-right: 1px solid #333333;
-	padding: 16px;
+	background-color: #0d0d0d;
+	border-right: 1px solid #222;
+	padding: 0;
 	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	transition:
+		margin-left 0.25s ease,
+		opacity 0.25s ease;
 }
 
-#sidebar-navigation h2 {
-	margin: 0 0 16px 0;
-	font-size: 16px;
-	color: #ffffff;
+/* Collapse state — sidebar slides out */
+.sidebar-collapsed #sidebar-navigation {
+	margin-left: -260px;
+	opacity: 0;
+	pointer-events: none;
 }
 
-#sidebar-navigation ul {
+/* ---- Header (logo + brand) ---- */
+
+.sidebar-header {
+	padding: 20px 16px 12px;
+	border-bottom: 1px solid #1a1a1a;
+}
+
+.sidebar-logo-link {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	text-decoration: none;
+	color: #fff;
+}
+
+.sidebar-logo-link:hover {
+	opacity: 0.85;
+}
+
+.sidebar-logo {
+	width: 36px;
+	height: 36px;
+	border-radius: 6px;
+	object-fit: contain;
+}
+
+.sidebar-brand {
+	font-size: 15px;
+	font-weight: 600;
+	letter-spacing: 0.3px;
+	color: #e0e0e0;
+}
+
+/* ---- External links ---- */
+
+.sidebar-links {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 12px 16px;
+	border-bottom: 1px solid #1a1a1a;
+}
+
+.sidebar-links a {
+	display: block;
+	padding: 5px 8px;
+	border-radius: 4px;
+	font-size: 12px;
+	color: rgba(255, 255, 255, 0.5);
+	text-decoration: none;
+	transition:
+		background-color 0.15s,
+		color 0.15s;
+}
+
+.sidebar-links a:hover {
+	background-color: #1a1a1a;
+	color: rgba(255, 255, 255, 0.85);
+}
+
+/* ---- Demo list ---- */
+
+.sidebar-demos {
+	flex: 1;
+	overflow-y: auto;
+	padding: 12px 16px;
+}
+
+.sidebar-demos h2 {
+	margin: 0 0 10px 0;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: rgba(255, 255, 255, 0.35);
+}
+
+.sidebar-demos ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
-#sidebar-navigation li {
-	margin-bottom: 4px;
+.sidebar-demos li {
+	margin-bottom: 2px;
 }
 
-#sidebar-navigation button {
+.sidebar-demos button {
 	width: 100%;
-	padding: 8px 12px;
+	padding: 7px 10px;
 	background: none;
 	border: 1px solid transparent;
-	border-radius: 1px;
-	color: rgba(255, 255, 255, 0.7);
-	font-size: 14px;
+	border-radius: 4px;
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 13px;
 	text-align: left;
 	cursor: pointer;
+	transition:
+		background-color 0.15s,
+		border-color 0.15s,
+		color 0.15s;
 }
 
-#sidebar-navigation button:hover {
-	background-color: #222222;
-	border-color: #444444;
-	color: #ffffff;
+.sidebar-demos button:hover {
+	background-color: #181818;
+	border-color: #333;
+	color: #fff;
 }
 
-#sidebar-navigation button.active {
-	background-color: #1a3a5c;
+.sidebar-demos button.active {
+	background-color: #142a42;
 	border-color: #4a9eff;
-	color: #ffffff;
+	color: #fff;
 }
+
+/* ------------------------------------------------------------------ */
+/* Collapse toggle button                                              */
+/* ------------------------------------------------------------------ */
+
+#sidebar-collapse-toggle {
+	position: absolute;
+	top: 10px;
+	left: 260px;
+	z-index: 100;
+	width: 24px;
+	height: 24px;
+	border: 1px solid #333;
+	border-radius: 4px;
+	background: #111;
+	color: rgba(255, 255, 255, 0.5);
+	font-size: 11px;
+	line-height: 1;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition:
+		left 0.25s ease,
+		background-color 0.15s;
+}
+
+#sidebar-collapse-toggle:hover {
+	background: #222;
+	color: #fff;
+}
+
+.sidebar-collapsed #sidebar-collapse-toggle {
+	left: 6px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Canvas                                                              */
+/* ------------------------------------------------------------------ */
 
 #pixi-container {
 	flex: 1;
 	height: 100vh;
 	overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ */
+/* PixiJS watermark                                                    */
+/* ------------------------------------------------------------------ */
+
+#pixi-watermark {
+	position: fixed;
+	bottom: 8px;
+	right: 12px;
+	font-size: 11px;
+	color: rgba(255, 255, 255, 0.15);
+	text-decoration: none;
+	letter-spacing: 0.3px;
+	pointer-events: auto;
+	transition: color 0.2s;
+	z-index: 50;
+}
+
+#pixi-watermark:hover {
+	color: rgba(255, 255, 255, 0.4);
 }
