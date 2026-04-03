@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-02T22:13:59.728Z",
+  "exportDate": "2026-04-03T00:40:25.197Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -273,27 +273,304 @@
       "uuid": "511c0cba-f9c8-4b9b-a0d1-91a36241a920",
       "label": "multi-tracks",
       "date": "02/04/2026",
-      "entryBlockId": "ad8a7573-500c-4038-bfef-a7ed4550ac8e",
+      "entryBlockId": "4604c8d0-c4cb-411a-a878-0d498bae868f",
       "blocks": [
         {
           "uuid": "ad8a7573-500c-4038-bfef-a7ed4550ac8e",
           "type": "DIALOG",
           "properties": [],
           "label": "DIALOG-001",
-          "isStartBlock": true,
           "structureKey": "__blueprints__.multi-tracks.DIALOG-001",
-          "content": "todo",
+          "content": "hey!",
+          "nativeProperties": {
+            "isAsync": true,
+            "timeout": 2000
+          },
           "dialogueText": {
             "en": "",
-            "fr": "todo"
+            "fr": "hey!"
           },
           "parentLabels": [
             "__blueprints__"
           ],
-          "metadata": {}
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0f16b34e-f9d5-493f-8bbc-8a2d1418f221",
+                "id": "l3",
+                "name": "l3"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "f38215d6-f0ef-4dc1-bee7-7dccf258ee2a",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-009",
+          "structureKey": "__blueprints__.multi-tracks.DIALOG-009",
+          "content": "oufff, je pu !!!",
+          "nativeProperties": {
+            "waitForBlocks": [
+              "80bf4972-7375-4b51-829d-d8481ace6b45"
+            ]
+          },
+          "dialogueText": {
+            "en": "",
+            "fr": "oufff, je pu !!!"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0f16b34e-f9d5-493f-8bbc-8a2d1418f221",
+                "id": "l3",
+                "name": "l3"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "36f0ba66-dfb8-4084-bf10-370a5e6c671b",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "final_decision-AI",
+          "structureKey": "__blueprints__.multi-tracks.final_decision-AI",
+          "content": "Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d9e2f0f-7382-439e-a256-8a29e65bdc09",
+                "id": "l2",
+                "name": "l2"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "a0f83f4a-271d-468a-821b-a881fe4a6058",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l1_irritation-AI",
+          "structureKey": "__blueprints__.multi-tracks.l1_irritation-AI",
+          "content": "L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro.",
+          "dialogueText": {
+            "en": "",
+            "fr": "L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "be6f47c5-13f3-4c1a-ba43-80d1820067af",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l2_response-AI",
+          "structureKey": "__blueprints__.multi-tracks.l2_response-AI",
+          "content": "Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d9e2f0f-7382-439e-a256-8a29e65bdc09",
+                "id": "l2",
+                "name": "l2"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "80bf4972-7375-4b51-829d-d8481ace6b45",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "l4_comment-AI",
+          "structureKey": "__blueprints__.multi-tracks.l4_comment-AI",
+          "content": "Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "7e045b7b-58a0-4b23-a6a0-c24352237680",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "noise_1-AI",
+          "structureKey": "__blueprints__.multi-tracks.noise_1-AI",
+          "content": "*Scratch scratch scratch* ! ",
+          "dialogueText": {
+            "en": "",
+            "fr": "*Scratch scratch scratch* ! "
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d9e2f0f-7382-439e-a256-8a29e65bdc09",
+                "id": "l2",
+                "name": "l2"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "9ffa9849-4e64-4982-849a-754ee6b67475",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "noise_2-AI",
+          "structureKey": "__blueprints__.multi-tracks.noise_2-AI",
+          "content": "*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !",
+          "nativeProperties": {
+            "isAsync": true
+          },
+          "dialogueText": {
+            "en": "",
+            "fr": "*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0f16b34e-f9d5-493f-8bbc-8a2d1418f221",
+                "id": "l3",
+                "name": "l3"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "4604c8d0-c4cb-411a-a878-0d498bae868f",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "start_discussion-AI",
+          "isStartBlock": true,
+          "structureKey": "__blueprints__.multi-tracks.start_discussion-AI",
+          "content": "Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret.",
+          "dialogueText": {
+            "en": "",
+            "fr": "Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
         }
       ],
-      "connections": []
+      "connections": [
+        {
+          "id": "cae285e5-4f1a-4877-82db-3c9724a07b1f",
+          "fromId": "4604c8d0-c4cb-411a-a878-0d498bae868f",
+          "toId": "7e045b7b-58a0-4b23-a6a0-c24352237680",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "8827d5bf-1cad-4ea4-8b5e-8a9a44b9ac7c",
+          "fromId": "7e045b7b-58a0-4b23-a6a0-c24352237680",
+          "toId": "be6f47c5-13f3-4c1a-ba43-80d1820067af",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "96649a21-f1e7-445b-a9b1-a101f6bccb64",
+          "fromId": "be6f47c5-13f3-4c1a-ba43-80d1820067af",
+          "toId": "9ffa9849-4e64-4982-849a-754ee6b67475",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "16852f95-6f57-480b-98cb-5f85811ee894",
+          "fromId": "a0f83f4a-271d-468a-821b-a881fe4a6058",
+          "toId": "80bf4972-7375-4b51-829d-d8481ace6b45",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "ec4d41d5-c270-4079-8027-846fc592d089",
+          "fromId": "80bf4972-7375-4b51-829d-d8481ace6b45",
+          "toId": "36f0ba66-dfb8-4084-bf10-370a5e6c671b",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "f993768c-deba-45c9-91e6-af64d35ac5ca",
+          "fromId": "be6f47c5-13f3-4c1a-ba43-80d1820067af",
+          "toId": "a0f83f4a-271d-468a-821b-a881fe4a6058",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "1bad9e0f-c7eb-4571-af8c-289689b94f61",
+          "fromId": "9ffa9849-4e64-4982-849a-754ee6b67475",
+          "toId": "f38215d6-f0ef-4dc1-bee7-7dccf258ee2a",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "1ccabadd-e197-48b3-8636-89e8999f9ebe",
+          "fromId": "4604c8d0-c4cb-411a-a878-0d498bae868f",
+          "toId": "ad8a7573-500c-4038-bfef-a7ed4550ac8e",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        }
+      ]
     }
   ]
 }

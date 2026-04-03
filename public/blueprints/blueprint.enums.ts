@@ -15,8 +15,9 @@ export enum LSDE_SCENES {
   simpleDialogFlow = "268a4c3e-7693-4ce7-8d36-4b0fd2e4a052",
   /**
    * ### Scene: multi-tracks
-   * 1 DIALOG
-   * Entry: `DIALOG-001` ⭐
+   * 9 DIALOG
+   * Entry: `start_discussion-AI` ⭐
+   * - Characters: `l1`, `l2`, `l3`, `l4`
    */
   multiTracks = "511c0cba-f9c8-4b9b-a0d1-91a36241a920",
 }
@@ -115,11 +116,98 @@ export enum LSDE_BLOCKS {
    */
   simpleDialogFlowRabbitWisdomAi = "95144722-b4eb-46c9-ba1e-54434cacda5f",
   /**
-   * ### 🟦[DIALOG] DIALOG-001 ⭐
-   * _"todo"_
+   * ### 🟦[DIALOG] DIALOG-001
+   * _"hey!"_
+   * - Characters: `l3`
    * - Scene: `multi-tracks`
+   * - In: `start_discussion-AI`
    * ---
    * <image url="./_images/dialog.webp" />
    */
   multiTracksDialog001 = "ad8a7573-500c-4038-bfef-a7ed4550ac8e",
+  /**
+   * ### 🟦[DIALOG] DIALOG-009
+   * _"oufff, je pu !!!"_
+   * - Characters: `l3`
+   * - Scene: `multi-tracks`
+   * - In: `noise_2-AI`
+   * ---
+   * <image url="./_images/dialog.webp" />
+   */
+  multiTracksDialog009 = "f38215d6-f0ef-4dc1-bee7-7dccf258ee2a",
+  /**
+   * ### 🟦[DIALOG] final_decision-AI
+   * _"Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus."_
+   * - Characters: `l2`
+   * - Scene: `multi-tracks`
+   * - In: `l4_comment-AI`
+   * ---
+   * <image url="./_images/dialog.webp" />
+   */
+  multiTracksFinalDecisionAi = "36f0ba66-dfb8-4084-bf10-370a5e6c671b",
+  /**
+   * ### 🟦[DIALOG] l1_irritation-AI
+   * _"L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro."_
+   * - Characters: `l1`
+   * - Scene: `multi-tracks`
+   * - In: `l2_response-AI`
+   * - Out: `l4_comment-AI`
+   * ---
+   * <image url="./_images/dialog.webp" />
+   */
+  multiTracksL1IrritationAi = "a0f83f4a-271d-468a-821b-a881fe4a6058",
+  /**
+   * ### 🟦[DIALOG] l2_response-AI
+   * _"Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner."_
+   * - Characters: `l2`
+   * - Scene: `multi-tracks`
+   * - In: `noise_1-AI`
+   * - Out: `noise_2-AI`, `l1_irritation-AI`
+   * ---
+   * <image url="./_images/dialog.webp" />
+   */
+  multiTracksL2ResponseAi = "be6f47c5-13f3-4c1a-ba43-80d1820067af",
+  /**
+   * ### 🟦[DIALOG] l4_comment-AI
+   * _"Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer."_
+   * - Characters: `l4`
+   * - Scene: `multi-tracks`
+   * - In: `l1_irritation-AI`
+   * - Out: `final_decision-AI`
+   * ---
+   * <image url="./_images/dialog.webp" />
+   */
+  multiTracksL4CommentAi = "80bf4972-7375-4b51-829d-d8481ace6b45",
+  /**
+   * ### 🟦[DIALOG] noise_1-AI
+   * _"*Scratch scratch scratch* !"_
+   * - Characters: `l2`
+   * - Scene: `multi-tracks`
+   * - In: `start_discussion-AI`
+   * - Out: `l2_response-AI`
+   * ---
+   * <image url="./_images/dialog.webp" />
+   */
+  multiTracksNoise1Ai = "7e045b7b-58a0-4b23-a6a0-c24352237680",
+  /**
+   * ### 🟦[DIALOG] noise_2-AI
+   * _"*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !"_
+   * - Characters: `l3`
+   * - Scene: `multi-tracks`
+   * - In: `l2_response-AI`
+   * - Out: `DIALOG-009`
+   * ---
+   * <image url="./_images/dialog.webp" />
+   */
+  multiTracksNoise2Ai = "9ffa9849-4e64-4982-849a-754ee6b67475",
+  /**
+   * ### 🟦[DIALOG] start_discussion-AI ⭐
+   * _"Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret."_
+   * - Characters: `l1`
+   * - Scene: `multi-tracks`
+   * - Out: `noise_1-AI`, `DIALOG-001`
+   * ---
+   * <image url="./_images/dialog.webp" />
+   */
+  multiTracksStartDiscussionAi = "4604c8d0-c4cb-411a-a878-0d498bae868f",
 }
