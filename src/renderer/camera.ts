@@ -27,6 +27,13 @@ const FULL_FOLLOW_RADIUS = 400;
 export interface CameraCommandTarget {
   targetX: number;
   targetY: number;
+  // Start position — captured at call time for time-based interpolation.
+  startX: number;
+  startY: number;
+  // Time-based mode: elapsed seconds + total duration.
+  // duration = 0 → fall back to speed-based exponential easing.
+  elapsed: number;
+  duration: number;
   onComplete?: () => void;
 }
 
@@ -101,12 +108,40 @@ export function moveCameraToPosition(
   worldX: number,
   worldY: number,
   onComplete?: () => void,
+  durationSeconds?: number,
 ): void {
   cameraState.commandTarget = {
     targetX: worldX,
     targetY: worldY,
+    startX: cameraState.worldContainer.pivot.x,
+    startY: cameraState.worldContainer.pivot.y,
+    elapsed: 0,
+    duration: durationSeconds ?? 0,
     onComplete,
   };
+}
+
+/**
+ * Temporarily disables camera follow — returns the saved follow target
+ * so it can be restored via resumeCameraFollow() after a command finishes.
+ * This prevents the follow lerp from fighting the camera command in progress.
+ */
+export function pauseCameraFollow(cameraState: CameraState): Sprite | null {
+  const saved = cameraState.followTarget;
+  cameraState.followTarget = null;
+  return saved;
+}
+
+/**
+ * Restores the follow target saved by pauseCameraFollow().
+ * Does NOT snap — the follow lerp will catch up smoothly from the
+ * camera's current position, which is already near the target anyway.
+ */
+export function resumeCameraFollow(
+  cameraState: CameraState,
+  savedTarget: Sprite | null,
+): void {
+  cameraState.followTarget = savedTarget;
 }
 
 export function cancelCameraCommand(cameraState: CameraState): void {
@@ -157,6 +192,14 @@ export function zoomCamera(
   };
 }
 
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+function lerp(start: number, end: number, t: number): number {
+  return start + (end - start) * t;
+}
+
 function snapCameraToFollowTarget(cameraState: CameraState): void {
   if (!cameraState.followTarget) return;
   cameraState.worldContainer.pivot.set(
@@ -174,22 +217,36 @@ function updateCamera(cameraState: CameraState, deltaTime: number): void {
   const halfViewportY = cameraState.pixiApplication.screen.height / 2;
 
   if (cameraState.commandTarget) {
-    const { targetX, targetY, onComplete } = cameraState.commandTarget;
-    const desiredPivotX = targetX;
-    const desiredPivotY = targetY;
+    const cmd = cameraState.commandTarget;
 
-    const deltaX = desiredPivotX - cameraState.worldContainer.pivot.x;
-    const deltaY = desiredPivotY - cameraState.worldContainer.pivot.y;
-    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-    if (distance < COMMAND_ARRIVAL_THRESHOLD) {
-      cameraState.worldContainer.pivot.set(desiredPivotX, desiredPivotY);
-      cameraState.commandTarget = null;
-      onComplete?.();
+    if (cmd.duration > 0) {
+      // Time-based mode: predictable duration, ease-in-out cubic.
+      // Use this when the blueprint specifies a duration param.
+      cmd.elapsed += deltaTime / 60;
+      const progress = Math.min(cmd.elapsed / cmd.duration, 1);
+      const eased = easeInOutCubic(progress);
+      cameraState.worldContainer.pivot.x = lerp(cmd.startX, cmd.targetX, eased);
+      cameraState.worldContainer.pivot.y = lerp(cmd.startY, cmd.targetY, eased);
+      if (progress >= 1) {
+        cameraState.commandTarget = null;
+        cmd.onComplete?.();
+      }
     } else {
-      const lerpAmount = 1 - Math.pow(1 - COMMAND_EASING_SPEED, deltaTime);
-      cameraState.worldContainer.pivot.x += deltaX * lerpAmount;
-      cameraState.worldContainer.pivot.y += deltaY * lerpAmount;
+      // Speed-based mode: exponential ease-out, no fixed duration.
+      // Use this as the default when no duration is specified.
+      const deltaX = cmd.targetX - cameraState.worldContainer.pivot.x;
+      const deltaY = cmd.targetY - cameraState.worldContainer.pivot.y;
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+      if (distance < COMMAND_ARRIVAL_THRESHOLD) {
+        cameraState.worldContainer.pivot.set(cmd.targetX, cmd.targetY);
+        cameraState.commandTarget = null;
+        cmd.onComplete?.();
+      } else {
+        const lerpAmount = 1 - Math.pow(1 - COMMAND_EASING_SPEED, deltaTime);
+        cameraState.worldContainer.pivot.x += deltaX * lerpAmount;
+        cameraState.worldContainer.pivot.y += deltaY * lerpAmount;
+      }
     }
 
     cameraState.worldContainer.position.set(halfViewportX, halfViewportY);

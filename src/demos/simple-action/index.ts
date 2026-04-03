@@ -38,6 +38,7 @@ import {
   type CharacterReference,
 } from "../../game/game-actions";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
+import { registerMovementTicker } from "../../renderer/movement";
 import {
   createDebugPanel,
   registerLiveMonitorTicker,
@@ -96,8 +97,10 @@ function executeAction(
       // In our demo, "labels" are character IDs — the narrative designer
       // placed camera targets on characters. A real game might have named
       // waypoints, but for this demo characters ARE the labels.
+      // params[1] is an optional duration in seconds from the blueprint.
       const targetLabel = action.params[0] as string;
-      return gameActions.moveCameraToCharacter(targetLabel);
+      const durationSeconds = action.params[1] as number | undefined;
+      return gameActions.moveCameraToCharacter(targetLabel, durationSeconds);
     }
 
     case "moveCharacterAt": {
@@ -161,6 +164,21 @@ export async function runScene(
     sceneContext,
   });
 
+  // --- NPC movement tickers ---
+  // The player gets a movement ticker via setupPlayerMovement (with collision).
+  // NPCs need their own ticker so moveCharacterRelative() actually moves them.
+  // Without this, setMovementTarget() sets a target but nothing processes it.
+  for (const [characterId, characterRef] of characters) {
+    if (characterId !== PLAYER_CHARACTER_ID) {
+      const unregisterNpcMovement = registerMovementTicker(
+        pixiApplication,
+        characterRef.sprite,
+        characterRef.movementState,
+      );
+      sceneContext.addDisposable(unregisterNpcMovement);
+    }
+  }
+
   // --- Player movement + collision + camera ---
   setupPlayerMovement({
     pixiApplication,
@@ -187,11 +205,22 @@ export async function runScene(
   sceneContext.addDisposable(() => debugPanelState.pane.dispose());
 
   // ---------------------------------------------------------------------------
-  // Dialogue + action state
+  // Dialogue + action state — multi-track aware
+  // ---------------------------------------------------------------------------
+  //
+  // This scene uses ACTION blocks that can fork the flow into parallel tracks
+  // after a CHOICE (e.g. final_decision-AI → dialog branch + action + dialog).
+  // We use the same Map-based pattern as multi-tracks to handle simultaneous
+  // bubbles from different tracks.
+  //
+  //   activeBubbles           — all currently visible bubbles, keyed by block UUID
+  //   blocksWaitingForInput   — blocks that need a click to advanceg
+  //
+  // A single click broadcasts to ALL waiting blocks at once ("press to continue").
   // ---------------------------------------------------------------------------
 
-  let currentBubbleHandle: BubbleTextHandle | null = null;
-  let currentAdvanceFunction: (() => void) | null = null;
+  const activeBubbles = new Map<string, BubbleTextHandle>();
+  const blocksWaitingForInput = new Map<string, () => void>();
   let currentChoiceBoxContainer: Container | null = null;
 
   const locale = blueprintData.primaryLanguage ?? "fr";
@@ -201,7 +230,7 @@ export async function runScene(
 
     const sceneHandle = dialogueEngine.scene(SCENE_UUID);
 
-    // --- DIALOG handler ---
+    // --- DIALOG handler (multi-track aware) ---
     sceneHandle.onDialog(({ block, context, next }) => {
       const dialogueText = block.dialogueText?.[locale] ?? "";
       const characterId = context.character?.id;
@@ -212,28 +241,73 @@ export async function runScene(
         return;
       }
 
-      currentAdvanceFunction = next;
-
+      // Show the bubble regardless of track type.
       if (characterId && characters.has(characterId)) {
-        currentBubbleHandle = gameActions.showBubbleOnCharacter(
+        const bubbleHandle = gameActions.showBubbleOnCharacter(
           characterId,
           characterName,
           dialogueText,
         );
+        activeBubbles.set(block.uuid, bubbleHandle);
       }
 
-      return () => {
-        if (currentBubbleHandle) {
-          gameActions.removeBubbleFromWorld(currentBubbleHandle);
-          currentBubbleHandle = null;
+      // Decide how to advance based on block properties:
+      //   • isAsync + no waitInput → auto-advance (immediately or after timeout)
+      //   • isAsync + waitInput    → joins the input queue, user click advances it
+      //   • main track (not async) → always waits for user input
+      const isAsyncBlock = block.nativeProperties?.isAsync === true;
+      const timeoutMs = block.nativeProperties?.timeout;
+      const needsUserInput =
+        block.nativeProperties?.waitInput === true || !isAsyncBlock;
+
+      if (needsUserInput) {
+        const blockUuid = block.uuid;
+        blocksWaitingForInput.set(blockUuid, next);
+
+        let autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
+        if (timeoutMs && timeoutMs > 0) {
+          autoAdvanceTimer = setTimeout(() => {
+            if (blocksWaitingForInput.delete(blockUuid)) {
+              next();
+            }
+          }, timeoutMs);
         }
-        currentAdvanceFunction = null;
+
+        return () => {
+          if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+          blocksWaitingForInput.delete(blockUuid);
+          const handle = activeBubbles.get(blockUuid);
+          if (handle) {
+            gameActions.removeBubbleFromWorld(handle);
+            activeBubbles.delete(blockUuid);
+          }
+        };
+      }
+
+      // Async track without waitInput: auto-advance.
+      if (timeoutMs && timeoutMs > 0) {
+        setTimeout(() => next(), timeoutMs);
+      } else {
+        next();
+      }
+
+      const blockUuid = block.uuid;
+      return () => {
+        const handle = activeBubbles.get(blockUuid);
+        if (handle) {
+          gameActions.removeBubbleFromWorld(handle);
+          activeBubbles.delete(blockUuid);
+        }
       };
     });
 
     // --- CHOICE handler ---
     sceneHandle.onChoice(({ context, next }) => {
-      const characterId = context.character?.id;
+      // context.character may be undefined when the CHOICE block follows an
+      // ACTION block — LSDE may not forward the character through non-DIALOG
+      // blocks. Fall back to the player character so the choice box always
+      // appears on-screen regardless of scene flow.
+      const characterId = context.character?.id ?? PLAYER_CHARACTER_ID;
 
       const visibleChoices = context.choices.filter(
         (choice) => choice.visible !== false,
@@ -306,8 +380,8 @@ export async function runScene(
     });
 
     sceneHandle.onExit(() => {
-      currentAdvanceFunction = null;
-      currentBubbleHandle = null;
+      blocksWaitingForInput.clear();
+      activeBubbles.clear();
       currentChoiceBoxContainer = null;
       console.log("[simple-action] Scene completed.");
     });
@@ -327,17 +401,32 @@ export async function runScene(
     onTrigger: startDialogueScene,
   });
 
-  // --- Click: advance dialogue ---
+  // --- Click: broadcast advance to ALL blocks waiting for input ---
+  //
+  // Same pattern as multi-tracks: a single click advances every block in
+  // blocksWaitingForInput at once. If any bubble's typewriter is still
+  // animating, the first click skips all typewriters to full text.
   const onPointerDownForDialogue = () => {
-    if (!currentAdvanceFunction) return;
+    if (blocksWaitingForInput.size === 0) return;
 
-    if (
-      currentBubbleHandle &&
-      !currentBubbleHandle.typewriterState.isComplete
-    ) {
-      currentBubbleHandle.skipTypewriter();
-    } else {
-      currentAdvanceFunction();
+    // First pass: if any waiting bubble is still typing, skip them all.
+    for (const blockUuid of blocksWaitingForInput.keys()) {
+      const bubbleHandle = activeBubbles.get(blockUuid);
+      if (bubbleHandle && !bubbleHandle.typewriterState.isComplete) {
+        for (const uuid of blocksWaitingForInput.keys()) {
+          activeBubbles.get(uuid)?.skipTypewriter();
+        }
+        return;
+      }
+    }
+
+    // Second pass: advance every waiting block at once.
+    // Snapshot first, then clear, then call advance() — calling advance()
+    // may synchronously dispatch new blocks that add fresh entries.
+    const toAdvance = [...blocksWaitingForInput.values()];
+    blocksWaitingForInput.clear();
+    for (const advance of toAdvance) {
+      advance();
     }
   };
 

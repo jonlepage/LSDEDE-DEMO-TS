@@ -11,6 +11,8 @@ import {
   shakeCamera,
   zoomCamera,
   FOLLOW_VERTICAL_OFFSET,
+  pauseCameraFollow,
+  resumeCameraFollow,
 } from "../renderer/camera";
 import { setMovementTarget, type MovementState } from "../renderer/movement";
 import {
@@ -45,8 +47,15 @@ export interface GameActionFacadeDependencies {
 }
 
 export interface GameActionFacade {
-  moveCameraToPosition(worldX: number, worldY: number): Promise<void>;
-  moveCameraToCharacter(characterId: string): Promise<void>;
+  moveCameraToPosition(
+    worldX: number,
+    worldY: number,
+    durationSeconds?: number,
+  ): Promise<void>;
+  moveCameraToCharacter(
+    characterId: string,
+    durationSeconds?: number,
+  ): Promise<void>;
   shakeCamera(intensity?: number, durationInSeconds?: number): Promise<void>;
   zoomCamera(targetScale: number): Promise<void>;
   moveCharacterToPosition(
@@ -100,23 +109,43 @@ export function createGameActionFacade(
   }
 
   return {
-    moveCameraToPosition(worldX: number, worldY: number): Promise<void> {
-      return new Promise((resolve) => {
-        moveCameraToPosition(cameraState, worldX, worldY, resolve);
+    moveCameraToPosition(
+      worldX: number,
+      worldY: number,
+      durationSeconds?: number,
+    ): Promise<void> {
+      const savedFollowTarget = pauseCameraFollow(cameraState);
+      return new Promise<void>((resolve) => {
+        moveCameraToPosition(
+          cameraState,
+          worldX,
+          worldY,
+          () => resolve(),
+          durationSeconds,
+        );
+      }).finally(() => {
+        resumeCameraFollow(cameraState, savedFollowTarget);
       });
     },
 
-    moveCameraToCharacter(characterId: string): Promise<void> {
+    moveCameraToCharacter(
+      characterId: string,
+      durationSeconds?: number,
+    ): Promise<void> {
       const character = findCharacterOrThrow(characterId);
-      return new Promise((resolve) => {
+      const savedFollowTarget = pauseCameraFollow(cameraState);
+      return new Promise<void>((resolve) => {
         // Use the same vertical offset as follow mode so the character
         // appears at the same screen position whether commanded or followed.
         moveCameraToPosition(
           cameraState,
           character.sprite.x,
           character.sprite.y + FOLLOW_VERTICAL_OFFSET,
-          resolve,
+          () => resolve(),
+          durationSeconds,
         );
+      }).finally(() => {
+        resumeCameraFollow(cameraState, savedFollowTarget);
       });
     },
 
@@ -193,17 +222,31 @@ export function createGameActionFacade(
       positionBubbleAboveTarget(
         bubbleHandle.container,
         character.sprite.x,
-        character.sprite.y,
+        character.sprite.y - character.sprite.height,
       );
+      bubbleHandle.container.zIndex = character.sprite.y + 1;
 
-      // Follow the character sprite each frame so the bubble moves with it.
+      // Follow the character sprite each frame with easing so the bubble
+      // lags slightly behind instead of snapping to the sprite instantly.
+      const BUBBLE_FOLLOW_LERP = 0.15;
+      let smoothedTargetX = character.sprite.x;
+      let smoothedTargetY = character.sprite.y - character.sprite.height / 2;
+
       const followTicker = () => {
         if (!bubbleHandle.container.destroyed) {
+          const spriteTargetX = character.sprite.x;
+          const spriteTargetY =
+            character.sprite.y - character.sprite.height / 2;
+          smoothedTargetX +=
+            (spriteTargetX - smoothedTargetX) * BUBBLE_FOLLOW_LERP;
+          smoothedTargetY +=
+            (spriteTargetY - smoothedTargetY) * BUBBLE_FOLLOW_LERP;
           positionBubbleAboveTarget(
             bubbleHandle.container,
-            character.sprite.x,
-            character.sprite.y,
+            smoothedTargetX,
+            smoothedTargetY,
           );
+          bubbleHandle.container.zIndex = character.sprite.y + 1;
         }
       };
       pixiApplication.ticker.add(followTicker);
@@ -247,6 +290,7 @@ export function createGameActionFacade(
           character.sprite.x,
           character.sprite.y,
         );
+        choiceBoxContainer.zIndex = character.sprite.y + 1;
       };
       pixiApplication.ticker.add(followTicker);
 

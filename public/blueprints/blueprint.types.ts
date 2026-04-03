@@ -33,7 +33,7 @@
 export type lsdeCharacter = 'l1' | 'l2' | 'l3' | 'l4' | 'boss';
 
 /** Action signature IDs */
-export type lsdeActionId = 'moveCameraToLabel' | 'shakeCamera' | 'moveCharacterAt';
+export type lsdeActionId = 'moveCameraToLabel' | 'moveCharacterAt';
 
 /**
  * Union of all block types present in this export.

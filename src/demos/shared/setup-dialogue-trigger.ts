@@ -34,7 +34,8 @@ export function setupDialogueTrigger(
     text: "👇 click me!",
     style: { fontSize: 12, fill: "#ffffff" },
   });
-  interactionHint.anchor.set(0.5, 2.5);
+  interactionHint.anchor.set(0.5, 1);
+  interactionHint.position.set(0, -(triggerNpcReference.sprite.height / 2 + 4));
   triggerNpcReference.sprite.addChild(interactionHint);
 
   function isPlayerNearTriggerNpc(): boolean {

@@ -29,7 +29,7 @@ export enum LSDE_SCENES {
 	simpleChoices = '169f7c4c-c3b1-4444-879c-060801cdcb1d',
 	/**
 	 * ### Scene: simple-action
-	 * 6 ACTION, 1 CHOICE, 8 DIALOG
+	 * 7 ACTION, 1 CHOICE, 10 DIALOG
 	 * Entry: `l1_alert-AI` ⭐
 	 * - Characters: `boss`, `l1`, `l4`
 	 */
@@ -346,7 +346,7 @@ export enum LSDE_BLOCKS {
 	 * ### 🟧[ACTION] ACTION-006
 	 * - Scene: `simple-action`
 	 * - In: `focus_boss-AI`
-	 * `shakeCamera`(16, 2)
+	 * `7a8db8b4-8874-4bdc-ae0d-9e82f4da0828`(16, 2)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */
@@ -355,12 +355,22 @@ export enum LSDE_BLOCKS {
 	 * ### 🟧[ACTION] ACTION-006
 	 * - Scene: `simple-action`
 	 * - In: `final_decision-AI`
-	 * `shakeCamera`(4, 2)
-	 * `moveCharacterAt`(l1, -300)
+	 * `7a8db8b4-8874-4bdc-ae0d-9e82f4da0828`(4, 2)
+	 * `moveCharacterAt`(l1, -800)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */
 	simpleActionAction0062 = 'dfa55271-2ed5-469c-9eaf-a05a46d7b254',
+	/**
+	 * ### 🟧[ACTION] ACTION-007
+	 * - Scene: `simple-action`
+	 * - In: `l4_flee-AI`
+	 * - Out: `DIALOG-009`, `DIALOG-010`
+	 * `moveCameraToLabel`(l1, 1.3)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionAction007 = 'b50008c7-348b-4bf4-b7cd-cec16ae727d0',
 	/**
 	 * ### 🟧[ACTION] focus_boss-AI
 	 * - Scene: `simple-action`
@@ -386,7 +396,7 @@ export enum LSDE_BLOCKS {
 	 * - Scene: `simple-action`
 	 * - In: `l1_alert-AI`
 	 * - Out: `l4_terror-AI`
-	 * `shakeCamera`(5, 0.3)
+	 * `7a8db8b4-8874-4bdc-ae0d-9e82f4da0828`(5, 0.3)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */
@@ -396,7 +406,7 @@ export enum LSDE_BLOCKS {
 	 * - Scene: `simple-action`
 	 * - In: `l4_terror-AI`
 	 * - Out: `focus_boss-AI`
-	 * `shakeCamera`(8, 0.4)
+	 * `7a8db8b4-8874-4bdc-ae0d-9e82f4da0828`(8, 0.4)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */
@@ -427,7 +437,7 @@ export enum LSDE_BLOCKS {
 	 * _"Le destin de la prairie se jouera ici, dans la poussière."_
 	 * - Characters: `l1`
 	 * - Scene: `simple-action`
-	 * - In: `l1_brave-AI`, `l4_flee-AI`
+	 * - In: `l1_brave-AI`
 	 * ---
 	 * <image url="./_images/dialog.webp" />
 	 */
@@ -454,6 +464,26 @@ export enum LSDE_BLOCKS {
 	 */
 	simpleActionDialog008 = '42c00a7a-3954-4e07-9e9e-9254d3a8df64',
 	/**
+	 * ### 🟦[DIALOG] DIALOG-009
+	 * _"J'aime les carotte mais pas a ce points !"_
+	 * - Characters: `l1`
+	 * - Scene: `simple-action`
+	 * - In: `ACTION-007`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionDialog009 = '3c3eb409-7bae-4c79-a1de-637384e51494',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-010
+	 * _"Tes un gros lapin mouillé l1 ..... traitre !"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-action`
+	 * - In: `ACTION-007`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionDialog010 = 'da5a321e-10b2-44b6-8632-39b737d65a5c',
+	/**
 	 * ### 🟦[DIALOG] l1_alert-AI ⭐
 	 * _"Est-ce que tu sens ça ? La terre se déchire sous ses pas..."_
 	 * - Characters: `l1`
@@ -476,11 +506,11 @@ export enum LSDE_BLOCKS {
 	simpleActionL1BraveAi = '3af36f94-0b76-40dc-9681-1bb360a03897',
 	/**
 	 * ### 🟦[DIALOG] l4_flee-AI
-	 * _"Désolé l1, mais je tiens trop à mes oreilles pour finir en purée !"_
+	 * _"Non mais tu me laisses seul !!!"_
 	 * - Characters: `l4`
 	 * - Scene: `simple-action`
 	 * - In: `final_decision-AI`
-	 * - Out: `climax_moment-AI`
+	 * - Out: `ACTION-007`
 	 * ---
 	 * <image url="./_images/dialog.webp" />
 	 */
