@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T04:53:12.152Z",
+  "exportDate": "2026-04-03T05:03:20.181Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -26,6 +26,10 @@
               "label": "l4"
             }
           ]
+        },
+        {
+          "label": "duration",
+          "type": "number"
         }
       ]
     },
@@ -1040,7 +1044,7 @@
               "signatureUuid": "7a8db8b4-8874-4bdc-ae0d-9e82f4da0828",
               "actionId": "shakeCamera",
               "params": [
-                12,
+                16,
                 2
               ]
             }
@@ -1086,6 +1090,9 @@
           "type": "ACTION",
           "properties": [],
           "label": "focus_boss-AI",
+          "nativeProperties": {
+            "delay": 500
+          },
           "note": "moveCameraToLabel(boss)",
           "actions": [
             {
@@ -1093,7 +1100,8 @@
               "signatureUuid": "060dfc91-5cec-4777-9460-84ae00f404b7",
               "actionId": "moveCameraToLabel",
               "params": [
-                "boss"
+                "boss",
+                1
               ]
             }
           ],
@@ -1113,7 +1121,8 @@
               "signatureUuid": "060dfc91-5cec-4777-9460-84ae00f404b7",
               "actionId": "moveCameraToLabel",
               "params": [
-                "l4"
+                "l4",
+                0.3
               ]
             }
           ],
@@ -1241,10 +1250,10 @@
           "properties": [],
           "label": "DIALOG-007",
           "structureKey": "__blueprints__.simple-action.DIALOG-007",
-          "content": "RWMMMMrggggg !🐰🐰🐰",
+          "content": "mmmmm !🐰🐰🐰",
           "dialogueText": {
             "en": "",
-            "fr": "RWMMMMrggggg !🐰🐰🐰"
+            "fr": "mmmmm !🐰🐰🐰"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1367,6 +1376,9 @@
           "label": "l4_terror-AI",
           "structureKey": "__blueprints__.simple-action.l4_terror-AI",
           "content": "C'est beaucoup trop gros pour être un simple lapin, l1 !",
+          "nativeProperties": {
+            "delay": 500
+          },
           "dialogueText": {
             "en": "",
             "fr": "C'est beaucoup trop gros pour être un simple lapin, l1 !"

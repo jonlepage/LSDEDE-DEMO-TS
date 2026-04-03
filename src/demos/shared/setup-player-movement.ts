@@ -9,7 +9,7 @@ import {
   registerMovementTicker,
 } from "../../renderer/movement";
 import { createCollidable, resolveCollisions } from "../../renderer/collision";
-import { setCameraFollowTarget } from "../../renderer/camera";
+import { setCameraFollowTarget, enableDepthSorting } from "../../renderer/camera";
 import type { CameraState } from "../../renderer/camera";
 import type { CollidableSprite } from "../../renderer/collision";
 import type { CharacterReference } from "../../game/game-actions";
@@ -57,6 +57,7 @@ export function setupPlayerMovement(
   sceneContext.addDisposable(unregisterMovement);
 
   setCameraFollowTarget(cameraState, playerReference.sprite);
+  enableDepthSorting(cameraState);
 
   const onPointerDown = (event: { global: { x: number; y: number } }) => {
     const worldPosition = worldContainer.toLocal(event.global);

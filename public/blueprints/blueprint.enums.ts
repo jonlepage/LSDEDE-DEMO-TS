@@ -346,7 +346,7 @@ export enum LSDE_BLOCKS {
 	 * ### 🟧[ACTION] ACTION-006
 	 * - Scene: `simple-action`
 	 * - In: `focus_boss-AI`
-	 * `shakeCamera`(12, 2)
+	 * `shakeCamera`(16, 2)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */
@@ -366,7 +366,7 @@ export enum LSDE_BLOCKS {
 	 * - Scene: `simple-action`
 	 * - In: `shake_mid-AI`
 	 * - Out: `boss_roar-AI`, `ACTION-006`
-	 * `moveCameraToLabel`(boss)
+	 * `moveCameraToLabel`(boss, 1)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */
@@ -376,7 +376,7 @@ export enum LSDE_BLOCKS {
 	 * - Scene: `simple-action`
 	 * - In: `DIALOG-007`
 	 * - Out: `final_decision-AI`
-	 * `moveCameraToLabel`(l4)
+	 * `moveCameraToLabel`(l4, 0.3)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */
@@ -434,7 +434,7 @@ export enum LSDE_BLOCKS {
 	simpleActionClimaxMomentAi = 'b22c8172-a63d-486b-b07d-37ab1832fee6',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-007
-	 * _"RWMMMMrggggg !🐰🐰🐰"_
+	 * _"mmmmm !🐰🐰🐰"_
 	 * - Characters: `boss`
 	 * - Scene: `simple-action`
 	 * - In: `boss_roar-AI`

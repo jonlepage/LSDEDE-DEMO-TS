@@ -48,11 +48,13 @@ export interface CameraState {
   commandTarget: CameraCommandTarget | null;
   shakeState: CameraShakeState | null;
   zoomTarget: CameraZoomTarget | null;
+  depthSortingEnabled: boolean;
 }
 
 export function createCamera(pixiApplication: Application): CameraState {
   const worldContainer = new Container();
   worldContainer.label = "camera-world";
+  worldContainer.sortableChildren = true;
   pixiApplication.stage.addChild(worldContainer);
 
   const cameraState: CameraState = {
@@ -63,6 +65,7 @@ export function createCamera(pixiApplication: Application): CameraState {
     commandTarget: null,
     shakeState: null,
     zoomTarget: null,
+    depthSortingEnabled: false,
   };
 
   pixiApplication.ticker.add((time) => {
@@ -133,6 +136,10 @@ export function shakeCamera(
     intensity,
     onComplete,
   };
+}
+
+export function enableDepthSorting(cameraState: CameraState): void {
+  cameraState.depthSortingEnabled = true;
 }
 
 export function zoomCamera(
@@ -228,6 +235,13 @@ function updateCamera(cameraState: CameraState, deltaTime: number): void {
         (Math.random() - 0.5) * shakeIntensity * 2;
       cameraState.worldContainer.position.y +=
         (Math.random() - 0.5) * shakeIntensity * 2;
+    }
+  }
+
+  // --- Depth sort — sprites further down (higher y) render in front ---
+  if (cameraState.depthSortingEnabled) {
+    for (const child of cameraState.worldContainer.children) {
+      child.zIndex = child.y;
     }
   }
 
