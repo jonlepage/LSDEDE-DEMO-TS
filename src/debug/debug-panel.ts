@@ -193,21 +193,6 @@ export function refreshGameStoreBindings(
       });
     }
   }
-
-  if (gameStore.characters.size > 0) {
-    const charactersFolder = folder.addFolder({
-      title: "Characters",
-      expanded: false,
-    });
-    for (const [characterId, character] of gameStore.characters) {
-      charactersFolder.addBlade({
-        view: "text",
-        label: characterId,
-        value: character.displayName,
-        parse: (value: string) => value,
-      });
-    }
-  }
 }
 
 export function disposeDebugPanel(debugPanelState: DebugPanelState): void {

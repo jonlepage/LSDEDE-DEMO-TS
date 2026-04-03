@@ -21,5 +21,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "public/blueprints/blueprint.enums.ts",
+    "public/blueprints/blueprint.types.ts"
+  ]
 }

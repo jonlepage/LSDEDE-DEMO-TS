@@ -21,12 +21,13 @@ import {
   registerLiveMonitorTicker,
   registerActionButtons,
 } from "../../debug/debug-panel";
-import { createGameStore } from "../../game/game-store";
+import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
+import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 
-const PLAYER_CHARACTER_ID = "l4";
-const TRIGGER_NPC_CHARACTER_ID = "l1";
-const SCENE_UUID = "268a4c3e-7693-4ce7-8d36-4b0fd2e4a052";
+const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
+const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
+const SCENE_UUID = LSDE_SCENES.simpleDialogFlow;
 
 export interface SimpleDialogFlowDependencies {
   readonly pixiApplication: Application;
@@ -59,29 +60,29 @@ export async function runScene(
   const { characters, playerReference, npcObstacles } = await setupCharacters({
     characterConfigurations: [
       {
-        characterId: "l1",
-        displayName: "l1",
+        characterId: GAME_ACTORS.l1,
+        displayName: GAME_ACTORS.l1,
         tintColor: 0xff6b6b,
         startX: screenCenterX - 200,
         startY: screenCenterY - 60,
       },
       {
-        characterId: "l2",
-        displayName: "l2",
+        characterId: GAME_ACTORS.l2,
+        displayName: GAME_ACTORS.l2,
         tintColor: 0x4ecdc4,
         startX: screenCenterX - 50,
         startY: screenCenterY - 20,
       },
       {
-        characterId: "l3",
-        displayName: "l3",
+        characterId: GAME_ACTORS.l3,
+        displayName: GAME_ACTORS.l3,
         tintColor: 0xffe66d,
         startX: screenCenterX + 100,
         startY: screenCenterY + 20,
       },
       {
-        characterId: "l4",
-        displayName: "l4",
+        characterId: GAME_ACTORS.l4,
+        displayName: GAME_ACTORS.l4,
         tintColor: 0xffffff,
         startX: screenCenterX,
         startY: screenCenterY + 80,

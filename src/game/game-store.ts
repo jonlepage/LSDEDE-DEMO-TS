@@ -1,15 +1,22 @@
 /**
  * Simulated game state — a minimal RPG-like store for demo purposes.
- * Tracks characters, game variables (switches/flags), and a basic inventory.
+ * Tracks game variables (switches/flags) and a basic inventory.
  * Inspired by RPG Maker's data model, kept intentionally simple.
  */
 
-export interface GameCharacter {
-  readonly characterId: string;
-  readonly displayName: string;
-  readonly spriteColor: string;
-  readonly portraitPath?: string;
-}
+import type { lsdeCharacter } from "../../public/blueprints/blueprint.types";
+
+/**
+ * Type-safe character ID dictionary.
+ * Guaranteed by `satisfies` to cover every character defined in the LSDE blueprint.
+ * If a character is added in LSDE and re-exported, tsc will error until it's added here.
+ */
+export const GAME_ACTORS = {
+  l1: "l1",
+  l2: "l2",
+  l3: "l3",
+  l4: "l4",
+} as const satisfies Record<lsdeCharacter, lsdeCharacter>;
 
 export interface GameItem {
   readonly itemId: string;
@@ -18,28 +25,17 @@ export interface GameItem {
 }
 
 export interface GameStore {
-  readonly characters: Map<string, GameCharacter>;
   readonly variables: Map<string, number>;
   readonly switches: Map<string, boolean>;
   readonly inventory: Map<string, GameItem>;
 }
 
 export function createGameStore(): GameStore {
-  const store: GameStore = {
-    characters: new Map(),
+  return {
     variables: new Map(),
     switches: new Map(),
     inventory: new Map(),
   };
-
-  return store;
-}
-
-export function registerCharacter(
-  gameStore: GameStore,
-  character: GameCharacter,
-): void {
-  gameStore.characters.set(character.characterId, character);
 }
 
 export function setGameVariable(
