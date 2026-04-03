@@ -32,6 +32,7 @@ export interface GameStore {
   readonly variables: Map<string, number>;
   readonly switches: Map<string, boolean>;
   readonly inventory: Map<string, GameItem>;
+  readonly party: Map<string, boolean>;
 }
 
 export function createGameStore(): GameStore {
@@ -39,6 +40,7 @@ export function createGameStore(): GameStore {
     variables: new Map(),
     switches: new Map(),
     inventory: new Map(),
+    party: new Map(),
   };
 }
 
@@ -94,6 +96,20 @@ export function getInventoryItemQuantity(
   itemId: string,
 ): number {
   return gameStore.inventory.get(itemId)?.quantity ?? 0;
+}
+
+export function addPartyMember(
+  gameStore: GameStore,
+  characterId: string,
+): void {
+  gameStore.party.set(characterId, true);
+}
+
+export function isPartyMember(
+  gameStore: GameStore,
+  characterId: string,
+): boolean {
+  return gameStore.party.get(characterId) ?? false;
 }
 
 export function removeItemFromInventory(

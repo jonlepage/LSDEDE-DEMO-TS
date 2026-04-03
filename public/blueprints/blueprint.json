@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T08:01:03.791Z",
+  "exportDate": "2026-04-03T08:29:28.111Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -1988,6 +1988,26 @@
       "entryBlockId": "90a8c0a2-cb0e-4900-b974-c59d470f296e",
       "blocks": [
         {
+          "uuid": "48e82cd7-1edb-4d11-9a64-8f28c7c0a0a0",
+          "type": "ACTION",
+          "properties": [],
+          "label": "ACTION-001",
+          "actions": [
+            {
+              "uuid": "82399607-994b-4ce6-90cd-8a5e60ba1b4f",
+              "signatureUuid": "7404e9c3-2cb3-4a55-92ce-ddb6de07f29f",
+              "actionId": "shakeCamera",
+              "params": [
+                3,
+                1
+              ]
+            }
+          ],
+          "parentLabels": [
+            "__blueprints__"
+          ]
+        },
+        {
           "uuid": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
           "type": "CONDITION",
           "properties": [],
@@ -2050,6 +2070,77 @@
                 "key": "party.l3",
                 "chain": "|",
                 "operator": "=",
+                "value": "true"
+              }
+            ]
+          ],
+          "parentLabels": [
+            "__blueprints__"
+          ]
+        },
+        {
+          "uuid": "164da884-2cd2-4696-b4e0-219bc951cf45",
+          "type": "CONDITION",
+          "properties": [],
+          "label": "CONDITION-003",
+          "conditions": [
+            [
+              {
+                "uuid": "dc0d535d-edbf-4983-a67a-e87480728d53",
+                "key": "party.l1",
+                "operator": "=",
+                "value": "true"
+              },
+              {
+                "uuid": "842a1b36-cd2b-47ba-b8d3-fbad86e9f57e",
+                "key": "party.l2",
+                "chain": "&",
+                "operator": "=",
+                "value": "true"
+              },
+              {
+                "uuid": "132f78c9-5d40-43b6-b70b-f60a5bc19781",
+                "key": "party.l3",
+                "chain": "&",
+                "operator": "=",
+                "value": "true"
+              }
+            ]
+          ],
+          "parentLabels": [
+            "__blueprints__"
+          ]
+        },
+        {
+          "uuid": "a77ac2c9-ade2-4a5b-b187-4ec81140b885",
+          "type": "CONDITION",
+          "properties": [],
+          "label": "CONDITION-004",
+          "nativeProperties": {
+            "enableDispatcher": true
+          },
+          "conditions": [
+            [
+              {
+                "uuid": "4c8febb6-bca5-44d0-b046-471275074206",
+                "key": "party.l1",
+                "operator": "!=",
+                "value": "true"
+              }
+            ],
+            [
+              {
+                "uuid": "37c86bbc-cd4e-493d-ad3b-db285ad61c16",
+                "key": "party.l2",
+                "operator": "!=",
+                "value": "true"
+              }
+            ],
+            [
+              {
+                "uuid": "b5534ad7-e566-4def-a8c2-3b143d884838",
+                "key": "party.l3",
+                "operator": "!=",
                 "value": "true"
               }
             ]
@@ -2209,6 +2300,118 @@
               }
             ]
           }
+        },
+        {
+          "uuid": "49711c01-57d5-4776-8bad-6e5b426eb1e8",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-007",
+          "structureKey": "__blueprints__.condition-dispatch.DIALOG-007",
+          "content": "ca marcher !",
+          "dialogueText": {
+            "en": "",
+            "fr": "ca marcher !"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "9441ad01-6402-4788-a3e4-0cbc2d2701a3",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-008",
+          "structureKey": "__blueprints__.condition-dispatch.DIALOG-008",
+          "content": "il ce passe rien ! il manque une incantation !? ....",
+          "dialogueText": {
+            "en": "",
+            "fr": "il ce passe rien ! il manque une incantation !? ...."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "19d77434-b74a-4678-8cd4-859d18c4ec30",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-009",
+          "structureKey": "__blueprints__.condition-dispatch.DIALOG-009",
+          "content": "Oui moi",
+          "nativeProperties": {
+            "isAsync": true
+          },
+          "dialogueText": {
+            "en": "",
+            "fr": "Oui moi"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              },
+              {
+                "uuid": "0d9e2f0f-7382-439e-a256-8a29e65bdc09",
+                "id": "l2",
+                "name": "l2"
+              },
+              {
+                "uuid": "0f16b34e-f9d5-493f-8bbc-8a2d1418f221",
+                "id": "l3",
+                "name": "l3"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "601c1889-5ba1-4da8-8076-f5bc6164c7b5",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-010",
+          "structureKey": "__blueprints__.condition-dispatch.DIALOG-010",
+          "content": "Ho !",
+          "nativeProperties": {
+            "delay": 1000
+          },
+          "dialogueText": {
+            "en": "",
+            "fr": "Ho !"
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "60383860-3694-4f1e-9ae4-c1b5bdc9d842",
+                "id": "l4",
+                "name": "l4"
+              }
+            ]
+          }
         }
       ],
       "connections": [
@@ -2264,6 +2467,78 @@
           "id": "c37c7448-8439-4a13-89b4-e52bb78d60ed",
           "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
           "toId": "f1de0bf3-65d8-4a0f-a26e-31562f349396",
+          "fromPort": "default",
+          "toPort": "in",
+          "fromPortIndex": 3
+        },
+        {
+          "id": "fcb07f8e-fb2e-4e03-a14f-285dfbae68f2",
+          "fromId": "f1de0bf3-65d8-4a0f-a26e-31562f349396",
+          "toId": "164da884-2cd2-4696-b4e0-219bc951cf45",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "17f89cd1-9ea2-45be-8d38-4360b9eb3efc",
+          "fromId": "164da884-2cd2-4696-b4e0-219bc951cf45",
+          "toId": "48e82cd7-1edb-4d11-9a64-8f28c7c0a0a0",
+          "fromPort": "true",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "58c75a99-30f0-4984-867f-31badebdc0c4",
+          "fromId": "48e82cd7-1edb-4d11-9a64-8f28c7c0a0a0",
+          "toId": "49711c01-57d5-4776-8bad-6e5b426eb1e8",
+          "fromPort": "then",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "ab537c00-5829-4e40-928b-9c97a4a377f3",
+          "fromId": "164da884-2cd2-4696-b4e0-219bc951cf45",
+          "toId": "9441ad01-6402-4788-a3e4-0cbc2d2701a3",
+          "fromPort": "false",
+          "toPort": "in",
+          "fromPortIndex": 1
+        },
+        {
+          "id": "45da4922-9356-4f8f-9d23-ec02f5fc1cdf",
+          "fromId": "9441ad01-6402-4788-a3e4-0cbc2d2701a3",
+          "toId": "a77ac2c9-ade2-4a5b-b187-4ec81140b885",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "959e6d3e-6176-4c82-b5ae-93293dee419b",
+          "fromId": "a77ac2c9-ade2-4a5b-b187-4ec81140b885",
+          "toId": "19d77434-b74a-4678-8cd4-859d18c4ec30",
+          "fromPort": "case_0",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "d18e3094-64bc-492a-9f90-d7b9dbe16991",
+          "fromId": "a77ac2c9-ade2-4a5b-b187-4ec81140b885",
+          "toId": "19d77434-b74a-4678-8cd4-859d18c4ec30",
+          "fromPort": "case_1",
+          "toPort": "in",
+          "fromPortIndex": 1
+        },
+        {
+          "id": "7b37494e-ea43-426e-aea4-a0a3efb644fd",
+          "fromId": "a77ac2c9-ade2-4a5b-b187-4ec81140b885",
+          "toId": "19d77434-b74a-4678-8cd4-859d18c4ec30",
+          "fromPort": "case_2",
+          "toPort": "in",
+          "fromPortIndex": 2
+        },
+        {
+          "id": "38af1428-0dd1-44fc-a83c-2ab9c9acafc4",
+          "fromId": "a77ac2c9-ade2-4a5b-b187-4ec81140b885",
+          "toId": "601c1889-5ba1-4da8-8076-f5bc6164c7b5",
           "fromPort": "default",
           "toPort": "in",
           "fromPortIndex": 3

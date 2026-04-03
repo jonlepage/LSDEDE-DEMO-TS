@@ -37,6 +37,8 @@ import {
   addItemToInventory,
   removeItemFromInventory,
   getInventoryItemQuantity,
+  addPartyMember,
+  isPartyMember,
   type GameStore,
 } from "./game-store";
 
@@ -99,6 +101,8 @@ export interface GameActionFacade {
   addItem(itemId: string, displayName: string, quantity?: number): void;
   removeItem(itemId: string, quantity?: number): void;
   getItemQuantity(itemId: string): number;
+  addToParty(characterId: string): void;
+  isInParty(characterId: string): boolean;
 }
 
 export function createGameActionFacade(
@@ -335,6 +339,14 @@ export function createGameActionFacade(
 
     getItemQuantity(itemId: string): number {
       return getInventoryItemQuantity(gameStore, itemId);
+    },
+
+    addToParty(characterId: string): void {
+      addPartyMember(gameStore, characterId);
+    },
+
+    isInParty(characterId: string): boolean {
+      return isPartyMember(gameStore, characterId);
     },
   };
 }

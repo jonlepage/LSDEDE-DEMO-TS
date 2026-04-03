@@ -6,48 +6,48 @@
  * Each value maps to the scene's UUID — stable even if the scene is renamed.
  */
 export enum LSDE_SCENES {
-  /**
-   * ### Scene: simple-dialog-flow
-   * 8 DIALOG
-   * Entry: `rabbit_rumor-AI` ⭐
-   * - Characters: `l1`, `l2`, `l3`, `l4`
-   */
-  simpleDialogFlow = "268a4c3e-7693-4ce7-8d36-4b0fd2e4a052",
-  /**
-   * ### Scene: multi-tracks
-   * 10 DIALOG
-   * Entry: `start_discussion-AI` ⭐
-   * - Characters: `l1`, `l2`, `l3`, `l4`
-   */
-  multiTracks = "511c0cba-f9c8-4b9b-a0d1-91a36241a920",
-  /**
-   * ### Scene: simple-choices
-   * 1 CHOICE, 9 DIALOG
-   * Entry: `l1_dramatic_intro-AI` ⭐
-   * - Characters: `l1`, `l4`
-   */
-  simpleChoices = "169f7c4c-c3b1-4444-879c-060801cdcb1d",
-  /**
-   * ### Scene: simple-action
-   * 8 ACTION, 1 CHOICE, 11 DIALOG
-   * Entry: `l1_alert-AI` ⭐
-   * - Characters: `boss`, `l1`, `l4`
-   */
-  simpleAction = "7e6e24b7-c08c-452c-9e11-0689d8c17b80",
-  /**
-   * ### Scene: simple-condition
-   * 1 CONDITION, 7 DIALOG
-   * Entry: `l1_lost_carrot_distress-AI` ⭐
-   * - Characters: `l1`, `l4`
-   */
-  simpleCondition = "a037a98b-ffec-40d3-8092-4eedb9857501",
-  /**
-   * ### Scene: condition-dispatch
-   * 2 CONDITION, 6 DIALOG
-   * Entry: `DIALOG-001` ⭐
-   * - Characters: `l1`, `l3`, `l4`
-   */
-  conditionDispatch = "c2e75db2-85c7-421b-91ab-f7ea1ea45284",
+	/**
+	 * ### Scene: simple-dialog-flow
+	 * 8 DIALOG
+	 * Entry: `rabbit_rumor-AI` ⭐
+	 * - Characters: `l1`, `l2`, `l3`, `l4`
+	 */
+	simpleDialogFlow = '268a4c3e-7693-4ce7-8d36-4b0fd2e4a052',
+	/**
+	 * ### Scene: multi-tracks
+	 * 10 DIALOG
+	 * Entry: `start_discussion-AI` ⭐
+	 * - Characters: `l1`, `l2`, `l3`, `l4`
+	 */
+	multiTracks = '511c0cba-f9c8-4b9b-a0d1-91a36241a920',
+	/**
+	 * ### Scene: simple-choices
+	 * 1 CHOICE, 9 DIALOG
+	 * Entry: `l1_dramatic_intro-AI` ⭐
+	 * - Characters: `l1`, `l4`
+	 */
+	simpleChoices = '169f7c4c-c3b1-4444-879c-060801cdcb1d',
+	/**
+	 * ### Scene: simple-action
+	 * 8 ACTION, 1 CHOICE, 11 DIALOG
+	 * Entry: `l1_alert-AI` ⭐
+	 * - Characters: `boss`, `l1`, `l4`
+	 */
+	simpleAction = '7e6e24b7-c08c-452c-9e11-0689d8c17b80',
+	/**
+	 * ### Scene: simple-condition
+	 * 1 CONDITION, 7 DIALOG
+	 * Entry: `l1_lost_carrot_distress-AI` ⭐
+	 * - Characters: `l1`, `l4`
+	 */
+	simpleCondition = 'a037a98b-ffec-40d3-8092-4eedb9857501',
+	/**
+	 * ### Scene: condition-dispatch
+	 * 1 ACTION, 4 CONDITION, 10 DIALOG
+	 * Entry: `DIALOG-001` ⭐
+	 * - Characters: `l1`, `l2`, `l3`, `l4`
+	 */
+	conditionDispatch = 'c2e75db2-85c7-421b-91ab-f7ea1ea45284',
 }
 
 /**
@@ -57,679 +57,758 @@ export enum LSDE_SCENES {
  * Each value maps to the block's UUID — stable even if the block is renamed.
  */
 export enum LSDE_BLOCKS {
-  /**
-   * ### 🟦[DIALOG] player_suggestion-AI
-   * _"Restons calmes les amis. Si cette carotte géante est réelle, ce serait le festin du siècle pour tout notre clan. Si c'es..."_
-   * - Characters: `l4`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_philosophy-AI`
-   * - Out: `rabbit_hype-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowPlayerSuggestionAi = "39a5f6d9-59cb-479f-bd17-28bfda31663a",
-  /**
-   * ### 🟦[DIALOG] player_warning-AI
-   * _"C'est ça, l3, on essaiera ta technique de distraction métaphysique si on croise un prédateur affamé. En attendant, on av..."_
-   * - Characters: `l4`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_wisdom-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowPlayerWarningAi = "d13045ac-a103-4e10-acb8-12399c11a2c1",
-  /**
-   * ### 🟦[DIALOG] rabbit_hype-AI
-   * _"C'est exactement l'esprit d'aventure qu'il nous fallait, l4 ! On va devenir des légendes vivantes, les lapins qui ont dé..."_
-   * - Characters: `l1`
-   * - Scene: `simple-dialog-flow`
-   * - In: `player_suggestion-AI`
-   * - Out: `rabbit_resignation-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitHypeAi = "6ed885e4-eb2d-4916-979d-339a30ae36ae",
-  /**
-   * ### 🟦[DIALOG] rabbit_philosophy-AI
-   * _"Mais le temps n'est qu'une construction mentale, l2. Est-ce que la carotte existe vraiment si personne n'est là pour la ..."_
-   * - Characters: `l3`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_skepticism-AI`
-   * - Out: `player_suggestion-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitPhilosophyAi = "067e705a-7696-45da-8a74-16f681dc83a3",
-  /**
-   * ### 🟦[DIALOG] rabbit_resignation-AI
-   * _"Ton nez nous a déjà conduits dans une mare de boue malodorante la semaine dernière, triple idiot. Mais bon, je suppose q..."_
-   * - Characters: `l2`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_hype-AI`
-   * - Out: `rabbit_wisdom-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitResignationAi = "cb1663f1-5833-456e-b033-e325d6077d71",
-  /**
-   * ### 🟦[DIALOG] rabbit_rumor-AI ⭐
-   * _"Les copains, vous n'allez pas me croire, mais j'ai déniché le scoop du siècle : il y aurait une carotte de la taille d'u..."_
-   * - Characters: `l1`
-   * - Scene: `simple-dialog-flow`
-   * - Out: `rabbit_skepticism-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitRumorAi = "c39d69d1-f508-45a8-8084-09a68f6916e1",
-  /**
-   * ### 🟦[DIALOG] rabbit_skepticism-AI
-   * _"Encore une de tes inventions débiles, l1 ! La dernière fois, ta fameuse montagne de trèfles n'était qu'un vieux pull ver..."_
-   * - Characters: `l2`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_rumor-AI`
-   * - Out: `rabbit_philosophy-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitSkepticismAi = "187ddb4f-1321-4255-a3dd-2cef59309af6",
-  /**
-   * ### 🟦[DIALOG] rabbit_wisdom-AI
-   * _"Saviez-vous que les renards ne sont que des chiens qui ont fait des études de philosophie ? Si on leur pose une question..."_
-   * - Characters: `l3`
-   * - Scene: `simple-dialog-flow`
-   * - In: `rabbit_resignation-AI`
-   * - Out: `player_warning-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleDialogFlowRabbitWisdomAi = "95144722-b4eb-46c9-ba1e-54434cacda5f",
-  /**
-   * ### 🟦[DIALOG] DIALOG-001
-   * _"hey!"_
-   * - Characters: `l3`
-   * - Scene: `multi-tracks`
-   * - In: `start_discussion-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksDialog001 = "ad8a7573-500c-4038-bfef-a7ed4550ac8e",
-  /**
-   * ### 🟦[DIALOG] DIALOG-009
-   * _"oufff, je pu !!!"_
-   * - Characters: `l3`
-   * - Scene: `multi-tracks`
-   * - In: `noise_2-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksDialog009 = "f38215d6-f0ef-4dc1-bee7-7dccf258ee2a",
-  /**
-   * ### 🟦[DIALOG] DIALOG-010
-   * _"pfff..."_
-   * - Characters: `l2`
-   * - Scene: `multi-tracks`
-   * - In: `l2_response-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksDialog010 = "2b49d688-ae02-43e6-adf0-c57c9ddc6854",
-  /**
-   * ### 🟦[DIALOG] final_decision-AI
-   * _"Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus."_
-   * - Characters: `l2`
-   * - Scene: `multi-tracks`
-   * - In: `l4_comment-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksFinalDecisionAi = "36f0ba66-dfb8-4084-bf10-370a5e6c671b",
-  /**
-   * ### 🟦[DIALOG] l1_irritation-AI
-   * _"L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro."_
-   * - Characters: `l1`
-   * - Scene: `multi-tracks`
-   * - In: `l2_response-AI`
-   * - Out: `l4_comment-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksL1IrritationAi = "a0f83f4a-271d-468a-821b-a881fe4a6058",
-  /**
-   * ### 🟦[DIALOG] l2_response-AI
-   * _"Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner."_
-   * - Characters: `l2`
-   * - Scene: `multi-tracks`
-   * - In: `noise_1-AI`
-   * - Out: `noise_2-AI`, `l1_irritation-AI`, `DIALOG-010`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksL2ResponseAi = "be6f47c5-13f3-4c1a-ba43-80d1820067af",
-  /**
-   * ### 🟦[DIALOG] l4_comment-AI
-   * _"Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer."_
-   * - Characters: `l4`
-   * - Scene: `multi-tracks`
-   * - In: `l1_irritation-AI`
-   * - Out: `final_decision-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksL4CommentAi = "80bf4972-7375-4b51-829d-d8481ace6b45",
-  /**
-   * ### 🟦[DIALOG] noise_1-AI
-   * _"*Scratch scratch scratch* !"_
-   * - Characters: `l2`
-   * - Scene: `multi-tracks`
-   * - In: `start_discussion-AI`
-   * - Out: `l2_response-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksNoise1Ai = "7e045b7b-58a0-4b23-a6a0-c24352237680",
-  /**
-   * ### 🟦[DIALOG] noise_2-AI
-   * _"*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !"_
-   * - Characters: `l3`
-   * - Scene: `multi-tracks`
-   * - In: `l2_response-AI`
-   * - Out: `DIALOG-009`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksNoise2Ai = "9ffa9849-4e64-4982-849a-754ee6b67475",
-  /**
-   * ### 🟦[DIALOG] start_discussion-AI ⭐
-   * _"Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret."_
-   * - Characters: `l1`
-   * - Scene: `multi-tracks`
-   * - Out: `noise_1-AI`, `DIALOG-001`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  multiTracksStartDiscussionAi = "4604c8d0-c4cb-411a-a878-0d498bae868f",
-  /**
-   * ### ⬜[CHOICE] player_moral_choice-AI
-   * - Characters: `l4`
-   * - Scene: `simple-choices`
-   * - In: `l1_dramatic_intro-AI`
-   * - Out: `l4_brave_response-AI`, `l4_fear_response-AI`, `l4_doubt_response-AI`
-   * - Choices: `Nous nous battrons !`, `C'est un suicide.`, `Est-ce vraiment réel ?`
-   * ---
-   * <image url="./_images/choice.webp" />
-   */
-  simpleChoicesPlayerMoralChoiceAi = "4452e0e5-a494-4e40-b11e-13eee3fb93c7",
-  /**
-   * ### 🟦[DIALOG] l1_brave_reaction-AI
-   * _"Ton feu intérieur nous guidera peut-être à travers les ombres qui rampent vers nous."_
-   * - Characters: `l1`
-   * - Scene: `simple-choices`
-   * - In: `l4_brave_response-AI`
-   * - Out: `l1_final_warning-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleChoicesL1BraveReactionAi = "b0012922-735a-45ba-b47c-8d9d03725c2c",
-  /**
-   * ### 🟦[DIALOG] l1_doubt_reaction-AI
-   * _"Le déni ne changera pas le poids du silence qui s'abat désormais sur la prairie."_
-   * - Characters: `l1`
-   * - Scene: `simple-choices`
-   * - In: `l4_doubt_response-AI`
-   * - Out: `l1_final_warning-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleChoicesL1DoubtReactionAi = "d0c0a458-7933-4330-912a-3820ca222ecb",
-  /**
-   * ### 🟦[DIALOG] l1_dramatic_intro-AI ⭐
-   * _"Le ciel s'assombrit, l4. La légende de la Carotte Éternelle n'était qu'un prélude à notre chute imminente."_
-   * - Characters: `l1`
-   * - Scene: `simple-choices`
-   * - Out: `player_moral_choice-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleChoicesL1DramaticIntroAi = "1db618cd-3883-4caf-bcd2-591562aade49",
-  /**
-   * ### 🟦[DIALOG] l1_fear_reaction-AI
-   * _"La peur est un poison, mais elle est aussi le seul miroir de notre fragile vérité."_
-   * - Characters: `l1`
-   * - Scene: `simple-choices`
-   * - In: `l4_fear_response-AI`
-   * - Out: `l1_final_warning-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleChoicesL1FearReactionAi = "50d0c209-6825-4cdd-9085-f8635f125a64",
-  /**
-   * ### 🟦[DIALOG] l1_final_warning-AI
-   * _"Écoute... le vent hurle déjà le nom de notre perte. Nous n'avons plus d'autre choix que d'avancer."_
-   * - Characters: `l1`
-   * - Scene: `simple-choices`
-   * - In: `l1_brave_reaction-AI`, `l1_fear_reaction-AI`, `l1_doubt_reaction-AI`
-   * - Out: `l4_final_resolution-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleChoicesL1FinalWarningAi = "20c774c7-597a-4d02-8730-afa033c20150",
-  /**
-   * ### 🟦[DIALOG] l4_brave_response-AI
-   * _"Je ne laisserai personne détruire notre foyer. Je me battrai jusqu'à mon dernier souffle s'il le faut."_
-   * - Characters: `l4`
-   * - Scene: `simple-choices`
-   * - In: `player_moral_choice-AI`
-   * - Out: `l1_brave_reaction-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleChoicesL4BraveResponseAi = "7d80327b-3a65-4be6-b8ed-76cf3cca57ee",
-  /**
-   * ### 🟦[DIALOG] l4_doubt_response-AI
-   * _"Tu parles comme un vieux prophète fatigué, l1. Et si ce n'était qu'un simple piège des renards ?"_
-   * - Characters: `l4`
-   * - Scene: `simple-choices`
-   * - In: `player_moral_choice-AI`
-   * - Out: `l1_doubt_reaction-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleChoicesL4DoubtResponseAi = "50dce24b-b3f7-49a6-bfb8-906b7e55a940",
-  /**
-   * ### 🟦[DIALOG] l4_fear_response-AI
-   * _"Regarde-nous ! Nous ne sommes que des proies. Espérer vaincre ce destin est une folie pure."_
-   * - Characters: `l4`
-   * - Scene: `simple-choices`
-   * - In: `player_moral_choice-AI`
-   * - Out: `l1_fear_reaction-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleChoicesL4FearResponseAi = "c3b0cdee-d840-4bf4-a0f0-a11d5e6d0402",
-  /**
-   * ### 🟦[DIALOG] l4_final_resolution-AI
-   * _"Alors qu'il en soit ainsi. Que le destin nous juge sur le champ de bataille, vers le terrier nord."_
-   * - Characters: `l4`
-   * - Scene: `simple-choices`
-   * - In: `l1_final_warning-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleChoicesL4FinalResolutionAi = "b630f2b9-85f5-4e26-aa86-cbc7427e88a1",
-  /**
-   * ### 🟧[ACTION] ACTION-0016
-   * - Scene: `simple-action`
-   * - In: `focus_boss-AI`
-   * `shakeCamera`(16, 2)
-   * ---
-   * <image url="./_images/action.webp" />
-   */
-  simpleActionAction0016 = "fa8ff197-0559-493a-b1a9-b4e0a1724b83",
-  /**
-   * ### 🟧[ACTION] ACTION-006
-   * - Scene: `simple-action`
-   * - In: `final_decision-AI`
-   * `shakeCamera`(5, 2)
-   * `moveCharacterAt`(l1, -800)
-   * ---
-   * <image url="./_images/action.webp" />
-   */
-  simpleActionAction006 = "dfa55271-2ed5-469c-9eaf-a05a46d7b254",
-  /**
-   * ### 🟧[ACTION] ACTION-007
-   * - Scene: `simple-action`
-   * - In: `l4_flee-AI`
-   * - Out: `DIALOG-009`, `DIALOG-010`
-   * `moveCameraToLabel`(l1, 1.3)
-   * ---
-   * <image url="./_images/action.webp" />
-   */
-  simpleActionAction007 = "b50008c7-348b-4bf4-b7cd-cec16ae727d0",
-  /**
-   * ### 🟧[ACTION] ACTION-008
-   * - Scene: `simple-action`
-   * - In: `l1_brave-AI`
-   * `moveCameraToLabel`(l1, 2)
-   * `moveCharacterAt`(l1, 800)
-   * ---
-   * <image url="./_images/action.webp" />
-   */
-  simpleActionAction008 = "26bc6b08-22b3-4ed5-bd6a-d4c955adff63",
-  /**
-   * ### 🟧[ACTION] focus_boss-AI
-   * - Scene: `simple-action`
-   * - In: `shake_mid-AI`
-   * - Out: `boss_roar-AI`, `ACTION-0016`
-   * `moveCameraToLabel`(boss, 1)
-   * ---
-   * <image url="./_images/action.webp" />
-   */
-  simpleActionFocusBossAi = "9b5df0e4-0971-4639-8736-9442dcd52d8a",
-  /**
-   * ### 🟧[ACTION] return_to_rabbits-AI
-   * - Scene: `simple-action`
-   * - In: `DIALOG-007`
-   * - Out: `final_decision-AI`
-   * `moveCameraToLabel`(l4, 0.3)
-   * ---
-   * <image url="./_images/action.webp" />
-   */
-  simpleActionReturnToRabbitsAi = "4b8b8fe2-d3b8-4ab6-9fc1-afd5eadb78af",
-  /**
-   * ### 🟧[ACTION] shake_intro-AI
-   * - Scene: `simple-action`
-   * - In: `l1_alert-AI`
-   * - Out: `l4_terror-AI`
-   * `shakeCamera`(5, 0.3)
-   * ---
-   * <image url="./_images/action.webp" />
-   */
-  simpleActionShakeIntroAi = "6430204d-5833-4fe3-9a5c-499c41c5a5df",
-  /**
-   * ### 🟧[ACTION] shake_mid-AI
-   * - Scene: `simple-action`
-   * - In: `l4_terror-AI`
-   * - Out: `focus_boss-AI`
-   * `shakeCamera`(8, 0.4)
-   * ---
-   * <image url="./_images/action.webp" />
-   */
-  simpleActionShakeMidAi = "955b54a6-33e9-477a-8573-6ea5dc9d7433",
-  /**
-   * ### ⬜[CHOICE] final_decision-AI
-   * - Scene: `simple-action`
-   * - In: `return_to_rabbits-AI`
-   * - Out: `l1_brave-AI`, `l4_flee-AI`, `ACTION-006`, `DIALOG-008`
-   * - Choices: `Charger la créature !`, `Battre en retraite !`
-   * ---
-   * <image url="./_images/choice.webp" />
-   */
-  simpleActionFinalDecisionAi = "36cdad6e-d85a-4c9a-90e0-6af5046c4245",
-  /**
-   * ### 🟦[DIALOG] boss_roar-AI
-   * _"RWMIAAAOUWWW ...... WROIUMOIWUUWWW...."_
-   * - Characters: `boss`
-   * - Scene: `simple-action`
-   * - In: `focus_boss-AI`
-   * - Out: `DIALOG-007`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionBossRoarAi = "dc58f326-8e8c-4837-beb1-e8ba04410b84",
-  /**
-   * ### 🟦[DIALOG] climax_moment-AI
-   * _"whaaaaaaa"_
-   * - Characters: `l1`
-   * - Scene: `simple-action`
-   * - In: `l1_brave-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionClimaxMomentAi = "b22c8172-a63d-486b-b07d-37ab1832fee6",
-  /**
-   * ### 🟦[DIALOG] DIALOG-007
-   * _"mmmmm !🐰🐰🐰"_
-   * - Characters: `boss`
-   * - Scene: `simple-action`
-   * - In: `boss_roar-AI`
-   * - Out: `return_to_rabbits-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionDialog007 = "f12afa3e-7d89-497c-8f2e-585187f3b55a",
-  /**
-   * ### 🟦[DIALOG] DIALOG-008
-   * _"Non dune carotte !! Sauve qui peut Haaaaa !!!!"_
-   * - Characters: `l1`
-   * - Scene: `simple-action`
-   * - In: `final_decision-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionDialog008 = "42c00a7a-3954-4e07-9e9e-9254d3a8df64",
-  /**
-   * ### 🟦[DIALOG] DIALOG-009
-   * _"J'aime les carotte mais pas a ce points !"_
-   * - Characters: `l1`
-   * - Scene: `simple-action`
-   * - In: `ACTION-007`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionDialog009 = "3c3eb409-7bae-4c79-a1de-637384e51494",
-  /**
-   * ### 🟦[DIALOG] DIALOG-010
-   * _"Tes un gros lapin mouillé l1 ..... traitre !"_
-   * - Characters: `l4`
-   * - Scene: `simple-action`
-   * - In: `ACTION-007`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionDialog010 = "da5a321e-10b2-44b6-8632-39b737d65a5c",
-  /**
-   * ### 🟦[DIALOG] DIALOG-011
-   * _"whaaaa"_
-   * - Characters: `l4`
-   * - Scene: `simple-action`
-   * - In: `l1_brave-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionDialog011 = "bce3aa3f-e3e9-4a7e-88a7-a74d5f5a4b58",
-  /**
-   * ### 🟦[DIALOG] l1_alert-AI ⭐
-   * _"Est-ce que tu sens ça ? La terre se déchire sous ses pas..."_
-   * - Characters: `l1`
-   * - Scene: `simple-action`
-   * - Out: `shake_intro-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionL1AlertAi = "c3b0ffcf-fe57-45f9-8c20-8db99da21ae3",
-  /**
-   * ### 🟦[DIALOG] l1_brave-AI
-   * _"Pour l'honneur du clan et la carotte éternelle, à l'attaque !"_
-   * - Characters: `l1`
-   * - Scene: `simple-action`
-   * - In: `final_decision-AI`
-   * - Out: `ACTION-008`, `climax_moment-AI`, `DIALOG-011`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionL1BraveAi = "3af36f94-0b76-40dc-9681-1bb360a03897",
-  /**
-   * ### 🟦[DIALOG] l4_flee-AI
-   * _"Non mais tu me laisses seul !!!"_
-   * - Characters: `l4`
-   * - Scene: `simple-action`
-   * - In: `final_decision-AI`
-   * - Out: `ACTION-007`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionL4FleeAi = "fca6d66a-a4ea-4059-80ab-9ae2107d6ef9",
-  /**
-   * ### 🟦[DIALOG] l4_terror-AI
-   * _"C'est beaucoup trop gros pour être un simple lapin, l1 !"_
-   * - Characters: `l4`
-   * - Scene: `simple-action`
-   * - In: `shake_intro-AI`
-   * - Out: `shake_mid-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleActionL4TerrorAi = "38f160eb-9e5f-4dac-b83a-7d0b55afac1a",
-  /**
-   * ### 🟪[CONDITION] check_carrot_inventory-AI
-   * - Scene: `simple-condition`
-   * - In: `l1_lost_carrot_distress-AI`
-   * - Out: `l4_comfort_response-AI`, `DIALOG-006`
-   * `inventory.carrot` >= `1`
-   * ---
-   * <image url="./_images/cond.webp" />
-   */
-  simpleConditionCheckCarrotInventoryAi = "6e270a8d-688c-4101-9d2b-97876b09e301",
-  /**
-   * ### 🟦[DIALOG] DIALOG-006
-   * _"J'ai trouvez ta carotte !"_
-   * - Characters: `l4`
-   * - Scene: `simple-condition`
-   * - In: `check_carrot_inventory-AI`
-   * - Out: `l1_carrot_found-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleConditionDialog006 = "d1670c06-ef2f-48db-8fef-df3bb4b63b05",
-  /**
-   * ### 🟦[DIALOG] DIALOG-007
-   * _".... ok"_
-   * - Characters: `l4`
-   * - Scene: `simple-condition`
-   * - In: `l1_carrot_found-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleConditionDialog007 = "7d0cab65-96ed-4471-b7f6-5b060c12007b",
-  /**
-   * ### 🟦[DIALOG] l1_carrot_found-AI
-   * _"Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros ! Garde la, j'ai trop peur de la perde a nou..."_
-   * - Characters: `l1`
-   * - Scene: `simple-condition`
-   * - In: `DIALOG-006`
-   * - Out: `DIALOG-007`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleConditionL1CarrotFoundAi = "4d8f4766-5c11-4a5d-bbc7-223a5bc4fc52",
-  /**
-   * ### 🟦[DIALOG] l1_carrot_missing_demand-AI
-   * _"Pourquoi restes-tu là à brouter ? Cherche-la sur le champ, avant que le malheur ne nous frappe !"_
-   * - Characters: `l1`
-   * - Scene: `simple-condition`
-   * - In: `l4_comfort_response-AI`
-   * - Out: `l4_final_thought-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleConditionL1CarrotMissingDemandAi = "bde6483a-c9e6-4ca1-94b5-14a8a8e0f36c",
-  /**
-   * ### 🟦[DIALOG] l1_lost_carrot_distress-AI ⭐
-   * _"Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !"_
-   * - Characters: `l1`
-   * - Scene: `simple-condition`
-   * - Out: `check_carrot_inventory-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleConditionL1LostCarrotDistressAi = "cb342290-3616-42d2-ba58-620290dfa45a",
-  /**
-   * ### 🟦[DIALOG] l4_comfort_response-AI
-   * _"Calme-toi, l1. Ce n'est qu'une racine séchée. On finira par la retrouver dans ce champ."_
-   * - Characters: `l4`
-   * - Scene: `simple-condition`
-   * - In: `check_carrot_inventory-AI`
-   * - Out: `l1_carrot_missing_demand-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleConditionL4ComfortResponseAi = "61ad4724-2845-426f-b4e2-581c670a3c60",
-  /**
-   * ### 🟦[DIALOG] l4_final_thought-AI
-   * _"D'accord, d'accord. Ne faisons pas un drame pour un légume, même s'il est porte-bonheur."_
-   * - Characters: `l4`
-   * - Scene: `simple-condition`
-   * - In: `l1_carrot_missing_demand-AI`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  simpleConditionL4FinalThoughtAi = "1690e771-7627-4abd-9944-84721b40567d",
-  /**
-   * ### 🟪[CONDITION] CONDITION-001
-   * - Scene: `condition-dispatch`
-   * - In: `CONDITION-002`
-   * - Out: `DIALOG-003`, `DIALOG-004`, `DIALOG-005`, `DIALOG-006`
-   * Case 0:
-   * `party.l1` = `true`
-   * Case 1:
-   * `party.l2` = `true`
-   * Case 2:
-   * `party.l3` = `true`
-   * ---
-   * <image url="./_images/cond.webp" />
-   */
-  conditionDispatchCondition001 = "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
-  /**
-   * ### 🟪[CONDITION] CONDITION-002
-   * - Scene: `condition-dispatch`
-   * - In: `DIALOG-001`
-   * - Out: `CONDITION-001`, `DIALOG-002`
-   * `party.l1` = `true`
-   * `party.l2` = `true`
-   * `party.l3` = `true`
-   * ---
-   * <image url="./_images/cond.webp" />
-   */
-  conditionDispatchCondition002 = "a004326b-fada-43fd-aae7-f6e1654fa02e",
-  /**
-   * ### 🟦[DIALOG] DIALOG-001 ⭐
-   * _"ho... grand esprit des carotte ..."_
-   * - Characters: `l4`
-   * - Scene: `condition-dispatch`
-   * - Out: `CONDITION-002`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  conditionDispatchDialog001 = "90a8c0a2-cb0e-4900-b974-c59d470f296e",
-  /**
-   * ### 🟦[DIALOG] DIALOG-002
-   * _"Hey vien nous choisir avant dinvoquez les esprit de la carotte"_
-   * - Characters: `l1`
-   * - Scene: `condition-dispatch`
-   * - In: `CONDITION-002`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  conditionDispatchDialog002 = "a4610101-f256-4ce8-a622-566493a7ea36",
-  /**
-   * ### 🟦[DIALOG] DIALOG-003
-   * _"Ho grande carotte rouge"_
-   * - Characters: `l1`
-   * - Scene: `condition-dispatch`
-   * - In: `CONDITION-001`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  conditionDispatchDialog003 = "f0d04478-f078-4284-bb29-84dde7f6745e",
-  /**
-   * ### 🟦[DIALOG] DIALOG-004
-   * _"ho grande carotte jaune"_
-   * - Scene: `condition-dispatch`
-   * - In: `CONDITION-001`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  conditionDispatchDialog004 = "fd4a39f9-6aa7-4222-90b1-7e79f8eab245",
-  /**
-   * ### 🟦[DIALOG] DIALOG-005
-   * _"ho grande carrote bleue"_
-   * - Characters: `l3`
-   * - Scene: `condition-dispatch`
-   * - In: `CONDITION-001`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  conditionDispatchDialog005 = "802b6469-bf1d-4e17-8bb3-1443b0f32b38",
-  /**
-   * ### 🟦[DIALOG] DIALOG-006
-   * _"ho grande carotte, merci de nous nourrire"_
-   * - Characters: `l4`
-   * - Scene: `condition-dispatch`
-   * - In: `CONDITION-001`
-   * ---
-   * <image url="./_images/dialog.webp" />
-   */
-  conditionDispatchDialog006 = "f1de0bf3-65d8-4a0f-a26e-31562f349396",
+	/**
+	 * ### 🟦[DIALOG] player_suggestion-AI
+	 * _"Restons calmes les amis. Si cette carotte géante est réelle, ce serait le festin du siècle pour tout notre clan. Si c'es..."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_philosophy-AI`
+	 * - Out: `rabbit_hype-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowPlayerSuggestionAi = '39a5f6d9-59cb-479f-bd17-28bfda31663a',
+	/**
+	 * ### 🟦[DIALOG] player_warning-AI
+	 * _"C'est ça, l3, on essaiera ta technique de distraction métaphysique si on croise un prédateur affamé. En attendant, on av..."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_wisdom-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowPlayerWarningAi = 'd13045ac-a103-4e10-acb8-12399c11a2c1',
+	/**
+	 * ### 🟦[DIALOG] rabbit_hype-AI
+	 * _"C'est exactement l'esprit d'aventure qu'il nous fallait, l4 ! On va devenir des légendes vivantes, les lapins qui ont dé..."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `player_suggestion-AI`
+	 * - Out: `rabbit_resignation-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitHypeAi = '6ed885e4-eb2d-4916-979d-339a30ae36ae',
+	/**
+	 * ### 🟦[DIALOG] rabbit_philosophy-AI
+	 * _"Mais le temps n'est qu'une construction mentale, l2. Est-ce que la carotte existe vraiment si personne n'est là pour la ..."_
+	 * - Characters: `l3`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_skepticism-AI`
+	 * - Out: `player_suggestion-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitPhilosophyAi = '067e705a-7696-45da-8a74-16f681dc83a3',
+	/**
+	 * ### 🟦[DIALOG] rabbit_resignation-AI
+	 * _"Ton nez nous a déjà conduits dans une mare de boue malodorante la semaine dernière, triple idiot. Mais bon, je suppose q..."_
+	 * - Characters: `l2`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_hype-AI`
+	 * - Out: `rabbit_wisdom-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitResignationAi = 'cb1663f1-5833-456e-b033-e325d6077d71',
+	/**
+	 * ### 🟦[DIALOG] rabbit_rumor-AI ⭐
+	 * _"Les copains, vous n'allez pas me croire, mais j'ai déniché le scoop du siècle : il y aurait une carotte de la taille d'u..."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-dialog-flow`
+	 * - Out: `rabbit_skepticism-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitRumorAi = 'c39d69d1-f508-45a8-8084-09a68f6916e1',
+	/**
+	 * ### 🟦[DIALOG] rabbit_skepticism-AI
+	 * _"Encore une de tes inventions débiles, l1 ! La dernière fois, ta fameuse montagne de trèfles n'était qu'un vieux pull ver..."_
+	 * - Characters: `l2`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_rumor-AI`
+	 * - Out: `rabbit_philosophy-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitSkepticismAi = '187ddb4f-1321-4255-a3dd-2cef59309af6',
+	/**
+	 * ### 🟦[DIALOG] rabbit_wisdom-AI
+	 * _"Saviez-vous que les renards ne sont que des chiens qui ont fait des études de philosophie ? Si on leur pose une question..."_
+	 * - Characters: `l3`
+	 * - Scene: `simple-dialog-flow`
+	 * - In: `rabbit_resignation-AI`
+	 * - Out: `player_warning-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleDialogFlowRabbitWisdomAi = '95144722-b4eb-46c9-ba1e-54434cacda5f',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-001
+	 * _"hey!"_
+	 * - Characters: `l3`
+	 * - Scene: `multi-tracks`
+	 * - In: `start_discussion-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksDialog001 = 'ad8a7573-500c-4038-bfef-a7ed4550ac8e',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-009
+	 * _"oufff, je pu !!!"_
+	 * - Characters: `l3`
+	 * - Scene: `multi-tracks`
+	 * - In: `noise_2-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksDialog009 = 'f38215d6-f0ef-4dc1-bee7-7dccf258ee2a',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-010
+	 * _"pfff..."_
+	 * - Characters: `l2`
+	 * - Scene: `multi-tracks`
+	 * - In: `l2_response-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksDialog010 = '2b49d688-ae02-43e6-adf0-c57c9ddc6854',
+	/**
+	 * ### 🟦[DIALOG] final_decision-AI
+	 * _"Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus."_
+	 * - Characters: `l2`
+	 * - Scene: `multi-tracks`
+	 * - In: `l4_comment-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksFinalDecisionAi = '36f0ba66-dfb8-4084-bf10-370a5e6c671b',
+	/**
+	 * ### 🟦[DIALOG] l1_irritation-AI
+	 * _"L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro."_
+	 * - Characters: `l1`
+	 * - Scene: `multi-tracks`
+	 * - In: `l2_response-AI`
+	 * - Out: `l4_comment-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksL1IrritationAi = 'a0f83f4a-271d-468a-821b-a881fe4a6058',
+	/**
+	 * ### 🟦[DIALOG] l2_response-AI
+	 * _"Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner."_
+	 * - Characters: `l2`
+	 * - Scene: `multi-tracks`
+	 * - In: `noise_1-AI`
+	 * - Out: `noise_2-AI`, `l1_irritation-AI`, `DIALOG-010`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksL2ResponseAi = 'be6f47c5-13f3-4c1a-ba43-80d1820067af',
+	/**
+	 * ### 🟦[DIALOG] l4_comment-AI
+	 * _"Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer."_
+	 * - Characters: `l4`
+	 * - Scene: `multi-tracks`
+	 * - In: `l1_irritation-AI`
+	 * - Out: `final_decision-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksL4CommentAi = '80bf4972-7375-4b51-829d-d8481ace6b45',
+	/**
+	 * ### 🟦[DIALOG] noise_1-AI
+	 * _"*Scratch scratch scratch* !"_
+	 * - Characters: `l2`
+	 * - Scene: `multi-tracks`
+	 * - In: `start_discussion-AI`
+	 * - Out: `l2_response-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksNoise1Ai = '7e045b7b-58a0-4b23-a6a0-c24352237680',
+	/**
+	 * ### 🟦[DIALOG] noise_2-AI
+	 * _"*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !"_
+	 * - Characters: `l3`
+	 * - Scene: `multi-tracks`
+	 * - In: `l2_response-AI`
+	 * - Out: `DIALOG-009`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksNoise2Ai = '9ffa9849-4e64-4982-849a-754ee6b67475',
+	/**
+	 * ### 🟦[DIALOG] start_discussion-AI ⭐
+	 * _"Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret."_
+	 * - Characters: `l1`
+	 * - Scene: `multi-tracks`
+	 * - Out: `noise_1-AI`, `DIALOG-001`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksStartDiscussionAi = '4604c8d0-c4cb-411a-a878-0d498bae868f',
+	/**
+	 * ### ⬜[CHOICE] player_moral_choice-AI
+	 * - Characters: `l4`
+	 * - Scene: `simple-choices`
+	 * - In: `l1_dramatic_intro-AI`
+	 * - Out: `l4_brave_response-AI`, `l4_fear_response-AI`, `l4_doubt_response-AI`
+	 * - Choices: `Nous nous battrons !`, `C'est un suicide.`, `Est-ce vraiment réel ?`
+	 * ---
+	 * <image url="./_images/choice.webp" />
+	 */
+	simpleChoicesPlayerMoralChoiceAi = '4452e0e5-a494-4e40-b11e-13eee3fb93c7',
+	/**
+	 * ### 🟦[DIALOG] l1_brave_reaction-AI
+	 * _"Ton feu intérieur nous guidera peut-être à travers les ombres qui rampent vers nous."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - In: `l4_brave_response-AI`
+	 * - Out: `l1_final_warning-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL1BraveReactionAi = 'b0012922-735a-45ba-b47c-8d9d03725c2c',
+	/**
+	 * ### 🟦[DIALOG] l1_doubt_reaction-AI
+	 * _"Le déni ne changera pas le poids du silence qui s'abat désormais sur la prairie."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - In: `l4_doubt_response-AI`
+	 * - Out: `l1_final_warning-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL1DoubtReactionAi = 'd0c0a458-7933-4330-912a-3820ca222ecb',
+	/**
+	 * ### 🟦[DIALOG] l1_dramatic_intro-AI ⭐
+	 * _"Le ciel s'assombrit, l4. La légende de la Carotte Éternelle n'était qu'un prélude à notre chute imminente."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - Out: `player_moral_choice-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL1DramaticIntroAi = '1db618cd-3883-4caf-bcd2-591562aade49',
+	/**
+	 * ### 🟦[DIALOG] l1_fear_reaction-AI
+	 * _"La peur est un poison, mais elle est aussi le seul miroir de notre fragile vérité."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - In: `l4_fear_response-AI`
+	 * - Out: `l1_final_warning-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL1FearReactionAi = '50d0c209-6825-4cdd-9085-f8635f125a64',
+	/**
+	 * ### 🟦[DIALOG] l1_final_warning-AI
+	 * _"Écoute... le vent hurle déjà le nom de notre perte. Nous n'avons plus d'autre choix que d'avancer."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-choices`
+	 * - In: `l1_brave_reaction-AI`, `l1_fear_reaction-AI`, `l1_doubt_reaction-AI`
+	 * - Out: `l4_final_resolution-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL1FinalWarningAi = '20c774c7-597a-4d02-8730-afa033c20150',
+	/**
+	 * ### 🟦[DIALOG] l4_brave_response-AI
+	 * _"Je ne laisserai personne détruire notre foyer. Je me battrai jusqu'à mon dernier souffle s'il le faut."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-choices`
+	 * - In: `player_moral_choice-AI`
+	 * - Out: `l1_brave_reaction-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL4BraveResponseAi = '7d80327b-3a65-4be6-b8ed-76cf3cca57ee',
+	/**
+	 * ### 🟦[DIALOG] l4_doubt_response-AI
+	 * _"Tu parles comme un vieux prophète fatigué, l1. Et si ce n'était qu'un simple piège des renards ?"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-choices`
+	 * - In: `player_moral_choice-AI`
+	 * - Out: `l1_doubt_reaction-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL4DoubtResponseAi = '50dce24b-b3f7-49a6-bfb8-906b7e55a940',
+	/**
+	 * ### 🟦[DIALOG] l4_fear_response-AI
+	 * _"Regarde-nous ! Nous ne sommes que des proies. Espérer vaincre ce destin est une folie pure."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-choices`
+	 * - In: `player_moral_choice-AI`
+	 * - Out: `l1_fear_reaction-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL4FearResponseAi = 'c3b0cdee-d840-4bf4-a0f0-a11d5e6d0402',
+	/**
+	 * ### 🟦[DIALOG] l4_final_resolution-AI
+	 * _"Alors qu'il en soit ainsi. Que le destin nous juge sur le champ de bataille, vers le terrier nord."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-choices`
+	 * - In: `l1_final_warning-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleChoicesL4FinalResolutionAi = 'b630f2b9-85f5-4e26-aa86-cbc7427e88a1',
+	/**
+	 * ### 🟧[ACTION] ACTION-0016
+	 * - Scene: `simple-action`
+	 * - In: `focus_boss-AI`
+	 * `shakeCamera`(16, 2)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionAction0016 = 'fa8ff197-0559-493a-b1a9-b4e0a1724b83',
+	/**
+	 * ### 🟧[ACTION] ACTION-006
+	 * - Scene: `simple-action`
+	 * - In: `final_decision-AI`
+	 * `shakeCamera`(5, 2)
+	 * `moveCharacterAt`(l1, -800)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionAction006 = 'dfa55271-2ed5-469c-9eaf-a05a46d7b254',
+	/**
+	 * ### 🟧[ACTION] ACTION-007
+	 * - Scene: `simple-action`
+	 * - In: `l4_flee-AI`
+	 * - Out: `DIALOG-009`, `DIALOG-010`
+	 * `moveCameraToLabel`(l1, 1.3)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionAction007 = 'b50008c7-348b-4bf4-b7cd-cec16ae727d0',
+	/**
+	 * ### 🟧[ACTION] ACTION-008
+	 * - Scene: `simple-action`
+	 * - In: `l1_brave-AI`
+	 * `moveCameraToLabel`(l1, 2)
+	 * `moveCharacterAt`(l1, 800)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionAction008 = '26bc6b08-22b3-4ed5-bd6a-d4c955adff63',
+	/**
+	 * ### 🟧[ACTION] focus_boss-AI
+	 * - Scene: `simple-action`
+	 * - In: `shake_mid-AI`
+	 * - Out: `boss_roar-AI`, `ACTION-0016`
+	 * `moveCameraToLabel`(boss, 1)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionFocusBossAi = '9b5df0e4-0971-4639-8736-9442dcd52d8a',
+	/**
+	 * ### 🟧[ACTION] return_to_rabbits-AI
+	 * - Scene: `simple-action`
+	 * - In: `DIALOG-007`
+	 * - Out: `final_decision-AI`
+	 * `moveCameraToLabel`(l4, 0.3)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionReturnToRabbitsAi = '4b8b8fe2-d3b8-4ab6-9fc1-afd5eadb78af',
+	/**
+	 * ### 🟧[ACTION] shake_intro-AI
+	 * - Scene: `simple-action`
+	 * - In: `l1_alert-AI`
+	 * - Out: `l4_terror-AI`
+	 * `shakeCamera`(5, 0.3)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionShakeIntroAi = '6430204d-5833-4fe3-9a5c-499c41c5a5df',
+	/**
+	 * ### 🟧[ACTION] shake_mid-AI
+	 * - Scene: `simple-action`
+	 * - In: `l4_terror-AI`
+	 * - Out: `focus_boss-AI`
+	 * `shakeCamera`(8, 0.4)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionShakeMidAi = '955b54a6-33e9-477a-8573-6ea5dc9d7433',
+	/**
+	 * ### ⬜[CHOICE] final_decision-AI
+	 * - Scene: `simple-action`
+	 * - In: `return_to_rabbits-AI`
+	 * - Out: `l1_brave-AI`, `l4_flee-AI`, `ACTION-006`, `DIALOG-008`
+	 * - Choices: `Charger la créature !`, `Battre en retraite !`
+	 * ---
+	 * <image url="./_images/choice.webp" />
+	 */
+	simpleActionFinalDecisionAi = '36cdad6e-d85a-4c9a-90e0-6af5046c4245',
+	/**
+	 * ### 🟦[DIALOG] boss_roar-AI
+	 * _"RWMIAAAOUWWW ...... WROIUMOIWUUWWW...."_
+	 * - Characters: `boss`
+	 * - Scene: `simple-action`
+	 * - In: `focus_boss-AI`
+	 * - Out: `DIALOG-007`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionBossRoarAi = 'dc58f326-8e8c-4837-beb1-e8ba04410b84',
+	/**
+	 * ### 🟦[DIALOG] climax_moment-AI
+	 * _"whaaaaaaa"_
+	 * - Characters: `l1`
+	 * - Scene: `simple-action`
+	 * - In: `l1_brave-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionClimaxMomentAi = 'b22c8172-a63d-486b-b07d-37ab1832fee6',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-007
+	 * _"mmmmm !🐰🐰🐰"_
+	 * - Characters: `boss`
+	 * - Scene: `simple-action`
+	 * - In: `boss_roar-AI`
+	 * - Out: `return_to_rabbits-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionDialog007 = 'f12afa3e-7d89-497c-8f2e-585187f3b55a',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-008
+	 * _"Non dune carotte !! Sauve qui peut Haaaaa !!!!"_
+	 * - Characters: `l1`
+	 * - Scene: `simple-action`
+	 * - In: `final_decision-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionDialog008 = '42c00a7a-3954-4e07-9e9e-9254d3a8df64',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-009
+	 * _"J'aime les carotte mais pas a ce points !"_
+	 * - Characters: `l1`
+	 * - Scene: `simple-action`
+	 * - In: `ACTION-007`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionDialog009 = '3c3eb409-7bae-4c79-a1de-637384e51494',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-010
+	 * _"Tes un gros lapin mouillé l1 ..... traitre !"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-action`
+	 * - In: `ACTION-007`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionDialog010 = 'da5a321e-10b2-44b6-8632-39b737d65a5c',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-011
+	 * _"whaaaa"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-action`
+	 * - In: `l1_brave-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionDialog011 = 'bce3aa3f-e3e9-4a7e-88a7-a74d5f5a4b58',
+	/**
+	 * ### 🟦[DIALOG] l1_alert-AI ⭐
+	 * _"Est-ce que tu sens ça ? La terre se déchire sous ses pas..."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-action`
+	 * - Out: `shake_intro-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionL1AlertAi = 'c3b0ffcf-fe57-45f9-8c20-8db99da21ae3',
+	/**
+	 * ### 🟦[DIALOG] l1_brave-AI
+	 * _"Pour l'honneur du clan et la carotte éternelle, à l'attaque !"_
+	 * - Characters: `l1`
+	 * - Scene: `simple-action`
+	 * - In: `final_decision-AI`
+	 * - Out: `ACTION-008`, `climax_moment-AI`, `DIALOG-011`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionL1BraveAi = '3af36f94-0b76-40dc-9681-1bb360a03897',
+	/**
+	 * ### 🟦[DIALOG] l4_flee-AI
+	 * _"Non mais tu me laisses seul !!!"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-action`
+	 * - In: `final_decision-AI`
+	 * - Out: `ACTION-007`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionL4FleeAi = 'fca6d66a-a4ea-4059-80ab-9ae2107d6ef9',
+	/**
+	 * ### 🟦[DIALOG] l4_terror-AI
+	 * _"C'est beaucoup trop gros pour être un simple lapin, l1 !"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-action`
+	 * - In: `shake_intro-AI`
+	 * - Out: `shake_mid-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionL4TerrorAi = '38f160eb-9e5f-4dac-b83a-7d0b55afac1a',
+	/**
+	 * ### 🟪[CONDITION] check_carrot_inventory-AI
+	 * - Scene: `simple-condition`
+	 * - In: `l1_lost_carrot_distress-AI`
+	 * - Out: `l4_comfort_response-AI`, `DIALOG-006`
+	 * `inventory.carrot` >= `1`
+	 * ---
+	 * <image url="./_images/cond.webp" />
+	 */
+	simpleConditionCheckCarrotInventoryAi = '6e270a8d-688c-4101-9d2b-97876b09e301',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-006
+	 * _"J'ai trouvez ta carotte !"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-condition`
+	 * - In: `check_carrot_inventory-AI`
+	 * - Out: `l1_carrot_found-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleConditionDialog006 = 'd1670c06-ef2f-48db-8fef-df3bb4b63b05',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-007
+	 * _".... ok"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-condition`
+	 * - In: `l1_carrot_found-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleConditionDialog007 = '7d0cab65-96ed-4471-b7f6-5b060c12007b',
+	/**
+	 * ### 🟦[DIALOG] l1_carrot_found-AI
+	 * _"Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros ! Garde la, j'ai trop peur de la perde a nou..."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-condition`
+	 * - In: `DIALOG-006`
+	 * - Out: `DIALOG-007`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleConditionL1CarrotFoundAi = '4d8f4766-5c11-4a5d-bbc7-223a5bc4fc52',
+	/**
+	 * ### 🟦[DIALOG] l1_carrot_missing_demand-AI
+	 * _"Pourquoi restes-tu là à brouter ? Cherche-la sur le champ, avant que le malheur ne nous frappe !"_
+	 * - Characters: `l1`
+	 * - Scene: `simple-condition`
+	 * - In: `l4_comfort_response-AI`
+	 * - Out: `l4_final_thought-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleConditionL1CarrotMissingDemandAi = 'bde6483a-c9e6-4ca1-94b5-14a8a8e0f36c',
+	/**
+	 * ### 🟦[DIALOG] l1_lost_carrot_distress-AI ⭐
+	 * _"Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !"_
+	 * - Characters: `l1`
+	 * - Scene: `simple-condition`
+	 * - Out: `check_carrot_inventory-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleConditionL1LostCarrotDistressAi = 'cb342290-3616-42d2-ba58-620290dfa45a',
+	/**
+	 * ### 🟦[DIALOG] l4_comfort_response-AI
+	 * _"Calme-toi, l1. Ce n'est qu'une racine séchée. On finira par la retrouver dans ce champ."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-condition`
+	 * - In: `check_carrot_inventory-AI`
+	 * - Out: `l1_carrot_missing_demand-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleConditionL4ComfortResponseAi = '61ad4724-2845-426f-b4e2-581c670a3c60',
+	/**
+	 * ### 🟦[DIALOG] l4_final_thought-AI
+	 * _"D'accord, d'accord. Ne faisons pas un drame pour un légume, même s'il est porte-bonheur."_
+	 * - Characters: `l4`
+	 * - Scene: `simple-condition`
+	 * - In: `l1_carrot_missing_demand-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleConditionL4FinalThoughtAi = '1690e771-7627-4abd-9944-84721b40567d',
+	/**
+	 * ### 🟧[ACTION] ACTION-001
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-003`
+	 * - Out: `DIALOG-007`
+	 * `shakeCamera`(3, 1)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	conditionDispatchAction001 = '48e82cd7-1edb-4d11-9a64-8f28c7c0a0a0',
+	/**
+	 * ### 🟪[CONDITION] CONDITION-001
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-002`
+	 * - Out: `DIALOG-003`, `DIALOG-004`, `DIALOG-005`, `DIALOG-006`
+	 * Case 0:
+	 * `party.l1` = `true`
+	 * Case 1:
+	 * `party.l2` = `true`
+	 * Case 2:
+	 * `party.l3` = `true`
+	 * ---
+	 * <image url="./_images/cond.webp" />
+	 */
+	conditionDispatchCondition001 = 'ab111d47-9fe0-41d9-afd9-e96f00a01d9a',
+	/**
+	 * ### 🟪[CONDITION] CONDITION-002
+	 * - Scene: `condition-dispatch`
+	 * - In: `DIALOG-001`
+	 * - Out: `CONDITION-001`, `DIALOG-002`
+	 * `party.l1` = `true`
+	 * `party.l2` = `true`
+	 * `party.l3` = `true`
+	 * ---
+	 * <image url="./_images/cond.webp" />
+	 */
+	conditionDispatchCondition002 = 'a004326b-fada-43fd-aae7-f6e1654fa02e',
+	/**
+	 * ### 🟪[CONDITION] CONDITION-003
+	 * - Scene: `condition-dispatch`
+	 * - In: `DIALOG-006`
+	 * - Out: `ACTION-001`, `DIALOG-008`
+	 * `party.l1` = `true`
+	 * `party.l2` = `true`
+	 * `party.l3` = `true`
+	 * ---
+	 * <image url="./_images/cond.webp" />
+	 */
+	conditionDispatchCondition003 = '164da884-2cd2-4696-b4e0-219bc951cf45',
+	/**
+	 * ### 🟪[CONDITION] CONDITION-004
+	 * - Scene: `condition-dispatch`
+	 * - In: `DIALOG-008`
+	 * - Out: `DIALOG-009`, `DIALOG-010`
+	 * Case 0:
+	 * `party.l1` != `true`
+	 * Case 1:
+	 * `party.l2` != `true`
+	 * Case 2:
+	 * `party.l3` != `true`
+	 * ---
+	 * <image url="./_images/cond.webp" />
+	 */
+	conditionDispatchCondition004 = 'a77ac2c9-ade2-4a5b-b187-4ec81140b885',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-001 ⭐
+	 * _"ho... grand esprit des carotte ..."_
+	 * - Characters: `l4`
+	 * - Scene: `condition-dispatch`
+	 * - Out: `CONDITION-002`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog001 = '90a8c0a2-cb0e-4900-b974-c59d470f296e',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-002
+	 * _"Hey vien nous choisir avant dinvoquez les esprit de la carotte"_
+	 * - Characters: `l1`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-002`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog002 = 'a4610101-f256-4ce8-a622-566493a7ea36',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-003
+	 * _"Ho grande carotte rouge"_
+	 * - Characters: `l1`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog003 = 'f0d04478-f078-4284-bb29-84dde7f6745e',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-004
+	 * _"ho grande carotte jaune"_
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog004 = 'fd4a39f9-6aa7-4222-90b1-7e79f8eab245',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-005
+	 * _"ho grande carrote bleue"_
+	 * - Characters: `l3`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog005 = '802b6469-bf1d-4e17-8bb3-1443b0f32b38',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-006
+	 * _"ho grande carotte, merci de nous nourrire"_
+	 * - Characters: `l4`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * - Out: `CONDITION-003`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog006 = 'f1de0bf3-65d8-4a0f-a26e-31562f349396',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-007
+	 * _"ca marcher !"_
+	 * - Characters: `l4`
+	 * - Scene: `condition-dispatch`
+	 * - In: `ACTION-001`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog007 = '49711c01-57d5-4776-8bad-6e5b426eb1e8',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-008
+	 * _"il ce passe rien ! il manque une incantation !? ...."_
+	 * - Characters: `l4`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-003`
+	 * - Out: `CONDITION-004`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog008 = '9441ad01-6402-4788-a3e4-0cbc2d2701a3',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-009
+	 * _"Oui moi"_
+	 * - Characters: `l1`, `l2`, `l3`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-004`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog009 = '19d77434-b74a-4678-8cd4-859d18c4ec30',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-010
+	 * _"Ho !"_
+	 * - Characters: `l4`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-004`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	conditionDispatchDialog010 = '601c1889-5ba1-4da8-8076-f5bc6164c7b5',
 }
 
 /**
@@ -738,44 +817,44 @@ export enum LSDE_BLOCKS {
  * Use these for switch/case handling of specific player decisions.
  */
 export enum LSDE_CHOICES {
-  /**
-   * ### ⬜[CHOICE_ITEM] Nous nous battrons !
-   * _"Nous nous battrons !"_
-   * - Scene: `simple-choices`
-   * - Parent: `player_moral_choice-AI`
-   */
-  /** @see {@link LSDE_BLOCKS.simpleChoicesPlayerMoralChoiceAi} */
-  simpleChoicesNousNousBattrons = "1db50a61-e40d-49a2-bf02-d8f5eee4ea84",
-  /**
-   * ### ⬜[CHOICE_ITEM] C'est un suicide.
-   * _"C'est un suicide."_
-   * - Scene: `simple-choices`
-   * - Parent: `player_moral_choice-AI`
-   */
-  /** @see {@link LSDE_BLOCKS.simpleChoicesPlayerMoralChoiceAi} */
-  simpleChoicesCEstUnSuicide = "189ecf6a-3f10-41d5-b4b0-78e35298ee4d",
-  /**
-   * ### ⬜[CHOICE_ITEM] Est-ce vraiment réel ?
-   * _"Est-ce vraiment réel ?"_
-   * - Scene: `simple-choices`
-   * - Parent: `player_moral_choice-AI`
-   */
-  /** @see {@link LSDE_BLOCKS.simpleChoicesPlayerMoralChoiceAi} */
-  simpleChoicesEstCeVraimentREl = "3716cb04-2e54-4bf4-864d-28b6ce000786",
-  /**
-   * ### ⬜[CHOICE_ITEM] Charger la créature !
-   * _"Charger la créature !"_
-   * - Scene: `simple-action`
-   * - Parent: `final_decision-AI`
-   */
-  /** @see {@link LSDE_BLOCKS.simpleActionFinalDecisionAi} */
-  simpleActionChargerLaCrAture = "09ccf6a7-35a8-4bec-9468-51728d5b8785",
-  /**
-   * ### ⬜[CHOICE_ITEM] Battre en retraite !
-   * _"Battre en retraite !"_
-   * - Scene: `simple-action`
-   * - Parent: `final_decision-AI`
-   */
-  /** @see {@link LSDE_BLOCKS.simpleActionFinalDecisionAi} */
-  simpleActionBattreEnRetraite = "cd1ae040-2421-41dd-8962-116a8a13ff78",
+	/**
+	 * ### ⬜[CHOICE_ITEM] Nous nous battrons !
+	 * _"Nous nous battrons !"_
+	 * - Scene: `simple-choices`
+	 * - Parent: `player_moral_choice-AI`
+	 */
+	/** @see {@link LSDE_BLOCKS.simpleChoicesPlayerMoralChoiceAi} */
+	simpleChoicesNousNousBattrons = '1db50a61-e40d-49a2-bf02-d8f5eee4ea84',
+	/**
+	 * ### ⬜[CHOICE_ITEM] C'est un suicide.
+	 * _"C'est un suicide."_
+	 * - Scene: `simple-choices`
+	 * - Parent: `player_moral_choice-AI`
+	 */
+	/** @see {@link LSDE_BLOCKS.simpleChoicesPlayerMoralChoiceAi} */
+	simpleChoicesCEstUnSuicide = '189ecf6a-3f10-41d5-b4b0-78e35298ee4d',
+	/**
+	 * ### ⬜[CHOICE_ITEM] Est-ce vraiment réel ?
+	 * _"Est-ce vraiment réel ?"_
+	 * - Scene: `simple-choices`
+	 * - Parent: `player_moral_choice-AI`
+	 */
+	/** @see {@link LSDE_BLOCKS.simpleChoicesPlayerMoralChoiceAi} */
+	simpleChoicesEstCeVraimentREl = '3716cb04-2e54-4bf4-864d-28b6ce000786',
+	/**
+	 * ### ⬜[CHOICE_ITEM] Charger la créature !
+	 * _"Charger la créature !"_
+	 * - Scene: `simple-action`
+	 * - Parent: `final_decision-AI`
+	 */
+	/** @see {@link LSDE_BLOCKS.simpleActionFinalDecisionAi} */
+	simpleActionChargerLaCrAture = '09ccf6a7-35a8-4bec-9468-51728d5b8785',
+	/**
+	 * ### ⬜[CHOICE_ITEM] Battre en retraite !
+	 * _"Battre en retraite !"_
+	 * - Scene: `simple-action`
+	 * - Parent: `final_decision-AI`
+	 */
+	/** @see {@link LSDE_BLOCKS.simpleActionFinalDecisionAi} */
+	simpleActionBattreEnRetraite = 'cd1ae040-2421-41dd-8962-116a8a13ff78',
 }
