@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T06:30:47.831Z",
+  "exportDate": "2026-04-03T06:48:38.494Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -1697,7 +1697,7 @@
       "uuid": "a037a98b-ffec-40d3-8092-4eedb9857501",
       "label": "simple-condition",
       "date": "03/04/2026",
-      "entryBlockId": "3c688020-6886-4fc6-842e-4e4bb9a689d2",
+      "entryBlockId": "cb342290-3616-42d2-ba58-620290dfa45a",
       "blocks": [
         {
           "uuid": "6e270a8d-688c-4101-9d2b-97876b09e301",
@@ -1718,23 +1718,6 @@
           "parentLabels": [
             "__blueprints__"
           ]
-        },
-        {
-          "uuid": "3c688020-6886-4fc6-842e-4e4bb9a689d2",
-          "type": "DIALOG",
-          "properties": [],
-          "label": "DIALOG-001",
-          "isStartBlock": true,
-          "structureKey": "__blueprints__.simple-condition.DIALOG-001",
-          "content": "",
-          "dialogueText": {
-            "en": "",
-            "fr": ""
-          },
-          "parentLabels": [
-            "__blueprints__"
-          ],
-          "metadata": {}
         },
         {
           "uuid": "4d8f4766-5c11-4a5d-bbc7-223a5bc4fc52",
@@ -1789,6 +1772,7 @@
           "type": "DIALOG",
           "properties": [],
           "label": "l1_lost_carrot_distress-AI",
+          "isStartBlock": true,
           "structureKey": "__blueprints__.simple-condition.l1_lost_carrot_distress-AI",
           "content": "Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !",
           "dialogueText": {

@@ -89,6 +89,13 @@ export function addItemToInventory(
   }
 }
 
+export function getInventoryItemQuantity(
+  gameStore: GameStore,
+  itemId: string,
+): number {
+  return gameStore.inventory.get(itemId)?.quantity ?? 0;
+}
+
 export function removeItemFromInventory(
   gameStore: GameStore,
   itemId: string,

@@ -30,7 +30,15 @@ import {
   type ChoiceSelectedCallback,
   type ChoiceEntry,
 } from "../renderer/ui/choice-box";
-import { setGameVariable, setGameSwitch, type GameStore } from "./game-store";
+import {
+  setGameVariable,
+  getGameVariable,
+  setGameSwitch,
+  addItemToInventory,
+  removeItemFromInventory,
+  getInventoryItemQuantity,
+  type GameStore,
+} from "./game-store";
 
 export interface CharacterReference {
   readonly characterId: string;
@@ -85,8 +93,12 @@ export interface GameActionFacade {
     onChoiceSelected: ChoiceSelectedCallback,
   ): Container;
   removeBubbleFromWorld(bubbleHandle: BubbleTextHandle): void;
+  getVariable(variableName: string): number;
   setVariable(variableName: string, value: number): void;
   setSwitch(switchName: string, isEnabled: boolean): void;
+  addItem(itemId: string, displayName: string, quantity?: number): void;
+  removeItem(itemId: string, quantity?: number): void;
+  getItemQuantity(itemId: string): number;
 }
 
 export function createGameActionFacade(
@@ -297,6 +309,10 @@ export function createGameActionFacade(
       return choiceBoxContainer;
     },
 
+    getVariable(variableName: string): number {
+      return getGameVariable(gameStore, variableName);
+    },
+
     setVariable(variableName: string, value: number): void {
       setGameVariable(gameStore, variableName, value);
     },
@@ -307,6 +323,18 @@ export function createGameActionFacade(
 
     setSwitch(switchName: string, isEnabled: boolean): void {
       setGameSwitch(gameStore, switchName, isEnabled);
+    },
+
+    addItem(itemId: string, displayName: string, quantity?: number): void {
+      addItemToInventory(gameStore, itemId, displayName, quantity);
+    },
+
+    removeItem(itemId: string, quantity?: number): void {
+      removeItemFromInventory(gameStore, itemId, quantity);
+    },
+
+    getItemQuantity(itemId: string): number {
+      return getInventoryItemQuantity(gameStore, itemId);
     },
   };
 }

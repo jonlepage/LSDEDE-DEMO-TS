@@ -48,7 +48,6 @@ import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import type { GameActionFacade } from "../../game/game-actions";
-import { lsdeActionId } from "../../../public/blueprints/blueprint.types";
 
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
@@ -80,7 +79,7 @@ export interface SceneCleanup {
 interface BlueprintAction {
   // string instead of lsdeActionId — native LSDE actions (e.g. "shakeCamera")
   // are not included in the auto-generated lsdeActionId union type.
-  readonly actionId: lsdeActionId;
+  readonly actionId: string;
   readonly params: readonly (string | number | boolean)[];
 }
 
