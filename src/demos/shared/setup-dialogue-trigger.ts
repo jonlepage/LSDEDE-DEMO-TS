@@ -35,15 +35,27 @@ export function setupDialogueTrigger(
     return Math.sqrt(deltaX * deltaX + deltaY * deltaY) < interactionDistance;
   }
 
-  const onKeyDown = (event: KeyboardEvent) => {
+  function onKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter" && !hasTriggered && isPlayerNearTriggerNpc()) {
       hasTriggered = true;
       onTrigger();
     }
-  };
+  }
+  function onClick() {
+    if (!hasTriggered && isPlayerNearTriggerNpc()) {
+      hasTriggered = true;
+      onTrigger();
+    }
+  }
+  triggerNpcReference.sprite.interactive = true;
+  triggerNpcReference.sprite.cursor = "pointer";
+  triggerNpcReference.sprite.onclick = onClick;
 
   window.addEventListener("keydown", onKeyDown);
   sceneContext.addDisposable(() =>
     window.removeEventListener("keydown", onKeyDown),
   );
+  sceneContext.addDisposable(() => {
+    triggerNpcReference.sprite.onclick = null;
+  });
 }
