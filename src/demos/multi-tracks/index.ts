@@ -70,8 +70,8 @@ export async function runScene(
         characterId: GAME_ACTORS.l2,
         displayName: GAME_ACTORS.l2,
         tintColor: 0x4ecdc4,
-        startX: screenCenterX - 50,
-        startY: screenCenterY - 20,
+        startX: screenCenterX - 5,
+        startY: screenCenterY - 5,
       },
       {
         characterId: GAME_ACTORS.l3,
@@ -142,11 +142,20 @@ export async function runScene(
   // Multiple bubbles can coexist when tracks run in parallel.
   const activeBubbles = new Map<string, BubbleTextHandle>();
 
-  // Only the main-track (non-async) block listens for user input.
-  // We store its advance function so the click handler can call it.
-  let mainTrackAdvanceFunction: (() => void) | null = null;
+  // Blocks waiting for user input to advance, keyed by block UUID.
+  // A single click broadcasts to ALL entries: the main-track block AND every
+  // async block with waitInput=true advance simultaneously.
+  // This models "press to continue" — every track that needs acknowledgement
+  // reacts to the same player interaction at once.
+  const blocksWaitingForInput = new Map<string, () => void>();
 
   const locale = blueprintData.primaryLanguage ?? "fr";
+
+  // you choose how handle delay if you want support it in your game
+  dialogueEngine.onBeforeBlock(({ block, resolve }) => {
+    const { nativeProperties } = block;
+    setTimeout(() => resolve(), nativeProperties?.delay ?? 0);
+  });
 
   function startDialogueScene(): void {
     console.log("[multi-tracks] Scene triggered!");
@@ -175,54 +184,54 @@ export async function runScene(
 
       // --- Decide how to advance based on block properties ---
       //
-      // Async blocks run on a parallel track and never require user input.
-      // If the block has a timeout, we wait that duration before advancing —
-      // this keeps the bubble visible for the specified time.
-      // If no timeout, we advance immediately (the bubble stays visible until
-      // the engine calls our cleanup function when the track moves on).
+      // Three cases determine when next() is called:
+      //
+      //   1. waitInput (any track)  → block joins the input queue, user click advances it
+      //   2. async WITHOUT waitInput → auto-advance (immediately, or after timeout)
+      //   3. main track (not async) → always waits for user input (implicit waitInput)
+      //
+      // waitInput is a passive flag — LSDE does not enforce it.
+      // It tells the game: "this block needs a player interaction before proceeding",
+      // even if it runs on an async track. This lets the narrative designer create
+      // async bubbles that pause until the player acknowledges them.
       const isAsyncBlock = block.nativeProperties?.isAsync === true;
       const timeoutMs = block.nativeProperties?.timeout;
-      const waitInput = block.nativeProperties?.waitInput;
+      const needsUserInput =
+        block.nativeProperties?.waitInput === true || !isAsyncBlock;
 
-      if (isAsyncBlock) {
-        // Async track: auto-advance. The bubble remains on screen until cleanup.
-        if (timeoutMs && timeoutMs > 0) {
-          setTimeout(() => next(), timeoutMs);
-        } else {
-          next();
-        }
-      } else {
-        // Main track: wait for user click/tap to advance.
-        // If the block has a timeout, auto-advance after that duration —
-        // the user can still click earlier to skip ahead.
-        mainTrackAdvanceFunction = next;
+      if (needsUserInput) {
+        // This block waits for user click to advance.
+        // If it also has a timeout, auto-advance after that duration
+        // (the user can still click earlier to skip ahead).
+        const blockUuid = block.uuid;
+        blocksWaitingForInput.set(blockUuid, next);
 
+        let autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
         if (timeoutMs && timeoutMs > 0) {
-          const autoAdvanceTimer = setTimeout(() => {
-            if (mainTrackAdvanceFunction === next) {
-              mainTrackAdvanceFunction = null;
+          autoAdvanceTimer = setTimeout(() => {
+            if (blocksWaitingForInput.delete(blockUuid)) {
               next();
             }
           }, timeoutMs);
-
-          // If the user clicks before timeout, cancel the timer.
-          // We store the original next and wrap it below in click handler,
-          // but we also need to clear the timer on cleanup.
-          const originalCleanup = () => clearTimeout(autoAdvanceTimer);
-          const blockUuid = block.uuid;
-
-          return () => {
-            originalCleanup();
-            const handle = activeBubbles.get(blockUuid);
-            if (handle) {
-              gameActions.removeBubbleFromWorld(handle);
-              activeBubbles.delete(blockUuid);
-            }
-            if (mainTrackAdvanceFunction === next) {
-              mainTrackAdvanceFunction = null;
-            }
-          };
         }
+
+        return () => {
+          if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+          blocksWaitingForInput.delete(blockUuid);
+          const handle = activeBubbles.get(blockUuid);
+          if (handle) {
+            gameActions.removeBubbleFromWorld(handle);
+            activeBubbles.delete(blockUuid);
+          }
+        };
+      }
+
+      // Async track without waitInput: auto-advance.
+      // The bubble remains on screen until LSDE calls our cleanup.
+      if (timeoutMs && timeoutMs > 0) {
+        setTimeout(() => next(), timeoutMs);
+      } else {
+        next();
       }
 
       // --- Cleanup: called by LSDE when THIS block's track advances ---
@@ -237,10 +246,6 @@ export async function runScene(
           gameActions.removeBubbleFromWorld(handle);
           activeBubbles.delete(blockUuid);
         }
-        // Only clear the main-track advance if it's still ours
-        if (mainTrackAdvanceFunction === next) {
-          mainTrackAdvanceFunction = null;
-        }
       };
     });
 
@@ -248,7 +253,7 @@ export async function runScene(
       // Scene complete — clear any remaining state.
       // LSDE cancels async tracks automatically on scene exit, but our
       // local references should be cleaned up for good measure.
-      mainTrackAdvanceFunction = null;
+      blocksWaitingForInput.clear();
       activeBubbles.clear();
       console.log("[multi-tracks] Scene completed.");
     });
@@ -268,26 +273,40 @@ export async function runScene(
     onTrigger: startDialogueScene,
   });
 
-  // --- Click: advance main-track dialogue only ---
+  // --- Click: broadcast advance to ALL blocks waiting for input ---
   //
-  // In a multi-track scene, clicking only affects the main track.
-  // Async tracks auto-advance on their own schedule (timeout or immediate).
-  // This separation is what makes parallel dialogue feel natural: the player
-  // controls the conversation pace while background chatter flows freely.
+  // A single click advances every block in blocksWaitingForInput at once:
+  // the main-track block AND any async blocks with waitInput=true.
+  // This is NOT a queue — it's a broadcast. All waiting tracks react
+  // to the same player interaction simultaneously, which feels natural:
+  // "press to continue" dismisses everything that was waiting.
+  //
+  // If any bubble's typewriter is still animating, the first click
+  // skips all typewriters to full text. The second click advances.
   const onPointerDownForDialogue = () => {
-    if (!mainTrackAdvanceFunction) return;
+    if (blocksWaitingForInput.size === 0) return;
 
-    // Find the main-track bubble (the one whose next === mainTrackAdvanceFunction).
-    // If the typewriter is still revealing text, skip to full text first.
-    // On the next click, advance to the next block.
-    for (const bubbleHandle of activeBubbles.values()) {
-      if (!bubbleHandle.typewriterState.isComplete) {
-        bubbleHandle.skipTypewriter();
+    // First pass: if any waiting bubble is still typing, skip them all.
+    for (const blockUuid of blocksWaitingForInput.keys()) {
+      const bubbleHandle = activeBubbles.get(blockUuid);
+      if (bubbleHandle && !bubbleHandle.typewriterState.isComplete) {
+        for (const uuid of blocksWaitingForInput.keys()) {
+          activeBubbles.get(uuid)?.skipTypewriter();
+        }
         return;
       }
     }
 
-    mainTrackAdvanceFunction();
+    // Second pass: advance every waiting block at once.
+    // Important: snapshot first, then clear, then call advance().
+    // Calling advance() may synchronously dispatch the next blocks,
+    // which would add new entries to blocksWaitingForInput.
+    // If we clear() after advancing, we'd wipe those fresh entries.
+    const toAdvance = [...blocksWaitingForInput.values()];
+    blocksWaitingForInput.clear();
+    for (const advance of toAdvance) {
+      advance();
+    }
   };
 
   sceneContext.addStageListener(

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T01:58:33.792Z",
+  "exportDate": "2026-04-03T02:15:53.189Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -333,6 +333,35 @@
           }
         },
         {
+          "uuid": "2b49d688-ae02-43e6-adf0-c57c9ddc6854",
+          "type": "DIALOG",
+          "properties": [],
+          "label": "DIALOG-010",
+          "structureKey": "__blueprints__.multi-tracks.DIALOG-010",
+          "content": "pfff...",
+          "nativeProperties": {
+            "isAsync": true,
+            "delay": 1000,
+            "timeout": 1000
+          },
+          "dialogueText": {
+            "en": "",
+            "fr": "pfff..."
+          },
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d9e2f0f-7382-439e-a256-8a29e65bdc09",
+                "id": "l2",
+                "name": "l2"
+              }
+            ]
+          }
+        },
+        {
           "uuid": "36f0ba66-dfb8-4084-bf10-370a5e6c671b",
           "type": "DIALOG",
           "properties": [],
@@ -567,6 +596,14 @@
           "id": "1ccabadd-e197-48b3-8636-89e8999f9ebe",
           "fromId": "4604c8d0-c4cb-411a-a878-0d498bae868f",
           "toId": "ad8a7573-500c-4038-bfef-a7ed4550ac8e",
+          "fromPort": "out",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "4aeea61a-34d1-42c8-93ff-f81cf1ffacf6",
+          "fromId": "be6f47c5-13f3-4c1a-ba43-80d1820067af",
+          "toId": "2b49d688-ae02-43e6-adf0-c57c9ddc6854",
           "fromPort": "out",
           "toPort": "in",
           "fromPortIndex": 0

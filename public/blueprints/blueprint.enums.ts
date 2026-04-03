@@ -15,7 +15,7 @@ export enum LSDE_SCENES {
 	simpleDialogFlow = '268a4c3e-7693-4ce7-8d36-4b0fd2e4a052',
 	/**
 	 * ### Scene: multi-tracks
-	 * 9 DIALOG
+	 * 10 DIALOG
 	 * Entry: `start_discussion-AI` ⭐
 	 * - Characters: `l1`, `l2`, `l3`, `l4`
 	 */
@@ -136,6 +136,16 @@ export enum LSDE_BLOCKS {
 	 */
 	multiTracksDialog009 = 'f38215d6-f0ef-4dc1-bee7-7dccf258ee2a',
 	/**
+	 * ### 🟦[DIALOG] DIALOG-010
+	 * _"pfff..."_
+	 * - Characters: `l2`
+	 * - Scene: `multi-tracks`
+	 * - In: `l2_response-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	multiTracksDialog010 = '2b49d688-ae02-43e6-adf0-c57c9ddc6854',
+	/**
 	 * ### 🟦[DIALOG] final_decision-AI
 	 * _"Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus."_
 	 * - Characters: `l2`
@@ -162,7 +172,7 @@ export enum LSDE_BLOCKS {
 	 * - Characters: `l2`
 	 * - Scene: `multi-tracks`
 	 * - In: `noise_1-AI`
-	 * - Out: `noise_2-AI`, `l1_irritation-AI`
+	 * - Out: `noise_2-AI`, `l1_irritation-AI`, `DIALOG-010`
 	 * ---
 	 * <image url="./_images/dialog.webp" />
 	 */
