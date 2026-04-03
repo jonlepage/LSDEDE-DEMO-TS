@@ -27,17 +27,32 @@ export interface MovementState {
   distanceSinceLastHop: number;
   hopProgress: number;
   smoothedHorizontalVelocity: number;
+  /** Per-character hop stride length — distance between hops (px). */
+  hopStrideDistance: number;
+  /** Per-character hop arc height (px). */
+  hopMaxHeight: number;
+}
+
+export interface MovementStateOptions {
+  readonly movementSpeed?: number;
+  readonly hopStrideDistance?: number;
+  readonly hopMaxHeight?: number;
 }
 
 export function createMovementState(
-  movementSpeed: number = DEFAULT_MOVEMENT_SPEED,
+  options: number | MovementStateOptions = {},
 ): MovementState {
+  // Backward-compatible: accept a bare number as movementSpeed.
+  const resolved =
+    typeof options === "number" ? { movementSpeed: options } : options;
   return {
     currentTarget: null,
-    movementSpeed,
+    movementSpeed: resolved.movementSpeed ?? DEFAULT_MOVEMENT_SPEED,
     distanceSinceLastHop: 0,
     hopProgress: -1,
     smoothedHorizontalVelocity: 0,
+    hopStrideDistance: resolved.hopStrideDistance ?? HOP_DISTANCE_PER_STRIDE,
+    hopMaxHeight: resolved.hopMaxHeight ?? HOP_MAX_HEIGHT,
   };
 }
 
@@ -166,6 +181,9 @@ export function registerMovementTicker(
     characterSprite.rotation =
       movementState.smoothedHorizontalVelocity * INERTIA_TILT_FACTOR;
 
+    const strideDistance = movementState.hopStrideDistance;
+    const maxHeight = movementState.hopMaxHeight;
+
     if (frameDistance < HOP_SPEED_FLOOR) {
       characterSprite.pivot.y *= 0.85;
       if (characterSprite.pivot.y < 0.5) characterSprite.pivot.y = 0;
@@ -175,21 +193,21 @@ export function registerMovementTicker(
 
       if (
         movementState.hopProgress < 0 &&
-        movementState.distanceSinceLastHop >= HOP_DISTANCE_PER_STRIDE
+        movementState.distanceSinceLastHop >= strideDistance
       ) {
         movementState.hopProgress = 0;
         movementState.distanceSinceLastHop = 0;
       }
 
       if (movementState.hopProgress >= 0) {
-        movementState.hopProgress += frameDistance / HOP_DISTANCE_PER_STRIDE;
+        movementState.hopProgress += frameDistance / strideDistance;
         if (movementState.hopProgress >= 1) {
           movementState.hopProgress = -1;
           characterSprite.pivot.y = 0;
         } else {
           const arc =
             4 * movementState.hopProgress * (1 - movementState.hopProgress);
-          characterSprite.pivot.y = arc * HOP_MAX_HEIGHT;
+          characterSprite.pivot.y = arc * maxHeight;
         }
       }
     }

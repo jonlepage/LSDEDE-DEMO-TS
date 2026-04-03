@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T08:29:28.111Z",
+  "exportDate": "2026-04-03T10:29:48.674Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -2207,7 +2207,8 @@
           "content": "Ho grande carotte rouge",
           "nativeProperties": {
             "isAsync": true,
-            "delay": 100
+            "delay": 100,
+            "timeout": 1000
           },
           "dialogueText": {
             "en": "",
@@ -2235,7 +2236,8 @@
           "content": "ho grande carotte jaune ",
           "nativeProperties": {
             "isAsync": true,
-            "delay": 600
+            "delay": 600,
+            "timeout": 1000
           },
           "dialogueText": {
             "en": "",
@@ -2255,7 +2257,8 @@
           "content": "ho grande carrote bleue",
           "nativeProperties": {
             "isAsync": true,
-            "delay": 1300
+            "delay": 1300,
+            "timeout": 1000
           },
           "dialogueText": {
             "en": "",
@@ -2282,7 +2285,7 @@
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-006",
           "content": "ho grande carotte, merci de nous nourrire",
           "nativeProperties": {
-            "delay": 2000
+            "delay": 13000
           },
           "dialogueText": {
             "en": "",
@@ -2424,52 +2427,12 @@
           "fromPortIndex": 0
         },
         {
-          "id": "0d09ac1b-2f78-43a0-bacb-fd07aa9dd55f",
-          "fromId": "a004326b-fada-43fd-aae7-f6e1654fa02e",
-          "toId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
-          "fromPort": "true",
-          "toPort": "in",
-          "fromPortIndex": 0
-        },
-        {
           "id": "24e0701c-40e9-43ba-8da9-75da1ef2928a",
           "fromId": "a004326b-fada-43fd-aae7-f6e1654fa02e",
           "toId": "a4610101-f256-4ce8-a622-566493a7ea36",
           "fromPort": "false",
           "toPort": "in",
           "fromPortIndex": 1
-        },
-        {
-          "id": "cab7e087-48a6-4d8f-ac29-a366015126bd",
-          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
-          "toId": "f0d04478-f078-4284-bb29-84dde7f6745e",
-          "fromPort": "case_0",
-          "toPort": "in",
-          "fromPortIndex": 0
-        },
-        {
-          "id": "dfa75b8c-eaca-45e2-aae1-b8a828e04b0e",
-          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
-          "toId": "fd4a39f9-6aa7-4222-90b1-7e79f8eab245",
-          "fromPort": "case_1",
-          "toPort": "in",
-          "fromPortIndex": 1
-        },
-        {
-          "id": "2c819938-1208-4e8f-8c8c-8da5a9d484e2",
-          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
-          "toId": "802b6469-bf1d-4e17-8bb3-1443b0f32b38",
-          "fromPort": "case_2",
-          "toPort": "in",
-          "fromPortIndex": 2
-        },
-        {
-          "id": "c37c7448-8439-4a13-89b4-e52bb78d60ed",
-          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
-          "toId": "f1de0bf3-65d8-4a0f-a26e-31562f349396",
-          "fromPort": "default",
-          "toPort": "in",
-          "fromPortIndex": 3
         },
         {
           "id": "fcb07f8e-fb2e-4e03-a14f-285dfbae68f2",
@@ -2542,6 +2505,30 @@
           "fromPort": "default",
           "toPort": "in",
           "fromPortIndex": 3
+        },
+        {
+          "id": "6078186c-fef1-46cb-bb3d-23f80c6eca97",
+          "fromId": "a004326b-fada-43fd-aae7-f6e1654fa02e",
+          "toId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "fromPort": "true",
+          "toPort": "in",
+          "fromPortIndex": 0
+        },
+        {
+          "id": "a654df11-a024-405c-989c-b48a2a479a6e",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "f1de0bf3-65d8-4a0f-a26e-31562f349396",
+          "fromPort": "default",
+          "toPort": "in",
+          "fromPortIndex": 3
+        },
+        {
+          "id": "511e6393-d48e-4167-a7ee-d51fc9059c17",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "f0d04478-f078-4284-bb29-84dde7f6745e",
+          "fromPort": "case_0",
+          "toPort": "in",
+          "fromPortIndex": 0
         }
       ]
     }

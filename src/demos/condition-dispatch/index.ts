@@ -10,10 +10,10 @@
  *    to the party (stored in gameStore.party). Once recruited, the NPC's
  *    recruit hint disappears and the follow system kicks in.
  *
- * 2. Party follow — a ticker each frame sets the movement target of every
- *    recruited party member to their assigned "slot" position behind the player.
- *    Slots form a V shape so members don't stack. This requires each NPC to
- *    have its own registerMovementTicker (unlike idle NPCs in other demos).
+ * 2. Party follow — a breadcrumb trail records the player's path each frame.
+ *    Recruited members follow in single file (queue), each targeting a point
+ *    further back on the trail. Per-character speed and hop variation make
+ *    the chain feel organic rather than robotic.
  *
  * ---------------------------------------------------------------------------
  * KEY EDUCATIONAL POINT: enableDispatcher mode
@@ -60,13 +60,13 @@ import {
   type CharacterReference,
   type GameActionFacade,
 } from "../../game/game-actions";
-import { registerMovementTicker } from "../../renderer/movement";
+import {
+  registerMovementTicker,
+  createMovementState,
+} from "../../renderer/movement";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
 import { setupPartyRecruitment } from "../shared/setup-party-recruitment";
-import {
-  setupPartyFollow,
-  type FormationOffset,
-} from "../shared/setup-party-follow";
+import { setupPartyFollow } from "../shared/setup-party-follow";
 import {
   createDebugPanel,
   registerLiveMonitorTicker,
@@ -81,11 +81,16 @@ const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const SCENE_UUID = LSDE_SCENES.conditionDispatch;
 const PARTY_NPC_IDS = [GAME_ACTORS.l1, GAME_ACTORS.l2, GAME_ACTORS.l3] as const;
 const BIG_CARROT_INTERACT_DISTANCE = 90;
-// V-formation slots: each member trails the player from a fixed offset.
-const PARTY_FOLLOW_OFFSETS: Record<string, FormationOffset> = {
-  [GAME_ACTORS.l1]: { x: -40, y: 18 },
-  [GAME_ACTORS.l2]: { x: -70, y: 0 },
-  [GAME_ACTORS.l3]: { x: -40, y: -18 },
+
+// Per-NPC movement personalities — varied speed and hop parameters so
+// followers don't all bounce in lockstep.
+const NPC_MOVEMENT_PROFILES: Record<
+  string,
+  { speed: number; hopStride: number; hopHeight: number }
+> = {
+  [GAME_ACTORS.l1]: { speed: 3.6, hopStride: 26, hopHeight: 6 },
+  [GAME_ACTORS.l2]: { speed: 3.2, hopStride: 34, hopHeight: 4 },
+  [GAME_ACTORS.l3]: { speed: 3.9, hopStride: 22, hopHeight: 5.5 },
 };
 
 export interface ConditionDispatchDependencies {
@@ -234,17 +239,42 @@ export async function runScene(
     sceneContext,
   });
 
-  // --- NPC movement tickers ---
-  // Party members need their own ticker so setMovementTarget() actually moves them.
-  // (The player gets its ticker via setupPlayerMovement.)
+  // --- NPC movement tickers (with per-character hop variation) ---
+  // Override default movementState with personality-specific values, then register.
   for (const characterId of PARTY_NPC_IDS) {
     const characterRef = characters.get(characterId) as CharacterReference;
-    const unregisterNpcMovement = registerMovementTicker(
-      pixiApplication,
-      characterRef.sprite,
-      characterRef.movementState,
-    );
-    sceneContext.addDisposable(unregisterNpcMovement);
+    const profile = NPC_MOVEMENT_PROFILES[characterId];
+    if (profile) {
+      const customMovementState = createMovementState({
+        movementSpeed: profile.speed,
+        hopStrideDistance: profile.hopStride,
+        hopMaxHeight: profile.hopHeight,
+      });
+      // Seed a random distanceSinceLastHop so hops start at different phases.
+      customMovementState.distanceSinceLastHop =
+        Math.random() * customMovementState.hopStrideDistance;
+      // Replace the default movementState — CharacterReference is readonly but
+      // the map entry can be reassembled.
+      characters.set(characterId, {
+        characterId: characterRef.characterId,
+        sprite: characterRef.sprite,
+        movementState: customMovementState,
+      });
+      const updatedRef = characters.get(characterId) as CharacterReference;
+      const unregisterNpcMovement = registerMovementTicker(
+        pixiApplication,
+        updatedRef.sprite,
+        updatedRef.movementState,
+      );
+      sceneContext.addDisposable(unregisterNpcMovement);
+    } else {
+      const unregisterNpcMovement = registerMovementTicker(
+        pixiApplication,
+        characterRef.sprite,
+        characterRef.movementState,
+      );
+      sceneContext.addDisposable(unregisterNpcMovement);
+    }
   }
 
   // --- Player movement + collision + camera ---
@@ -287,14 +317,14 @@ export async function runScene(
 
   sceneContext.addDisposable(() => debugPanelState.pane.dispose());
 
-  // --- Party follow formation ---
+  // --- Party follow — single-file chain (breadcrumb trail) ---
   setupPartyFollow({
     playerReference,
     partyNpcIds: PARTY_NPC_IDS,
     characters,
-    formationOffsets: PARTY_FOLLOW_OFFSETS,
     sceneContext,
     gameActions,
+    followDistance: 50,
   });
 
   // --- Big ritual carrot ---
