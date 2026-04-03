@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T10:29:48.674Z",
+  "exportDate": "2026-04-03T11:17:29.978Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -2529,6 +2529,22 @@
           "fromPort": "case_0",
           "toPort": "in",
           "fromPortIndex": 0
+        },
+        {
+          "id": "3b5468eb-34e9-4429-82bb-a4bd485623f2",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "fd4a39f9-6aa7-4222-90b1-7e79f8eab245",
+          "fromPort": "case_1",
+          "toPort": "in",
+          "fromPortIndex": 1
+        },
+        {
+          "id": "ae1f48c4-977e-459b-90c8-2a06a7cea269",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "802b6469-bf1d-4e17-8bb3-1443b0f32b38",
+          "fromPort": "case_2",
+          "toPort": "in",
+          "fromPortIndex": 2
         }
       ]
     }

@@ -658,7 +658,7 @@ export enum LSDE_BLOCKS {
 	 * ### 🟪[CONDITION] CONDITION-001
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-002`
-	 * - Out: `DIALOG-006`, `DIALOG-003`
+	 * - Out: `DIALOG-006`, `DIALOG-003`, `DIALOG-004`, `DIALOG-005`
 	 * Case 0:
 	 * `party.l1` = `true`
 	 * Case 1:
@@ -742,6 +742,7 @@ export enum LSDE_BLOCKS {
 	 * ### 🟦[DIALOG] DIALOG-004
 	 * _"ho grande carotte jaune"_
 	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
 	 * ---
 	 * <image url="./_images/dialog.webp" />
 	 */
@@ -751,6 +752,7 @@ export enum LSDE_BLOCKS {
 	 * _"ho grande carrote bleue"_
 	 * - Characters: `l3`
 	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
 	 * ---
 	 * <image url="./_images/dialog.webp" />
 	 */
