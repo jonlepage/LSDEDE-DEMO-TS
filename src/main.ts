@@ -12,6 +12,7 @@ import { initAnalytics, trackSceneSelected } from "./analytics/posthog";
 import { Pane } from "tweakpane";
 import { registerCrtFilterControls } from "./debug/debug-panel";
 import { createBlueprintPreview } from "./app/blueprint-preview";
+import { createMagicTrail } from "./renderer/magic-trail";
 
 const BLUEPRINT_FILE_PATH = "/blueprints/blueprint.json";
 
@@ -39,6 +40,7 @@ const POSTHOG_API_HOST =
   const crtPane = new Pane({ title: "CRTFilter", expanded: false });
   registerCrtFilterControls(crtPane, crtFilterState);
   const blueprintPreview = createBlueprintPreview(canvasContainer);
+  createMagicTrail(pixiApplication);
   const cameraState = createCamera(pixiApplication);
 
   const blueprintData = await loadBlueprintFromPath(BLUEPRINT_FILE_PATH);
