@@ -13,6 +13,9 @@ const HOP_MAX_HEIGHT = 5;
 const HOP_DISTANCE_PER_STRIDE = 30;
 const HOP_SPEED_FLOOR = 0.5;
 
+const INERTIA_TILT_FACTOR = 0.055; // radians per pixel of smoothed horizontal velocity
+const INERTIA_VELOCITY_LERP = 0.1; // lag factor — lower = more inertia feel
+
 export interface MovementTarget {
   targetX: number;
   targetY: number;
@@ -23,6 +26,7 @@ export interface MovementState {
   movementSpeed: number;
   distanceSinceLastHop: number;
   hopProgress: number;
+  smoothedHorizontalVelocity: number;
 }
 
 export function createMovementState(
@@ -33,6 +37,7 @@ export function createMovementState(
     movementSpeed,
     distanceSinceLastHop: 0,
     hopProgress: -1,
+    smoothedHorizontalVelocity: 0,
   };
 }
 
@@ -97,6 +102,9 @@ export function registerMovementTicker(
   const tickerCallback = (time: { deltaTime: number }) => {
     if (!movementState.currentTarget) {
       characterSprite.pivot.y = 0;
+      movementState.smoothedHorizontalVelocity *= 0.85;
+      characterSprite.rotation =
+        movementState.smoothedHorizontalVelocity * INERTIA_TILT_FACTOR;
       return;
     }
 
@@ -111,6 +119,8 @@ export function registerMovementTicker(
       characterSprite.pivot.y = 0;
       movementState.distanceSinceLastHop = 0;
       movementState.hopProgress = -1;
+      movementState.smoothedHorizontalVelocity = 0;
+      characterSprite.rotation = 0;
       clearMovementTarget(movementState);
       return;
     }
@@ -147,6 +157,14 @@ export function registerMovementTicker(
     const frameDistance = Math.sqrt(
       frameDeltaX * frameDeltaX + frameDeltaY * frameDeltaY,
     );
+
+    // Inertia tilt — smoothed horizontal velocity lags behind real velocity,
+    // creating a lean that overshoots momentarily on direction reversal.
+    movementState.smoothedHorizontalVelocity +=
+      (frameDeltaX - movementState.smoothedHorizontalVelocity) *
+      INERTIA_VELOCITY_LERP;
+    characterSprite.rotation =
+      movementState.smoothedHorizontalVelocity * INERTIA_TILT_FACTOR;
 
     if (frameDistance < HOP_SPEED_FLOOR) {
       characterSprite.pivot.y *= 0.85;

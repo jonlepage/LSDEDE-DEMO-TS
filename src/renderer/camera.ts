@@ -11,9 +11,11 @@ import { Container } from "pixi.js";
 import type { Application, Sprite } from "pixi.js";
 
 const DEFAULT_FOLLOW_LERP_FACTOR = 0.003;
-const COMMAND_EASING_SPEED = 0.03;
-const COMMAND_ARRIVAL_THRESHOLD = 1;
-const FOLLOW_VERTICAL_OFFSET = -120;
+// Command easing: fast enough that camera pans feel intentional (not sluggish).
+// 0.1 → ~1s for 860px distance at 60fps, vs 0.03 which took ~4s.
+const COMMAND_EASING_SPEED = 0.1;
+const COMMAND_ARRIVAL_THRESHOLD = 2;
+export const FOLLOW_VERTICAL_OFFSET = -120;
 
 /**
  * Dead zone: camera does not move at all when the target is within this radius (in pixels)

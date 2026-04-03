@@ -10,6 +10,7 @@ import {
   moveCameraToPosition,
   shakeCamera,
   zoomCamera,
+  FOLLOW_VERTICAL_OFFSET,
 } from "../renderer/camera";
 import { setMovementTarget, type MovementState } from "../renderer/movement";
 import {
@@ -108,10 +109,12 @@ export function createGameActionFacade(
     moveCameraToCharacter(characterId: string): Promise<void> {
       const character = findCharacterOrThrow(characterId);
       return new Promise((resolve) => {
+        // Use the same vertical offset as follow mode so the character
+        // appears at the same screen position whether commanded or followed.
         moveCameraToPosition(
           cameraState,
           character.sprite.x,
-          character.sprite.y,
+          character.sprite.y + FOLLOW_VERTICAL_OFFSET,
           resolve,
         );
       });
