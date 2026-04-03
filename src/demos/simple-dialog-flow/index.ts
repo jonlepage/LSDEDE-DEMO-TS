@@ -83,7 +83,7 @@ export async function runScene(
       {
         characterId: GAME_ACTORS.l4,
         displayName: GAME_ACTORS.l4,
-        tintColor: 0xffffff,
+        tintColor: 0x666666,
         startX: screenCenterX,
         startY: screenCenterY + 80,
       },

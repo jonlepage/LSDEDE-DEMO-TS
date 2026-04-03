@@ -1,65 +1,74 @@
 body {
-    margin: 0;
-    padding: 0;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #000000;
-    font-family: system-ui, -apple-system, sans-serif;
+	margin: 0;
+	padding: 0;
+	color: rgba(255, 255, 255, 0.87);
+	background-color: #000000;
+	font-family:
+		system-ui,
+		-apple-system,
+		sans-serif;
 }
 
 #app {
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
+	display: flex;
 }
 
 #sidebar-navigation {
-    width: 240px;
-    min-width: 240px;
-    height: 100vh;
-    overflow-y: auto;
-    background-color: #111111;
-    border-right: 1px solid #333333;
-    padding: 16px;
-    box-sizing: border-box;
+	width: 240px;
+	min-width: 240px;
+	height: 100vh;
+	overflow-y: auto;
+	background-color: #111111;
+	border-right: 1px solid #333333;
+	padding: 16px;
+	box-sizing: border-box;
 }
 
 #sidebar-navigation h2 {
-    margin: 0 0 16px 0;
-    font-size: 16px;
-    color: #ffffff;
+	margin: 0 0 16px 0;
+	font-size: 16px;
+	color: #ffffff;
 }
 
 #sidebar-navigation ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
 #sidebar-navigation li {
-    margin-bottom: 4px;
+	margin-bottom: 4px;
 }
 
 #sidebar-navigation button {
-    width: 100%;
-    padding: 8px 12px;
-    background: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-    text-align: left;
-    cursor: pointer;
+	width: 100%;
+	padding: 8px 12px;
+	background: none;
+	border: 1px solid transparent;
+	border-radius: 1px;
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 14px;
+	text-align: left;
+	cursor: pointer;
 }
 
 #sidebar-navigation button:hover {
-    background-color: #222222;
-    border-color: #444444;
-    color: #ffffff;
+	background-color: #222222;
+	border-color: #444444;
+	color: #ffffff;
+}
+
+#sidebar-navigation button.active {
+	background-color: #1a3a5c;
+	border-color: #4a9eff;
+	color: #ffffff;
 }
 
 #pixi-container {
-    flex: 1;
-    height: 100vh;
-    overflow: hidden;
+	flex: 1;
+	height: 100vh;
+	overflow: hidden;
 }

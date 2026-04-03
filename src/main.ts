@@ -10,7 +10,7 @@ import {
 import { LSDE_SCENES } from "../public/blueprints/blueprint.enums";
 
 const BLUEPRINT_FILE_PATH = "/blueprints/blueprint.json";
-const DEFAULT_SCENE_UUID = LSDE_SCENES.simpleDialogFlow;
+const DEFAULT_SCENE_UUID = LSDE_SCENES.multiTracks;
 
 (async () => {
   const { sidebarContainer, canvasContainer } = createApplicationLayout();
@@ -97,6 +97,12 @@ const DEFAULT_SCENE_UUID = LSDE_SCENES.simpleDialogFlow;
     }
   }
 
-  renderDemoNavigation(sidebarContainer, sceneNavigationEntries, loadScene);
+  const navigationHandle = renderDemoNavigation(
+    sidebarContainer,
+    sceneNavigationEntries,
+    loadScene,
+  );
+
+  navigationHandle.selectById(DEFAULT_SCENE_UUID);
   loadScene(DEFAULT_SCENE_UUID);
 })();

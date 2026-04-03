@@ -3,6 +3,7 @@
  * Fires onTrigger when the player is within interaction distance of an NPC and presses Enter.
  */
 
+import { Text } from "pixi.js";
 import type { CharacterReference } from "../../game/game-actions";
 import type { SceneContext } from "../../shared/scene-context";
 
@@ -29,22 +30,33 @@ export function setupDialogueTrigger(
 
   let hasTriggered = false;
 
+  const interactionHint = new Text({
+    text: "👇 click me!",
+    style: { fontSize: 12, fill: "#ffffff" },
+  });
+  interactionHint.anchor.set(0.5, 2.5);
+  triggerNpcReference.sprite.addChild(interactionHint);
+
   function isPlayerNearTriggerNpc(): boolean {
     const deltaX = playerReference.sprite.x - triggerNpcReference.sprite.x;
     const deltaY = playerReference.sprite.y - triggerNpcReference.sprite.y;
     return Math.sqrt(deltaX * deltaX + deltaY * deltaY) < interactionDistance;
   }
 
+  function trigger(): void {
+    hasTriggered = true;
+    interactionHint.destroy();
+    onTrigger();
+  }
+
   function onKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter" && !hasTriggered && isPlayerNearTriggerNpc()) {
-      hasTriggered = true;
-      onTrigger();
+      trigger();
     }
   }
   function onClick() {
     if (!hasTriggered && isPlayerNearTriggerNpc()) {
-      hasTriggered = true;
-      onTrigger();
+      trigger();
     }
   }
   triggerNpcReference.sprite.interactive = true;
