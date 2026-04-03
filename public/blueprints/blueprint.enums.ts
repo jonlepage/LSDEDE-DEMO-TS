@@ -27,6 +27,13 @@ export enum LSDE_SCENES {
 	 * - Characters: `l1`, `l4`
 	 */
 	simpleChoices = '169f7c4c-c3b1-4444-879c-060801cdcb1d',
+	/**
+	 * ### Scene: simple-action
+	 * 6 ACTION, 1 CHOICE, 8 DIALOG
+	 * Entry: `l1_alert-AI` ⭐
+	 * - Characters: `boss`, `l1`, `l4`
+	 */
+	simpleAction = '7e6e24b7-c08c-452c-9e11-0689d8c17b80',
 }
 
 /**
@@ -229,7 +236,7 @@ export enum LSDE_BLOCKS {
 	multiTracksStartDiscussionAi = '4604c8d0-c4cb-411a-a878-0d498bae868f',
 	/**
 	 * ### ⬜[CHOICE] player_moral_choice-AI
-	 * - Characters: `l1`
+	 * - Characters: `l4`
 	 * - Scene: `simple-choices`
 	 * - In: `l1_dramatic_intro-AI`
 	 * - Out: `l4_brave_response-AI`, `l4_fear_response-AI`, `l4_doubt_response-AI`
@@ -335,6 +342,160 @@ export enum LSDE_BLOCKS {
 	 * <image url="./_images/dialog.webp" />
 	 */
 	simpleChoicesL4FinalResolutionAi = 'b630f2b9-85f5-4e26-aa86-cbc7427e88a1',
+	/**
+	 * ### 🟧[ACTION] ACTION-006
+	 * - Scene: `simple-action`
+	 * - In: `boss_roar-AI`
+	 * `shakeCamera`(12, 2)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionAction006 = 'fa8ff197-0559-493a-b1a9-b4e0a1724b83',
+	/**
+	 * ### 🟧[ACTION] ACTION-006
+	 * - Scene: `simple-action`
+	 * - In: `final_decision-AI`
+	 * `shakeCamera`(4, 2)
+	 * `moveCharacterAt`(l1, -300)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionAction0062 = 'dfa55271-2ed5-469c-9eaf-a05a46d7b254',
+	/**
+	 * ### 🟧[ACTION] focus_boss-AI
+	 * - Scene: `simple-action`
+	 * - In: `shake_mid-AI`
+	 * - Out: `boss_roar-AI`
+	 * `moveCameraToLabel`(boss)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionFocusBossAi = '9b5df0e4-0971-4639-8736-9442dcd52d8a',
+	/**
+	 * ### 🟧[ACTION] return_to_rabbits-AI
+	 * - Scene: `simple-action`
+	 * - In: `DIALOG-007`
+	 * - Out: `final_decision-AI`
+	 * `moveCameraToLabel`(l4)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionReturnToRabbitsAi = '4b8b8fe2-d3b8-4ab6-9fc1-afd5eadb78af',
+	/**
+	 * ### 🟧[ACTION] shake_intro-AI
+	 * - Scene: `simple-action`
+	 * - In: `l1_alert-AI`
+	 * - Out: `l4_terror-AI`
+	 * `shakeCamera`(5, 0.5)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionShakeIntroAi = '6430204d-5833-4fe3-9a5c-499c41c5a5df',
+	/**
+	 * ### 🟧[ACTION] shake_mid-AI
+	 * - Scene: `simple-action`
+	 * - In: `l4_terror-AI`
+	 * - Out: `focus_boss-AI`
+	 * `shakeCamera`(8, 0.8)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	simpleActionShakeMidAi = '955b54a6-33e9-477a-8573-6ea5dc9d7433',
+	/**
+	 * ### ⬜[CHOICE] final_decision-AI
+	 * - Scene: `simple-action`
+	 * - In: `return_to_rabbits-AI`
+	 * - Out: `l1_brave-AI`, `l4_flee-AI`, `ACTION-006`, `DIALOG-008`
+	 * - Choices: `Charger la créature !`, `Battre en retraite !`
+	 * ---
+	 * <image url="./_images/choice.webp" />
+	 */
+	simpleActionFinalDecisionAi = '36cdad6e-d85a-4c9a-90e0-6af5046c4245',
+	/**
+	 * ### 🟦[DIALOG] boss_roar-AI
+	 * _"RWMIAAAOUWWW ...... WROIUMOIWUUWWW...."_
+	 * - Characters: `boss`
+	 * - Scene: `simple-action`
+	 * - In: `focus_boss-AI`
+	 * - Out: `ACTION-006`, `DIALOG-007`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionBossRoarAi = 'dc58f326-8e8c-4837-beb1-e8ba04410b84',
+	/**
+	 * ### 🟦[DIALOG] climax_moment-AI
+	 * _"Le destin de la prairie se jouera ici, dans la poussière."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-action`
+	 * - In: `l1_brave-AI`, `l4_flee-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionClimaxMomentAi = 'b22c8172-a63d-486b-b07d-37ab1832fee6',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-007
+	 * _"RWMMMMrggggg !🐰🐰🐰"_
+	 * - Characters: `boss`
+	 * - Scene: `simple-action`
+	 * - In: `boss_roar-AI`
+	 * - Out: `return_to_rabbits-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionDialog007 = 'f12afa3e-7d89-497c-8f2e-585187f3b55a',
+	/**
+	 * ### 🟦[DIALOG] DIALOG-008
+	 * _"Non dune carotte !! Sauve qui peut Haaaaa !!!!"_
+	 * - Characters: `l1`
+	 * - Scene: `simple-action`
+	 * - In: `final_decision-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionDialog008 = '42c00a7a-3954-4e07-9e9e-9254d3a8df64',
+	/**
+	 * ### 🟦[DIALOG] l1_alert-AI ⭐
+	 * _"Est-ce que tu sens ça ? La terre se déchire sous ses pas..."_
+	 * - Characters: `l1`
+	 * - Scene: `simple-action`
+	 * - Out: `shake_intro-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionL1AlertAi = 'c3b0ffcf-fe57-45f9-8c20-8db99da21ae3',
+	/**
+	 * ### 🟦[DIALOG] l1_brave-AI
+	 * _"Pour l'honneur du clan et la carotte éternelle, à l'attaque !"_
+	 * - Characters: `l1`
+	 * - Scene: `simple-action`
+	 * - In: `final_decision-AI`
+	 * - Out: `climax_moment-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionL1BraveAi = '3af36f94-0b76-40dc-9681-1bb360a03897',
+	/**
+	 * ### 🟦[DIALOG] l4_flee-AI
+	 * _"Désolé l1, mais je tiens trop à mes oreilles pour finir en purée !"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-action`
+	 * - In: `final_decision-AI`
+	 * - Out: `climax_moment-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionL4FleeAi = 'fca6d66a-a4ea-4059-80ab-9ae2107d6ef9',
+	/**
+	 * ### 🟦[DIALOG] l4_terror-AI
+	 * _"C'est beaucoup trop gros pour être un simple lapin, l1 !"_
+	 * - Characters: `l4`
+	 * - Scene: `simple-action`
+	 * - In: `shake_intro-AI`
+	 * - Out: `shake_mid-AI`
+	 * ---
+	 * <image url="./_images/dialog.webp" />
+	 */
+	simpleActionL4TerrorAi = '38f160eb-9e5f-4dac-b83a-7d0b55afac1a',
 }
 
 /**
@@ -367,4 +528,20 @@ export enum LSDE_CHOICES {
 	 */
 	/** @see {@link LSDE_BLOCKS.simpleChoicesPlayerMoralChoiceAi} */
 	simpleChoicesEstCeVraimentREl = '3716cb04-2e54-4bf4-864d-28b6ce000786',
+	/**
+	 * ### ⬜[CHOICE_ITEM] Charger la créature !
+	 * _"Charger la créature !"_
+	 * - Scene: `simple-action`
+	 * - Parent: `final_decision-AI`
+	 */
+	/** @see {@link LSDE_BLOCKS.simpleActionFinalDecisionAi} */
+	simpleActionChargerLaCrAture = '09ccf6a7-35a8-4bec-9468-51728d5b8785',
+	/**
+	 * ### ⬜[CHOICE_ITEM] Battre en retraite !
+	 * _"Battre en retraite !"_
+	 * - Scene: `simple-action`
+	 * - Parent: `final_decision-AI`
+	 */
+	/** @see {@link LSDE_BLOCKS.simpleActionFinalDecisionAi} */
+	simpleActionBattreEnRetraite = 'cd1ae040-2421-41dd-8962-116a8a13ff78',
 }

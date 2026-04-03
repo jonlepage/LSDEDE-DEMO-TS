@@ -5,6 +5,7 @@
 
 import { Container, Graphics, Text } from "pixi.js";
 import type { Application } from "pixi.js";
+import { OutlineFilter, DropShadowFilter } from "pixi-filters";
 
 const CHOICE_BOX_PADDING_HORIZONTAL = 36;
 const CHOICE_BOX_PADDING_VERTICAL = 26;
@@ -14,6 +15,14 @@ const CHOICE_BOX_STROKE_WIDTH = 2.5;
 const CHOICE_ROW_HEIGHT = 28;
 const CHOICE_ROW_GAP = 6;
 const CHOICE_MAX_TEXT_WIDTH = 220;
+
+const OUTLINE_COLOR = 0x222222;
+const OUTLINE_THICKNESS = 3;
+const SHADOW_OFFSET_X = 3;
+const SHADOW_OFFSET_Y = 3;
+const SHADOW_BLUR = 3;
+const SHADOW_ALPHA = 0.7;
+const SHADOW_COLOR = 0x000000;
 
 const WOBBLE_AMPLITUDE = 3;
 const WOBBLE_SPEED = 0.8;
@@ -257,7 +266,11 @@ export function createChoiceBox(options: ChoiceBoxOptions): Container {
     showTail,
   );
 
-  pixiApplication.ticker.add((time) => {
+  const animationTicker = (time: { deltaTime: number }) => {
+    if (boxGraphics.destroyed) {
+      pixiApplication.ticker.remove(animationTicker);
+      return;
+    }
     elapsedTime += time.deltaTime * 0.05;
     drawAnimatedShape(
       boxGraphics,
@@ -267,9 +280,24 @@ export function createChoiceBox(options: ChoiceBoxOptions): Container {
       elapsedTime,
       showTail,
     );
-  });
+  };
+  pixiApplication.ticker.add(animationTicker);
 
   choiceBoxContainer.addChild(boxGraphics, ...choiceRowContainers);
+
+  choiceBoxContainer.filters = [
+    new OutlineFilter({
+      thickness: OUTLINE_THICKNESS,
+      color: OUTLINE_COLOR,
+      quality: 1,
+    }),
+    new DropShadowFilter({
+      offset: { x: SHADOW_OFFSET_X, y: SHADOW_OFFSET_Y },
+      blur: SHADOW_BLUR,
+      alpha: SHADOW_ALPHA,
+      color: SHADOW_COLOR,
+    }),
+  ];
 
   return choiceBoxContainer;
 }

@@ -190,6 +190,21 @@ export function createGameActionFacade(
         character.sprite.x,
         character.sprite.y,
       );
+
+      // Follow the character sprite each frame so the choice box moves with it.
+      const followTicker = () => {
+        if (choiceBoxContainer.destroyed) {
+          pixiApplication.ticker.remove(followTicker);
+          return;
+        }
+        positionChoiceBoxAboveTarget(
+          choiceBoxContainer,
+          character.sprite.x,
+          character.sprite.y,
+        );
+      };
+      pixiApplication.ticker.add(followTicker);
+
       return choiceBoxContainer;
     },
 
