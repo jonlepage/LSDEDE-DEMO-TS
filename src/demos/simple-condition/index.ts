@@ -354,6 +354,7 @@ export async function runScene(
       isDialogueActive = false;
       currentAdvanceFunction = null;
       currentBubbleHandle = null;
+      dialogueTriggerHandle.resetTrigger();
       console.log("[simple-condition] Scene completed.");
     });
 
@@ -365,7 +366,7 @@ export async function runScene(
     TRIGGER_NPC_CHARACTER_ID,
   ) as CharacterReference;
 
-  setupDialogueTrigger({
+  const dialogueTriggerHandle = setupDialogueTrigger({
     playerReference,
     triggerNpcReference,
     sceneContext,

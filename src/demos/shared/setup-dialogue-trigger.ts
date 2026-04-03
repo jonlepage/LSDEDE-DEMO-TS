@@ -1,6 +1,7 @@
 /**
- * Shared scene setup — proximity detection + Enter key to trigger a callback.
- * Fires onTrigger when the player is within interaction distance of an NPC and presses Enter.
+ * Shared scene setup — proximity detection + Enter/click to trigger a callback.
+ * Fires onTrigger when the player is within interaction distance of an NPC.
+ * Returns a handle to re-arm the trigger after a scene completes.
  */
 
 import { Text } from "pixi.js";
@@ -17,9 +18,14 @@ export interface SetupDialogueTriggerOptions {
   readonly onTrigger: () => void;
 }
 
+export interface DialogueTriggerHandle {
+  /** Re-arms the trigger so the player can activate it again (e.g. after a scene ends). */
+  readonly resetTrigger: () => void;
+}
+
 export function setupDialogueTrigger(
   options: SetupDialogueTriggerOptions,
-): void {
+): DialogueTriggerHandle {
   const {
     playerReference,
     triggerNpcReference,
@@ -29,14 +35,20 @@ export function setupDialogueTrigger(
   } = options;
 
   let hasTriggered = false;
+  let interactionHint: Text | null = null;
 
-  const interactionHint = new Text({
-    text: "👇 click me!",
-    style: { fontSize: 12, fill: "#ffffff" },
-  });
-  interactionHint.anchor.set(0.5, 1);
-  interactionHint.position.set(0, -(triggerNpcReference.sprite.height / 2 + 4));
-  triggerNpcReference.sprite.addChild(interactionHint);
+  function createInteractionHint(): Text {
+    const hint = new Text({
+      text: "👇 click me!",
+      style: { fontSize: 12, fill: "#ffffff" },
+    });
+    hint.anchor.set(0.5, 1);
+    hint.position.set(0, -(triggerNpcReference.sprite.height / 2 + 4));
+    triggerNpcReference.sprite.addChild(hint);
+    return hint;
+  }
+
+  interactionHint = createInteractionHint();
 
   function isPlayerNearTriggerNpc(): boolean {
     const deltaX = playerReference.sprite.x - triggerNpcReference.sprite.x;
@@ -46,7 +58,10 @@ export function setupDialogueTrigger(
 
   function trigger(): void {
     hasTriggered = true;
-    interactionHint.destroy();
+    if (interactionHint) {
+      interactionHint.destroy();
+      interactionHint = null;
+    }
     onTrigger();
   }
 
@@ -71,4 +86,13 @@ export function setupDialogueTrigger(
   sceneContext.addDisposable(() => {
     triggerNpcReference.sprite.onclick = null;
   });
+
+  return {
+    resetTrigger(): void {
+      hasTriggered = false;
+      if (!interactionHint) {
+        interactionHint = createInteractionHint();
+      }
+    },
+  };
 }

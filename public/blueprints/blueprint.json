@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T06:48:38.494Z",
+  "exportDate": "2026-04-03T07:18:32.133Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -57,6 +57,24 @@
         },
         {
           "label": "duration",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "uuid": "ad033563-7d76-4178-917e-283dc59c87b0",
+      "id": "moveCharacterAt",
+      "params": [
+        {
+          "label": "id",
+          "type": "string"
+        },
+        {
+          "label": "x",
+          "type": "number"
+        },
+        {
+          "label": "y",
           "type": "number"
         }
       ]
@@ -1028,7 +1046,7 @@
           "uuid": "fa8ff197-0559-493a-b1a9-b4e0a1724b83",
           "type": "ACTION",
           "properties": [],
-          "label": "ACTION-006",
+          "label": "ACTION-0016",
           "nativeProperties": {
             "isAsync": true,
             "delay": 300
@@ -1069,8 +1087,8 @@
             },
             {
               "uuid": "729b989f-53c3-42ee-a099-0cc04aa6fd64",
-              "signatureUuid": "62d9470a-cd91-4c6c-aba0-ba261f554182",
-              "actionId": "62d9470a-cd91-4c6c-aba0-ba261f554182",
+              "signatureUuid": "ad033563-7d76-4178-917e-283dc59c87b0",
+              "actionId": "moveCharacterAt",
               "params": [
                 "l1",
                 -800
@@ -1122,8 +1140,8 @@
             },
             {
               "uuid": "f423e8e3-aef2-415e-b9a7-106932148c42",
-              "signatureUuid": "62d9470a-cd91-4c6c-aba0-ba261f554182",
-              "actionId": "62d9470a-cd91-4c6c-aba0-ba261f554182",
+              "signatureUuid": "ad033563-7d76-4178-917e-283dc59c87b0",
+              "actionId": "moveCharacterAt",
               "params": [
                 "l1",
                 800
