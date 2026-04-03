@@ -43,7 +43,7 @@ export enum LSDE_SCENES {
 	simpleCondition = 'a037a98b-ffec-40d3-8092-4eedb9857501',
 	/**
 	 * ### Scene: condition-dispatch
-	 * 1 ACTION, 4 CONDITION, 10 DIALOG
+	 * 2 ACTION, 4 CONDITION, 10 DIALOG
 	 * Entry: `DIALOG-001` ⭐
 	 * - Characters: `l1`, `l2`, `l3`, `l4`
 	 */
@@ -655,10 +655,20 @@ export enum LSDE_BLOCKS {
 	 */
 	conditionDispatchAction001 = '48e82cd7-1edb-4d11-9a64-8f28c7c0a0a0',
 	/**
+	 * ### 🟧[ACTION] ACTION-002
+	 * - Characters: `l1`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * `moveCharacterAt`(l1, -400)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	conditionDispatchAction002 = 'ddd26ce9-3afb-4ca9-891d-86299bf7ff4e',
+	/**
 	 * ### 🟪[CONDITION] CONDITION-001
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-002`
-	 * - Out: `DIALOG-006`, `DIALOG-003`, `DIALOG-004`, `DIALOG-005`
+	 * - Out: `DIALOG-006`, `DIALOG-003`, `DIALOG-004`, `DIALOG-005`, `ACTION-002`
 	 * Case 0:
 	 * `party.l1` = `true`
 	 * Case 1:
@@ -741,6 +751,7 @@ export enum LSDE_BLOCKS {
 	/**
 	 * ### 🟦[DIALOG] DIALOG-004
 	 * _"ho grande carotte jaune"_
+	 * - Characters: `l2`
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-001`
 	 * ---

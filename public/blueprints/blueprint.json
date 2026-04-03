@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T11:17:29.978Z",
+  "exportDate": "2026-04-03T11:29:13.987Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -2008,6 +2008,38 @@
           ]
         },
         {
+          "uuid": "ddd26ce9-3afb-4ca9-891d-86299bf7ff4e",
+          "type": "ACTION",
+          "properties": [],
+          "label": "ACTION-002",
+          "nativeProperties": {
+            "isAsync": true
+          },
+          "actions": [
+            {
+              "uuid": "60a1d216-d475-4330-93e2-0ece4804bda5",
+              "signatureUuid": "ad033563-7d76-4178-917e-283dc59c87b0",
+              "actionId": "moveCharacterAt",
+              "params": [
+                "l1",
+                -400
+              ]
+            }
+          ],
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
           "uuid": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
           "type": "CONDITION",
           "properties": [],
@@ -2236,7 +2268,7 @@
           "content": "ho grande carotte jaune ",
           "nativeProperties": {
             "isAsync": true,
-            "delay": 600,
+            "delay": 800,
             "timeout": 1000
           },
           "dialogueText": {
@@ -2246,7 +2278,16 @@
           "parentLabels": [
             "__blueprints__"
           ],
-          "metadata": {}
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d9e2f0f-7382-439e-a256-8a29e65bdc09",
+                "id": "l2",
+                "name": "l2",
+                "emotionIntensity": 0
+              }
+            ]
+          }
         },
         {
           "uuid": "802b6469-bf1d-4e17-8bb3-1443b0f32b38",
@@ -2257,7 +2298,7 @@
           "content": "ho grande carrote bleue",
           "nativeProperties": {
             "isAsync": true,
-            "delay": 1300,
+            "delay": 1400,
             "timeout": 1000
           },
           "dialogueText": {
@@ -2285,7 +2326,7 @@
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-006",
           "content": "ho grande carotte, merci de nous nourrire",
           "nativeProperties": {
-            "delay": 13000
+            "delay": 4500
           },
           "dialogueText": {
             "en": "",
@@ -2545,6 +2586,14 @@
           "fromPort": "case_2",
           "toPort": "in",
           "fromPortIndex": 2
+        },
+        {
+          "id": "82162837-bc07-4f41-ad69-f149c8a64fcf",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "ddd26ce9-3afb-4ca9-891d-86299bf7ff4e",
+          "fromPort": "case_0",
+          "toPort": "in",
+          "fromPortIndex": 0
         }
       ]
     }

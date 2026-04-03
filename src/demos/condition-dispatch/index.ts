@@ -397,9 +397,17 @@ export async function runScene(
     const sceneHandle = dialogueEngine.scene(SCENE_UUID);
 
     // --- DIALOG handler (multi-track + delay-aware) ---
-    // delay: pre-display wait (timer before bubble appears).
-    // All blocks — immediate or delayed — go into blocksWaitingForInput so a
-    // single broadcast click after DIALOG-006 dismisses everything at once.
+    //
+    // Dispatched async tracks (DIALOG-003/004/005) have isAsync + delay + timeout:
+    //   - delay:   pre-display wait (engine skips onBeforeBlock for async tracks,
+    //              so the handler must enforce delay itself)
+    //   - timeout: auto-advance after N ms (bubble disappears on its own)
+    //
+    // Main track (DIALOG-006) has only delay — which the global onBeforeBlock
+    // already handles. The handler just waits for user input like normal.
+    //
+    // Pattern matches multi-tracks demo: distinguish isAsync vs main track,
+    // and handle delay + timeout + waitInput correctly per block.
     sceneHandle.onDialog(({ block, context, next }) => {
       const dialogueText = block.dialogueText?.[locale] ?? "";
       // DIALOG-004 has no character in blueprint metadata; fall back to player.
@@ -411,11 +419,18 @@ export async function runScene(
         return;
       }
 
+      const isAsyncBlock = block.nativeProperties?.isAsync === true;
       const delayMs = block.nativeProperties?.delay ?? 0;
+      const timeoutMs = block.nativeProperties?.timeout;
+      const needsUserInput =
+        block.nativeProperties?.waitInput === true || !isAsyncBlock;
+
       const blockUuid = block.uuid;
       let delayTimer: ReturnType<typeof setTimeout> | null = null;
+      const timers: ReturnType<typeof setTimeout>[] = [];
 
-      const showAndQueue = () => {
+      /** Show the bubble and decide how to advance. */
+      const showAndAdvance = () => {
         if (characters.has(characterId)) {
           const bubbleHandle = gameActions.showBubbleOnCharacter(
             characterId,
@@ -424,17 +439,41 @@ export async function runScene(
           );
           activeBubbles.set(blockUuid, bubbleHandle);
         }
-        blocksWaitingForInput.set(blockUuid, next);
+
+        if (needsUserInput) {
+          // Main track or waitInput=true: wait for user click.
+          blocksWaitingForInput.set(blockUuid, next);
+
+          if (timeoutMs && timeoutMs > 0) {
+            const autoAdvanceTimer = setTimeout(() => {
+              if (blocksWaitingForInput.delete(blockUuid)) {
+                next();
+              }
+            }, timeoutMs);
+            timers.push(autoAdvanceTimer);
+          }
+        } else {
+          // Async track without waitInput: auto-advance after timeout.
+          if (timeoutMs && timeoutMs > 0) {
+            const autoTimer = setTimeout(() => next(), timeoutMs);
+            timers.push(autoTimer);
+          } else {
+            next();
+          }
+        }
       };
 
-      if (delayMs > 0) {
-        delayTimer = setTimeout(showAndQueue, delayMs);
+      // Async tracks: engine skips onBeforeBlock, so enforce delay here.
+      // Main track: onBeforeBlock already handles delay, show immediately.
+      if (isAsyncBlock && delayMs > 0) {
+        delayTimer = setTimeout(showAndAdvance, delayMs);
       } else {
-        showAndQueue();
+        showAndAdvance();
       }
 
       return () => {
         if (delayTimer) clearTimeout(delayTimer);
+        for (const timer of timers) clearTimeout(timer);
         blocksWaitingForInput.delete(blockUuid);
         const handle = activeBubbles.get(blockUuid);
         if (handle) {
