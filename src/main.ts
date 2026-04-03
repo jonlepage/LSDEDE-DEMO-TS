@@ -10,7 +10,7 @@ import {
 import { LSDE_SCENES } from "../public/blueprints/blueprint.enums";
 
 const BLUEPRINT_FILE_PATH = "/blueprints/blueprint.json";
-const DEFAULT_SCENE_LABEL = LSDE_SCENES.simpleDialogFlow;
+const DEFAULT_SCENE_UUID = LSDE_SCENES.simpleDialogFlow;
 
 (async () => {
   const { sidebarContainer, canvasContainer } = createApplicationLayout();
@@ -32,7 +32,7 @@ const DEFAULT_SCENE_LABEL = LSDE_SCENES.simpleDialogFlow;
   );
 
   const sceneNavigationEntries = blueprintData.scenes.map((scene) => ({
-    id: scene.label,
+    id: scene.uuid,
     title: scene.label,
     description: `${scene.blocks.length} blocks`,
     blueprintPath: BLUEPRINT_FILE_PATH,
@@ -40,7 +40,7 @@ const DEFAULT_SCENE_LABEL = LSDE_SCENES.simpleDialogFlow;
 
   let currentSceneTeardown: (() => void) | null = null;
 
-  async function loadScene(sceneLabel: string): Promise<void> {
+  async function loadScene(sceneUuid: string): Promise<void> {
     if (currentSceneTeardown) {
       currentSceneTeardown();
       currentSceneTeardown = null;
@@ -50,33 +50,37 @@ const DEFAULT_SCENE_LABEL = LSDE_SCENES.simpleDialogFlow;
     cameraState.worldContainer.removeChildren();
 
     const sceneData = blueprintData.scenes.find(
-      (scene) => scene.label === sceneLabel,
+      (scene) => scene.uuid === sceneUuid,
     );
 
-    if (sceneData) {
-      console.group(`[LSDE] Scene: ${sceneData.label}`);
-      console.log("UUID:", sceneData.uuid);
-      console.log("Entry block:", sceneData.entryBlockId);
-      console.log("Blocks:", sceneData.blocks.length, sceneData.blocks);
-      console.log(
-        "Connections:",
-        sceneData.connections.length,
-        sceneData.connections,
-      );
-      const characterIds = new Set<string>();
-      for (const block of sceneData.blocks) {
-        if (block.metadata?.characters) {
-          for (const character of block.metadata.characters) {
-            characterIds.add(`${character.id} (${character.name})`);
-          }
-        }
-      }
-      console.log("Characters:", [...characterIds]);
-      console.groupEnd();
+    if (!sceneData) {
+      console.warn(`[LSDE] Scene UUID "${sceneUuid}" not found in blueprint.`);
+      return;
     }
 
+    console.group(`[LSDE] Scene: ${sceneData.label}`);
+    console.log("UUID:", sceneData.uuid);
+    console.log("Entry block:", sceneData.entryBlockId);
+    console.log("Blocks:", sceneData.blocks.length, sceneData.blocks);
+    console.log(
+      "Connections:",
+      sceneData.connections.length,
+      sceneData.connections,
+    );
+    const characterIds = new Set<string>();
+    for (const block of sceneData.blocks) {
+      if (block.metadata?.characters) {
+        for (const character of block.metadata.characters) {
+          characterIds.add(`${character.id} (${character.name})`);
+        }
+      }
+    }
+    console.log("Characters:", [...characterIds]);
+    console.groupEnd();
+
     try {
-      const demoModule = await import(`./demos/${sceneLabel}/index.ts`);
+      // Demo folders match scene labels (e.g. "simple-dialog-flow", "multi-tracks")
+      const demoModule = await import(`./demos/${sceneData.label}/index.ts`);
       const sceneCleanup = await demoModule.runScene({
         pixiApplication,
         cameraState,
@@ -87,11 +91,12 @@ const DEFAULT_SCENE_LABEL = LSDE_SCENES.simpleDialogFlow;
       currentSceneTeardown = sceneCleanup.teardown;
     } catch (importError) {
       console.warn(
-        `[LSDE] No demo script for scene "${sceneLabel}" — showing empty canvas.`,
+        `[LSDE] No demo script for scene "${sceneData.label}" — showing empty canvas.`,
         importError,
       );
     }
   }
 
   renderDemoNavigation(sidebarContainer, sceneNavigationEntries, loadScene);
+  loadScene(DEFAULT_SCENE_UUID);
 })();
