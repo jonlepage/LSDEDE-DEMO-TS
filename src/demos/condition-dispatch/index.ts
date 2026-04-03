@@ -77,6 +77,58 @@ import type { CameraState } from "../../renderer/camera";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import type { ExportCondition } from "../../../public/blueprints/blueprint.types";
 
+// ---------------------------------------------------------------------------
+// Lightweight action type — mirrors the shape LSDE puts in block.actions[].
+// ---------------------------------------------------------------------------
+interface BlueprintAction {
+  readonly actionId: string;
+  readonly params: readonly (string | number | boolean | null)[];
+}
+
+function executeAction(
+  action: BlueprintAction,
+  gameActions: GameActionFacade,
+): Promise<void> {
+  switch (action.actionId) {
+    case "shakeCamera": {
+      const intensity = action.params[0] as number;
+      const duration = action.params[1] as number;
+      return gameActions.shakeCamera(intensity, duration);
+    }
+
+    case "moveCameraToLabel": {
+      const targetLabel = action.params[0] as string;
+      const durationSeconds = action.params[1] as number | undefined;
+      return gameActions.moveCameraToCharacter(targetLabel, durationSeconds);
+    }
+
+    case "moveCharacterAt": {
+      const characterId = action.params[0] as string;
+      const offsetX = action.params[1] as number;
+      const offsetY = (action.params[2] as number) ?? 0;
+      const isAbsolute = action.params[3] === true;
+
+      if (isAbsolute) {
+        // Absolute mode: offsets are relative to the world center (screen center).
+        const worldCenterX = gameActions.getWorldCenter().x;
+        const worldCenterY = gameActions.getWorldCenter().y;
+        return gameActions.moveCharacterToWorldPosition(
+          characterId,
+          worldCenterX + offsetX,
+          worldCenterY + offsetY,
+        );
+      }
+      return gameActions.moveCharacterRelative(characterId, offsetX, offsetY);
+    }
+
+    default:
+      console.warn(
+        `[condition-dispatch] Unknown actionId: "${action.actionId}"`,
+      );
+      return Promise.resolve();
+  }
+}
+
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const SCENE_UUID = LSDE_SCENES.conditionDispatch;
 const PARTY_NPC_IDS = [GAME_ACTORS.l1, GAME_ACTORS.l2, GAME_ACTORS.l3] as const;
@@ -505,6 +557,27 @@ export async function runScene(
 
       context.resolve(result);
       next();
+    });
+
+    // --- ACTION handler ---
+    // Executes blueprint-defined actions (moveCharacterAt, shakeCamera, etc.)
+    // and waits for all of them to complete before advancing.
+    sceneHandle.onAction(({ block, context, next }) => {
+      context.preventGlobalHandler();
+
+      const actionPromises = (block.actions ?? []).map((action) =>
+        executeAction(action as BlueprintAction, gameActions),
+      );
+
+      Promise.all(actionPromises)
+        .then(() => {
+          context.resolve();
+        })
+        .catch((error) => {
+          console.error("[condition-dispatch] Action failed:", error);
+          context.reject(error);
+        })
+        .finally(() => next());
     });
 
     sceneHandle.onExit(() => {

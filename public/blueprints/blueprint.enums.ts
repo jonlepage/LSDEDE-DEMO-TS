@@ -43,7 +43,7 @@ export enum LSDE_SCENES {
 	simpleCondition = 'a037a98b-ffec-40d3-8092-4eedb9857501',
 	/**
 	 * ### Scene: condition-dispatch
-	 * 2 ACTION, 4 CONDITION, 10 DIALOG
+	 * 4 ACTION, 4 CONDITION, 10 DIALOG
 	 * Entry: `DIALOG-001` ⭐
 	 * - Characters: `l1`, `l2`, `l3`, `l4`
 	 */
@@ -659,16 +659,36 @@ export enum LSDE_BLOCKS {
 	 * - Characters: `l1`
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-001`
-	 * `moveCharacterAt`(l1, -400)
+	 * `moveCharacterAt`(l1, -200, undefined, true)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */
 	conditionDispatchAction002 = 'ddd26ce9-3afb-4ca9-891d-86299bf7ff4e',
 	/**
+	 * ### 🟧[ACTION] ACTION-003
+	 * - Characters: `l1`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * `moveCharacterAt`(l2, -100, -200, true)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	conditionDispatchAction003 = '2211a918-d127-40d0-9dd3-55ec851cc1d2',
+	/**
+	 * ### 🟧[ACTION] ACTION-004
+	 * - Characters: `l1`
+	 * - Scene: `condition-dispatch`
+	 * - In: `CONDITION-001`
+	 * `moveCharacterAt`(l3, 200, undefined, true)
+	 * ---
+	 * <image url="./_images/action.webp" />
+	 */
+	conditionDispatchAction004 = '035cbe91-d916-4388-b872-e14dbadc191a',
+	/**
 	 * ### 🟪[CONDITION] CONDITION-001
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-002`
-	 * - Out: `DIALOG-006`, `DIALOG-003`, `DIALOG-004`, `DIALOG-005`, `ACTION-002`
+	 * - Out: `DIALOG-006`, `DIALOG-003`, `DIALOG-004`, `DIALOG-005`, `ACTION-002`, `ACTION-003`, `ACTION-004`
 	 * Case 0:
 	 * `party.l1` = `true`
 	 * Case 1:

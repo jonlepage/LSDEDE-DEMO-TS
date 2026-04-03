@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T11:37:14.797Z",
+  "exportDate": "2026-04-03T12:15:05.546Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
@@ -91,6 +91,10 @@
         {
           "label": "y",
           "type": "number"
+        },
+        {
+          "label": "absolut",
+          "type": "boolean"
         }
       ]
     }
@@ -2022,7 +2026,77 @@
               "actionId": "moveCharacterAt",
               "params": [
                 "l1",
-                -400
+                -200,
+                null,
+                true
+              ]
+            }
+          ],
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "2211a918-d127-40d0-9dd3-55ec851cc1d2",
+          "type": "ACTION",
+          "properties": [],
+          "label": "ACTION-003",
+          "nativeProperties": {
+            "isAsync": true
+          },
+          "actions": [
+            {
+              "uuid": "dbecbe58-ae6c-4dee-a57a-e96074ca5f6c",
+              "signatureUuid": "ad033563-7d76-4178-917e-283dc59c87b0",
+              "actionId": "moveCharacterAt",
+              "params": [
+                "l2",
+                -100,
+                -200,
+                true
+              ]
+            }
+          ],
+          "parentLabels": [
+            "__blueprints__"
+          ],
+          "metadata": {
+            "characters": [
+              {
+                "uuid": "0d848982-9b5e-4437-b0d7-96a97ae78538",
+                "id": "l1",
+                "name": "l1"
+              }
+            ]
+          }
+        },
+        {
+          "uuid": "035cbe91-d916-4388-b872-e14dbadc191a",
+          "type": "ACTION",
+          "properties": [],
+          "label": "ACTION-004",
+          "nativeProperties": {
+            "isAsync": true
+          },
+          "actions": [
+            {
+              "uuid": "d9828cc8-905c-4007-aefd-83978281a137",
+              "signatureUuid": "ad033563-7d76-4178-917e-283dc59c87b0",
+              "actionId": "moveCharacterAt",
+              "params": [
+                "l3",
+                200,
+                null,
+                true
               ]
             }
           ],
@@ -2239,7 +2313,7 @@
           "content": "Ho grande carotte rouge",
           "nativeProperties": {
             "isAsync": true,
-            "delay": 100,
+            "delay": 1000,
             "timeout": 1000
           },
           "dialogueText": {
@@ -2268,7 +2342,7 @@
           "content": "ho grande carotte jaune ",
           "nativeProperties": {
             "isAsync": true,
-            "delay": 800,
+            "delay": 2000,
             "timeout": 1000
           },
           "dialogueText": {
@@ -2298,7 +2372,7 @@
           "content": "ho grande carrote bleue",
           "nativeProperties": {
             "isAsync": true,
-            "delay": 1400,
+            "delay": 3000,
             "timeout": 1000
           },
           "dialogueText": {
@@ -2326,7 +2400,7 @@
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-006",
           "content": "ho grande carotte, merci de nous nourrire",
           "nativeProperties": {
-            "delay": 4500
+            "delay": 7700
           },
           "dialogueText": {
             "en": "",
@@ -2588,12 +2662,28 @@
           "fromPortIndex": 2
         },
         {
-          "id": "82162837-bc07-4f41-ad69-f149c8a64fcf",
+          "id": "faa27291-70fb-4756-b011-31b2fc3ee1dc",
           "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
           "toId": "ddd26ce9-3afb-4ca9-891d-86299bf7ff4e",
           "fromPort": "case_0",
           "toPort": "in",
           "fromPortIndex": 0
+        },
+        {
+          "id": "4b283613-9f37-4a09-b604-63d23bb52af5",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "2211a918-d127-40d0-9dd3-55ec851cc1d2",
+          "fromPort": "case_1",
+          "toPort": "in",
+          "fromPortIndex": 1
+        },
+        {
+          "id": "2f328788-6c55-4ae0-bb43-72fae2257e04",
+          "fromId": "ab111d47-9fe0-41d9-afd9-e96f00a01d9a",
+          "toId": "035cbe91-d916-4388-b872-e14dbadc191a",
+          "fromPort": "case_2",
+          "toPort": "in",
+          "fromPortIndex": 2
         }
       ]
     }

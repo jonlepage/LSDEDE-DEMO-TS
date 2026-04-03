@@ -73,6 +73,11 @@ export interface GameActionFacade {
     worldX: number,
     worldY: number,
   ): void;
+  moveCharacterToWorldPosition(
+    characterId: string,
+    worldX: number,
+    worldY: number,
+  ): Promise<void>;
   moveCharacterRelative(
     characterId: string,
     offsetX: number,
@@ -103,6 +108,7 @@ export interface GameActionFacade {
   getItemQuantity(itemId: string): number;
   addToParty(characterId: string): void;
   isInParty(characterId: string): boolean;
+  getWorldCenter(): { x: number; y: number };
 }
 
 export function createGameActionFacade(
@@ -184,6 +190,25 @@ export function createGameActionFacade(
     ): void {
       const character = findCharacterOrThrow(characterId);
       setMovementTarget(character.movementState, worldX, worldY);
+    },
+
+    moveCharacterToWorldPosition(
+      characterId: string,
+      worldX: number,
+      worldY: number,
+    ): Promise<void> {
+      const character = findCharacterOrThrow(characterId);
+      setMovementTarget(character.movementState, worldX, worldY);
+
+      return new Promise((resolve) => {
+        const checkArrival = () => {
+          if (!character.movementState.currentTarget) {
+            pixiApplication.ticker.remove(checkArrival);
+            resolve();
+          }
+        };
+        pixiApplication.ticker.add(checkArrival);
+      });
     },
 
     moveCharacterRelative(
@@ -347,6 +372,13 @@ export function createGameActionFacade(
 
     isInParty(characterId: string): boolean {
       return isPartyMember(gameStore, characterId);
+    },
+
+    getWorldCenter(): { x: number; y: number } {
+      return {
+        x: pixiApplication.screen.width / 2,
+        y: pixiApplication.screen.height / 2,
+      };
     },
   };
 }
