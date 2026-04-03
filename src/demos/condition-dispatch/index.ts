@@ -318,13 +318,13 @@ export async function runScene(
   sceneContext.addDisposable(() => debugPanelState.pane.dispose());
 
   // --- Party follow — single-file chain (breadcrumb trail) ---
-  setupPartyFollow({
+  const partyFollowHandle = setupPartyFollow({
     playerReference,
     partyNpcIds: PARTY_NPC_IDS,
     characters,
     sceneContext,
     gameActions,
-    followDistance: 50,
+    followDistance: 99,
   });
 
   // --- Big ritual carrot ---
@@ -392,6 +392,7 @@ export async function runScene(
 
   function startDialogueScene(): void {
     isDialogueActive = true;
+    partyFollowHandle.pause();
     console.log("[condition-dispatch] Ritual started!");
 
     const sceneHandle = dialogueEngine.scene(SCENE_UUID);
@@ -510,6 +511,7 @@ export async function runScene(
       isDialogueActive = false;
       blocksWaitingForInput.clear();
       activeBubbles.clear();
+      partyFollowHandle.resume();
       console.log("[condition-dispatch] Ritual completed.");
     });
 

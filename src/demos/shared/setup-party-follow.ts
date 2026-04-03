@@ -81,7 +81,16 @@ function sampleTrailAtDistance(
   return { x: tail.x, y: tail.y };
 }
 
-export function setupPartyFollow(options: SetupPartyFollowOptions): void {
+export interface PartyFollowHandle {
+  /** Pause the follow system — followers stop chasing the player. */
+  pause(): void;
+  /** Resume follow and reset the trail from the current player position. */
+  resume(): void;
+}
+
+export function setupPartyFollow(
+  options: SetupPartyFollowOptions,
+): PartyFollowHandle {
   const {
     playerReference,
     partyNpcIds,
@@ -94,8 +103,11 @@ export function setupPartyFollow(options: SetupPartyFollowOptions): void {
 
   // Trail stores positions from newest (index 0) to oldest.
   const trail: TrailPoint[] = [];
+  let paused = false;
 
   sceneContext.addTickerCallback(() => {
+    if (paused) return;
+
     const playerX = playerReference.sprite.x;
     const playerY = playerReference.sprite.y;
 
@@ -147,4 +159,15 @@ export function setupPartyFollow(options: SetupPartyFollowOptions): void {
       }
     }
   });
+
+  return {
+    pause() {
+      paused = true;
+    },
+    resume() {
+      // Reset trail so followers don't teleport back to a stale path.
+      trail.length = 0;
+      paused = false;
+    },
+  };
 }
