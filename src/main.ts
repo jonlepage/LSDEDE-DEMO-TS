@@ -7,8 +7,10 @@ import {
   registerCharacterResolver,
   registerGlobalHandlers,
 } from "./engine/handlers";
+import { LSDE_SCENES } from "../public/blueprints/blueprint.enums";
 
 const BLUEPRINT_FILE_PATH = "/blueprints/blueprint.json";
+const DEFAULT_SCENE_LABEL = LSDE_SCENES.simpleDialogFlow;
 
 (async () => {
   const { sidebarContainer, canvasContainer } = createApplicationLayout();
