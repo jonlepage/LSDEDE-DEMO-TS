@@ -139,12 +139,8 @@ function evaluateGameCondition(
 export async function runScene(
   dependencies: SimpleConditionDependencies,
 ): Promise<SceneCleanup> {
-  const {
-    pixiApplication,
-    cameraState,
-    worldContainer,
-    dialogueEngine,
-  } = dependencies;
+  const { pixiApplication, cameraState, worldContainer, dialogueEngine } =
+    dependencies;
 
   const sceneContext = createSceneContext(pixiApplication);
   const screenCenterX = pixiApplication.screen.width / 2;

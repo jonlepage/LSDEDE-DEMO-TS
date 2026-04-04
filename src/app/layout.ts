@@ -111,7 +111,16 @@ export function createApplicationLayout(): {
     sidebarContainer: demosSection,
     canvasContainer,
     onSidebarTransitionEnd: (callback: () => void) => {
-      sidebarContainer.addEventListener("transitionend", callback);
+      sidebarContainer.addEventListener("transitionend", (event) => {
+        // Only react to the sidebar's own collapse/expand transition,
+        // not hover transitions (background-color, color…) bubbling from children.
+        if (
+          event.target === sidebarContainer &&
+          event.propertyName === "margin-left"
+        ) {
+          callback();
+        }
+      });
     },
   };
 }

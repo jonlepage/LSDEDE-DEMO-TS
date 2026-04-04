@@ -131,12 +131,8 @@ function executeAction(
 export async function runScene(
   dependencies: SimpleActionDependencies,
 ): Promise<SceneCleanup> {
-  const {
-    pixiApplication,
-    cameraState,
-    worldContainer,
-    dialogueEngine,
-  } = dependencies;
+  const { pixiApplication, cameraState, worldContainer, dialogueEngine } =
+    dependencies;
 
   const sceneContext = createSceneContext(pixiApplication);
   const screenCenterX = pixiApplication.screen.width / 2;
