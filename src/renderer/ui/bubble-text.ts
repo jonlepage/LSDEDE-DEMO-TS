@@ -36,13 +36,13 @@ const NAME_BACKGROUND_BORDER_RADIUS = 6;
 const WOBBLE_AMPLITUDE = 5;
 const WOBBLE_SPEED = 0.5;
 const CONTROL_POINT_COUNT = 14;
-const BULGE_VARIATION = 1;
+const BULGE_VARIATION = 3;
 
 const DEFAULT_SPEAKER_NAME_COLOR = "#333333";
 
 const DIALOGUE_TEXT_STYLE: Partial<TextStyle> = {
   fill: "#222222",
-  fontSize: 16,
+  fontSize: 18,
   wordWrap: true,
   wordWrapWidth: BUBBLE_MAX_TEXT_WIDTH,
   breakWords: true,
@@ -384,10 +384,10 @@ export function positionBubbleAboveTarget(
   bubbleContainer: Container,
   targetX: number,
   targetY: number,
-  verticalOffset: number = 40,
+  verticalOffset: number = 45,
 ): void {
   bubbleContainer.position.set(
-    targetX - bubbleContainer.width / 2,
+    targetX - bubbleContainer.width / 1.7,
     targetY - bubbleContainer.height - verticalOffset,
   );
 }

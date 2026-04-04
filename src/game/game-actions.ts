@@ -253,6 +253,7 @@ export function createGameActionFacade(
       speakerNameColor?: string,
     ): BubbleTextHandle {
       const character = findCharacterOrThrow(characterId);
+      playCharacterAnimation(pixiApplication, character.sprite, "bounce");
       const bubbleHandle = createBubbleText({
         pixiApplication,
         speakerName,

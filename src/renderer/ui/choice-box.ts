@@ -4,7 +4,7 @@
  */
 
 import { Container, Graphics, Text } from "pixi.js";
-import type { Application } from "pixi.js";
+import type { Application, TextStyle } from "pixi.js";
 import { OutlineFilter, DropShadowFilter } from "pixi-filters";
 
 const CHOICE_BOX_PADDING_HORIZONTAL = 36;
@@ -24,15 +24,16 @@ const SHADOW_COLOR = 0x000000;
 
 const WOBBLE_AMPLITUDE = 3;
 const WOBBLE_SPEED = 0.8;
-const CONTROL_POINT_COUNT = 12;
+const CONTROL_POINT_COUNT = 22;
 
-const CHOICE_TEXT_STYLE = {
+const CHOICE_TEXT_STYLE: Partial<TextStyle> = {
   fill: "#ffffff",
-  fontSize: 13,
+  fontSize: 18,
   wordWrap: true,
   wordWrapWidth: CHOICE_MAX_TEXT_WIDTH,
   breakWords: true,
-  fontFamily: "Arial, sans-serif",
+  fontFamily: "Comic Sans MS",
+  padding: 9,
 };
 
 const CHOICE_TEXT_HOVER_COLOR = "#ffcc00";
@@ -128,27 +129,28 @@ function drawTail(
   bottomY: number,
   time: number,
 ): void {
-  const tailWobble = Math.sin(time * WOBBLE_SPEED * 0.5 + 2.0) * 4;
-  const tailBaseLeftX = centerX - 3;
-  const tailBaseRightX = centerX + 8;
+  const tailWobble = Math.sin(time * WOBBLE_SPEED * 0.5 + 2.0) * 3;
+  // Narrow base (pointy), angled left, longer tail.
+  const tailBaseLeftX = centerX - 5;
+  const tailBaseRightX = centerX + 1;
   const tailAttachY = bottomY - 4;
-  const tailTipX = centerX + 22 + tailWobble;
-  const tailTipY = tailAttachY + 44;
+  const tailTipX = centerX - 18 + tailWobble;
+  const tailTipY = tailAttachY + 30;
 
   graphics.moveTo(tailBaseRightX, tailAttachY);
   graphics.bezierCurveTo(
-    tailBaseRightX + 12,
-    tailAttachY + 14,
-    tailTipX + 4,
-    tailTipY - 10,
+    tailBaseRightX - 2,
+    tailAttachY + 20,
+    tailTipX + 6,
+    tailTipY - 14,
     tailTipX,
     tailTipY,
   );
   graphics.bezierCurveTo(
-    tailTipX - 6 + tailWobble * 0.3,
-    tailTipY - 6,
-    tailBaseLeftX + 4,
-    tailAttachY + 16,
+    tailTipX - 4 + tailWobble * 0.3,
+    tailTipY - 8,
+    tailBaseLeftX - 2,
+    tailAttachY + 18,
     tailBaseLeftX,
     tailAttachY,
   );
@@ -214,7 +216,7 @@ export function createChoiceBox(options: ChoiceBoxOptions): Container {
       choiceLabel.style.fill = CHOICE_TEXT_HOVER_COLOR;
     });
     rowContainer.on("pointerout", () => {
-      choiceLabel.style.fill = CHOICE_TEXT_STYLE.fill;
+      choiceLabel.style.fill = CHOICE_TEXT_STYLE.fill ?? "#ffffff";
     });
     rowContainer.on("pointerdown", (event) => {
       event.stopPropagation();
@@ -297,10 +299,10 @@ export function positionChoiceBoxAboveTarget(
   choiceBoxContainer: Container,
   targetX: number,
   targetY: number,
-  verticalOffset: number = 40,
+  verticalOffset: number = 65,
 ): void {
   choiceBoxContainer.position.set(
-    targetX - choiceBoxContainer.width / 2,
+    targetX - choiceBoxContainer.width / 3,
     targetY - choiceBoxContainer.height - verticalOffset,
   );
 }

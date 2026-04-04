@@ -30,7 +30,7 @@ const SCENE_BLUEPRINT_IMAGES: Record<string, string> = {
   "simple-condition": "cond.webp",
   "condition-dispatch": "cond.webp",
 };
-const DEFAULT_SCENE_UUID = LSDE_SCENES.conditionDispatch;
+const DEFAULT_SCENE_UUID = LSDE_SCENES.simpleChoices;
 
 const POSTHOG_API_KEY = import.meta.env.VITE_POSTHOG_API_KEY as string;
 const POSTHOG_API_HOST =
