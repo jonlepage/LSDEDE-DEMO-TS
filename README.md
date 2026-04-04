@@ -19,11 +19,8 @@ Each demo loads an LSDE blueprint and renders it in real-time — walk your char
 
 ## Stack
 
-- **[LSDE Dialog Engine](https://lepasoft.com/fr/software/ls-dialog-editor)** — visual dialog editor & runtime engine
-- **[PixiJS 8](https://pixijs.com)** — 2D rendering
-- **[Vite](https://vite.dev)** — build tool
-- **TypeScript** (strict mode)
-- **[Tweakpane](https://tweakpane.github.io/docs/)** — debug panel
+- **[LSDE Dialog Engine Runtime](https://lepasoft.com/fr/software/ls-dialog-editor)** — runtime engine to execute LSDE blueprints data.
+- **[PixiJS](https://pixijs.com)** — 2D rendering (simulate custom game engine and rendering)
 
 ## Getting Started
 
