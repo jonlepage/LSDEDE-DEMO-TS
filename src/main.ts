@@ -32,13 +32,14 @@ const SCENE_BLUEPRINT_IMAGES: Record<string, string> = {
 };
 const DEFAULT_SCENE_UUID = LSDE_SCENES.simpleChoices;
 
-const POSTHOG_API_KEY = import.meta.env.VITE_POSTHOG_API_KEY as string;
+const POSTHOG_PROJECT_TOKEN = import.meta.env
+  .VITE_POSTHOG_PROJECT_TOKEN as string;
 const POSTHOG_API_HOST =
   (import.meta.env.VITE_POSTHOG_API_HOST as string) ||
   "https://us.i.posthog.com";
 
 (async () => {
-  initAnalytics(POSTHOG_API_KEY, POSTHOG_API_HOST);
+  initAnalytics(POSTHOG_PROJECT_TOKEN, POSTHOG_API_HOST);
   const { sidebarContainer, canvasContainer, onSidebarTransitionEnd } =
     createApplicationLayout();
   const pixiApplication = await createPixiApplication(canvasContainer);

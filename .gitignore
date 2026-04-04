@@ -33,3 +33,5 @@ LSDEDE-DEMO-TS.lsde
 _bmad-output/*
 _bmad/*
 .claude/*
+.env.example
+src/vite-env.d.ts

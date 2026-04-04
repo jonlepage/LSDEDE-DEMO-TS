@@ -12,17 +12,22 @@ let initialized = false;
 
 /**
  * Initialise PostHog. Call once at application startup.
- * Does nothing if the API key is missing (local dev without analytics).
+ * Does nothing if the project token is missing (local dev without analytics).
  */
-export function initAnalytics(apiKey: string, apiHost: string): void {
+export function initAnalytics(projectToken: string, apiHost: string): void {
   if (initialized) return;
-  if (!apiKey) {
-    console.warn("[Analytics] No PostHog API key — analytics disabled.");
+  if (!projectToken) {
+    console.warn("[Analytics] No PostHog project token — analytics disabled.");
     return;
   }
 
-  posthog.init(apiKey, {
+  posthog.init(projectToken, {
     api_host: apiHost,
+    ui_host: "https://us.posthog.com", // PostHog app UI (toolbar, surveys)
+
+    /* ── Silence errors when blocked by ad blockers ──── */
+    on_request_error: () => {},
+
     /* ── Autocapture ─────────────────────────────────── */
     autocapture: true, // clicks, inputs, form submits
     capture_pageview: true, // SPA page views
