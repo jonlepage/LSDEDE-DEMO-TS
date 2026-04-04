@@ -1,6 +1,6 @@
 # LSDE Playground — Dialog Engine Demos
 
-Interactive demos showcasing the **[LSDE Dialog Engine](https://lsde.lepa-dialog.com)** (`@lsde/dialog-engine`) through PixiJS scenes with colored bunny sprites as characters.
+Interactive demos showcasing the **[LSDE Dialog Engine](https://lepasoft.com/fr/software/ls-dialog-editor)** (`@lsde/dialog-engine`) through PixiJS scenes with colored bunny sprites as characters.
 
 Each demo loads an LSDE blueprint and renders it in real-time — walk your character, trigger dialogues, make choices, and watch the engine in action.
 
@@ -19,7 +19,7 @@ Each demo loads an LSDE blueprint and renders it in real-time — walk your char
 
 ## Stack
 
-- **[LSDE Dialog Engine](https://lsde.lepa-dialog.com)** — visual dialog editor & runtime engine
+- **[LSDE Dialog Engine](https://lepasoft.com/fr/software/ls-dialog-editor)** — visual dialog editor & runtime engine
 - **[PixiJS 8](https://pixijs.com)** — 2D rendering
 - **[Vite](https://vite.dev)** — build tool
 - **TypeScript** (strict mode)
