@@ -15,7 +15,6 @@ dist-ssr
 .env.*
 !.env.example
 .env.example
-src/vite-env.d.ts
 
 # Editor directories and files
 .vscode/*
@@ -36,4 +35,3 @@ _bmad-output/*
 _bmad/*
 .claude/*
 .env.example
-src/vite-env.d.ts
