@@ -1,8 +1,11 @@
-# LSDE Playground — Dialog Engine Demos
+# LSDE Playground with runtime demos
 
-Interactive demos showcasing the **[LSDE Dialog Engine](https://lepasoft.com/fr/software/ls-dialog-editor)** (`@lsde/dialog-engine`) through PixiJS scenes with colored bunny sprites as characters.
+Interactive demos showcasing **[LSDEDE](https://jonlepage.github.io/LS-Dialog-Editor-Engine)** through PixiJS scenes with colored bunny sprites as characters.
 
-Each demo loads an LSDE blueprint and renders it in real-time — walk your character, trigger dialogues, make choices, and watch the engine in action.
+Each demo loads an [LSDE](https://lepasoft.com/en/software/ls-dialog-editor) blueprint and renders it in real-time — walk your character, trigger dialogues, make choices, and watch the engine in action.
+
+The demo demonstrates a basic use of the [LSDEDE](https://jonlepage.github.io/LS-Dialog-Editor-Engine) runtime and a way to connect it to your game architecture.
+The scenes come from data produced by [LSDE](https://lepasoft.com/en/software/ls-dialog-editor), and the runtime called [LSDEDE](https://jonlepage.github.io/LS-Dialog-Editor-Engine) interprets them in order to map them to your game engine or API.
 
 **[▶ Live Demo](https://jonlepage.github.io/LSDEDE-DEMO-TS/)**
 
@@ -19,7 +22,7 @@ Each demo loads an LSDE blueprint and renders it in real-time — walk your char
 
 ## Stack
 
-- **[LSDE Dialog Engine Runtime](https://lepasoft.com/fr/software/ls-dialog-editor)** — runtime engine to execute LSDE blueprints data.
+- **[LSDE Dialog Engine Runtime](https://github.com/jonlepage/LS-Dialog-Editor-Engine)** — runtime engine to execute [LS Dialog editor](https://lepasoft.com/en/software/ls-dialog-editor) blueprints data.
 - **[PixiJS](https://pixijs.com)** — 2D rendering (simulate custom game engine and rendering)
 
 ## demo code
@@ -34,22 +37,7 @@ Your can find all demo in [`src/demos/`](src/demos/) folder:
 - [condition-dispatch](src/demos/condition-dispatch)
 
 They are only for demonstration purposes and not meant to be production-quality code or best practices for your game engine.
-All engine need specific optimizations and architecture decisions, so treat them as educational reference material to understand how to integrate LSDEDE with your custom rendering/game engine
-
-## Getting Started
-
-```bash
-npm install
-npm run dev       # Vite dev server on port 8080
-```
-
-## Commands
-
-| Command         | Description                                      |
-| --------------- | ------------------------------------------------ |
-| `npm run dev`   | Start dev server (port 8080, auto-opens browser) |
-| `npm run lint`  | ESLint (TypeScript + Prettier)                   |
-| `npm run build` | Lint → type-check → Vite production build        |
+All engine need specific optimizations and architecture decisions, so treat them as educational reference material to understand how to integrate [LSDEDE](https://jonlepage.github.io/LS-Dialog-Editor-Engine) with your custom rendering/game engine
 
 ## Architecture
 
@@ -58,19 +46,17 @@ src/
 ├── engine/      → LSDE logic & dispatch (knows nothing about PixiJS)
 ├── renderer/    → PixiJS rendering (knows nothing about LSDE)
 ├── game/        → Game state: characters, variables, inventory
-├── demos/       → Composition layer — connects engine + game + renderer
-├── analytics/   → PostHog telemetry
+├── demos/       → LSDEDE runtime — connects engine + game + renderer
 ├── app/         → App shell (sidebar navigation + canvas layout)
 ├── debug/       → Tweakpane debug panel
-└── shared/      → Cross-layer types and constants
+└── shared/      → utiles, types and constants
 ```
 
 Strict layer separation: `engine/`, `renderer/`, and `game/` never import from each other. Only `demos/` composes them together.
 
 ## Links
 
-- **LSDE Editor** — [lsde.lepa-dialog.com](https://lsde.lepa-dialog.com)
-- **LEPA Dialog** — [lepa-dialog.com](https://lepa-dialog.com)
+- **LSDE Editor** — [lsde.lepa-dialog.com](https://lepasoft.com/en/software/ls-dialog-editor)
 - **npm package** — [@lsde/dialog-engine](https://www.npmjs.com/package/@lsde/dialog-engine)
 
 ## Demo Blueprint Screenshots
