@@ -10,6 +10,7 @@ import type { Application } from "pixi.js";
 import type { GameStore } from "../game/game-store";
 import type { GameActionFacade } from "../game/game-actions";
 import type { SupportedLanguage } from "../engine/i18n";
+import { currentLanguage } from "../engine/i18n";
 import type { CrtFilterState } from "../renderer/stage";
 
 export interface DebugPanelState {
@@ -50,8 +51,10 @@ export function createDebugPanel(
     options: [
       { text: "English", value: "en" },
       { text: "Français", value: "fr" },
+      { text: "日本語", value: "ja" },
+      { text: "中文", value: "zh" },
     ],
-    value: "en",
+    value: currentLanguage,
   }) as ListBladeApi<string>;
 
   languageBlade.on("change", (event) => {

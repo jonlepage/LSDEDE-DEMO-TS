@@ -45,7 +45,7 @@
  */
 
 import { Graphics, Sprite, Text } from "pixi.js";
-import type { Application, Container, FederatedPointerEvent } from "pixi.js";
+import type { Application, Container } from "pixi.js";
 import type {
   DialogueEngine,
   BlueprintExport,
@@ -75,6 +75,7 @@ import {
 } from "../../debug/debug-panel";
 import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
+import { currentLanguage, setCurrentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import type { ExportCondition } from "../../../public/blueprints/blueprint.types";
 import {
@@ -256,7 +257,6 @@ export async function runScene(
     cameraState,
     worldContainer,
     dialogueEngine,
-    blueprintData,
   } = dependencies;
 
   const sceneContext = createSceneContext(pixiApplication);
@@ -372,7 +372,9 @@ export async function runScene(
   });
 
   // --- Debug panel ---
-  const debugPanelState = createDebugPanel();
+  const debugPanelState = createDebugPanel({
+    onLanguageChanged: setCurrentLanguage,
+  });
   registerLiveMonitorTicker(debugPanelState, pixiApplication);
   registerActionButtons(debugPanelState, gameActions, GAME_ACTORS.l1);
 
@@ -475,8 +477,6 @@ export async function runScene(
   const activeBubbles = new Map<string, BubbleTextHandle>();
   const blocksWaitingForInput = new Map<string, () => void>();
 
-  const locale = blueprintData.primaryLanguage ?? "fr";
-
   function startDialogueScene(): void {
     isDialogueActive = true;
     partyFollowHandle.pause();
@@ -497,7 +497,7 @@ export async function runScene(
     // Pattern matches multi-tracks demo: distinguish isAsync vs main track,
     // and handle delay + timeout + waitInput correctly per block.
     sceneHandle.onDialog(({ block, context, next }) => {
-      const dialogueText = block.dialogueText?.[locale] ?? "";
+      const dialogueText = block.dialogueText?.[currentLanguage] ?? "";
       // DIALOG-004 has no character in blueprint metadata; fall back to player.
       const characterId = context.character?.id ?? PLAYER_CHARACTER_ID;
       const characterName = context.character?.name ?? characterId;
@@ -641,8 +641,7 @@ export async function runScene(
   // Clicking the ritual carrot starts the scene (proximity + not already active).
   bigCarrotSprite.eventMode = "static";
   bigCarrotSprite.cursor = "pointer";
-  bigCarrotSprite.on("pointerdown", (event: FederatedPointerEvent) => {
-    event.stopPropagation();
+  bigCarrotSprite.on("pointerdown", () => {
     if (isDialogueActive || !isPlayerNearBigCarrot()) return;
     startDialogueScene();
   });

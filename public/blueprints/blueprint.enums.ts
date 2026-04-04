@@ -59,7 +59,7 @@ export enum LSDE_SCENES {
 export enum LSDE_BLOCKS {
 	/**
 	 * ### 🟦[DIALOG] player_suggestion-AI
-	 * _"Restons calmes les amis. Si cette carotte géante est réelle, ce serait le festin du siècle pour tout notre clan. Si c'es..."_
+	 * _"Restons calmes les amis.  Si cette carotte géante est réelle, ce serait le festin du siècle pour tout notre clan.  Si c'..."_
 	 * - Characters: `l4`
 	 * - Scene: `simple-dialog-flow`
 	 * - In: `rabbit_philosophy-AI`
@@ -80,7 +80,7 @@ export enum LSDE_BLOCKS {
 	simpleDialogFlowPlayerWarningAi = 'd13045ac-a103-4e10-acb8-12399c11a2c1',
 	/**
 	 * ### 🟦[DIALOG] rabbit_hype-AI
-	 * _"C'est exactement l'esprit d'aventure qu'il nous fallait, l4 ! On va devenir des légendes vivantes, les lapins qui ont dé..."_
+	 * _"C'est exactement l'esprit d'aventure qu'il nous fallait, l4 !  On va devenir des légendes vivantes, les lapins qui ont d..."_
 	 * - Characters: `l1`
 	 * - Scene: `simple-dialog-flow`
 	 * - In: `player_suggestion-AI`
@@ -91,7 +91,7 @@ export enum LSDE_BLOCKS {
 	simpleDialogFlowRabbitHypeAi = '6ed885e4-eb2d-4916-979d-339a30ae36ae',
 	/**
 	 * ### 🟦[DIALOG] rabbit_philosophy-AI
-	 * _"Mais le temps n'est qu'une construction mentale, l2. Est-ce que la carotte existe vraiment si personne n'est là pour la ..."_
+	 * _"Mais le temps n'est qu'une construction mentale, l2.  Est-ce que la carotte existe vraiment si personne n'est là pour la..."_
 	 * - Characters: `l3`
 	 * - Scene: `simple-dialog-flow`
 	 * - In: `rabbit_skepticism-AI`
@@ -102,7 +102,7 @@ export enum LSDE_BLOCKS {
 	simpleDialogFlowRabbitPhilosophyAi = '067e705a-7696-45da-8a74-16f681dc83a3',
 	/**
 	 * ### 🟦[DIALOG] rabbit_resignation-AI
-	 * _"Ton nez nous a déjà conduits dans une mare de boue malodorante la semaine dernière, triple idiot. Mais bon, je suppose q..."_
+	 * _"Ton nez nous a déjà conduits dans une mare de boue malodorante la semaine dernière, triple idiot.  Mais bon, je suppose ..."_
 	 * - Characters: `l2`
 	 * - Scene: `simple-dialog-flow`
 	 * - In: `rabbit_hype-AI`
@@ -123,7 +123,7 @@ export enum LSDE_BLOCKS {
 	simpleDialogFlowRabbitRumorAi = 'c39d69d1-f508-45a8-8084-09a68f6916e1',
 	/**
 	 * ### 🟦[DIALOG] rabbit_skepticism-AI
-	 * _"Encore une de tes inventions débiles, l1 ! La dernière fois, ta fameuse montagne de trèfles n'était qu'un vieux pull ver..."_
+	 * _"Encore une de tes inventions débiles, l1 !  La dernière fois, ta fameuse montagne de trèfles n'était qu'un vieux pull ve..."_
 	 * - Characters: `l2`
 	 * - Scene: `simple-dialog-flow`
 	 * - In: `rabbit_rumor-AI`
@@ -134,7 +134,7 @@ export enum LSDE_BLOCKS {
 	simpleDialogFlowRabbitSkepticismAi = '187ddb4f-1321-4255-a3dd-2cef59309af6',
 	/**
 	 * ### 🟦[DIALOG] rabbit_wisdom-AI
-	 * _"Saviez-vous que les renards ne sont que des chiens qui ont fait des études de philosophie ? Si on leur pose une question..."_
+	 * _"Saviez-vous que les renards ne sont que des chiens qui ont fait des études de philosophie ?  Si on leur pose une questio..."_
 	 * - Characters: `l3`
 	 * - Scene: `simple-dialog-flow`
 	 * - In: `rabbit_resignation-AI`
@@ -659,7 +659,7 @@ export enum LSDE_BLOCKS {
 	 * - Characters: `l1`
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-001`
-	 * `moveCharacterAt`(l1, -200, undefined, true)
+	 * `moveCharacterAt`(l1, -200, null, true)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */
@@ -679,7 +679,7 @@ export enum LSDE_BLOCKS {
 	 * - Characters: `l1`
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-001`
-	 * `moveCharacterAt`(l3, 200, undefined, true)
+	 * `moveCharacterAt`(l3, 200, null, true)
 	 * ---
 	 * <image url="./_images/action.webp" />
 	 */

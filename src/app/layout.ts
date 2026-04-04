@@ -5,6 +5,8 @@
 export function createApplicationLayout(): {
   sidebarContainer: HTMLElement;
   canvasContainer: HTMLElement;
+  /** Register a callback fired when the sidebar collapse/expand transition ends. */
+  onSidebarTransitionEnd: (callback: () => void) => void;
 } {
   const applicationWrapper = document.getElementById("app")!;
   applicationWrapper.innerHTML = "";
@@ -24,7 +26,7 @@ export function createApplicationLayout(): {
   logoLink.className = "sidebar-logo-link";
 
   const logoImage = document.createElement("img");
-  logoImage.src = "/lsde-logo.webp";
+  logoImage.src = `${import.meta.env.BASE_URL}lsde-logo.webp`;
   logoImage.alt = "LSDE Logo";
   logoImage.className = "sidebar-logo";
   logoLink.appendChild(logoImage);
@@ -105,5 +107,11 @@ export function createApplicationLayout(): {
   applicationWrapper.appendChild(pixiWatermark);
 
   // Return the demos section so navigation.ts populates it (not the full sidebar)
-  return { sidebarContainer: demosSection, canvasContainer };
+  return {
+    sidebarContainer: demosSection,
+    canvasContainer,
+    onSidebarTransitionEnd: (callback: () => void) => {
+      sidebarContainer.addEventListener("transitionend", callback);
+    },
+  };
 }

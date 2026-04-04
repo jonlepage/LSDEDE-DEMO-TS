@@ -23,6 +23,7 @@ import {
 } from "../../debug/debug-panel";
 import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
+import { currentLanguage, setCurrentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import {
   trackDialogueShown,
@@ -54,7 +55,6 @@ export async function runScene(
     cameraState,
     worldContainer,
     dialogueEngine,
-    blueprintData,
   } = dependencies;
 
   const sceneContext = createSceneContext(pixiApplication);
@@ -118,7 +118,9 @@ export async function runScene(
     characters,
   });
 
-  const debugPanelState = createDebugPanel();
+  const debugPanelState = createDebugPanel({
+    onLanguageChanged: setCurrentLanguage,
+  });
   registerLiveMonitorTicker(debugPanelState, pixiApplication);
   registerActionButtons(debugPanelState, gameActions, TRIGGER_NPC_CHARACTER_ID);
   sceneContext.addDisposable(() => debugPanelState.pane.dispose());
@@ -154,15 +156,13 @@ export async function runScene(
   // reacts to the same player interaction at once.
   const blocksWaitingForInput = new Map<string, () => void>();
 
-  const locale = blueprintData.primaryLanguage ?? "fr";
-
   function startDialogueScene(): void {
     console.log("[multi-tracks] Scene triggered!");
 
     const sceneHandle = dialogueEngine.scene(SCENE_UUID);
 
     sceneHandle.onDialog(({ block, context, next }) => {
-      const dialogueText = block.dialogueText?.[locale] ?? "";
+      const dialogueText = block.dialogueText?.[currentLanguage] ?? "";
       const characterId = context.character?.id;
       const characterName = context.character?.name ?? "???";
 

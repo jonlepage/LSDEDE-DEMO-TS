@@ -20,9 +20,72 @@ export const FOLLOW_VERTICAL_OFFSET = -120;
 /**
  * Dead zone: camera does not move at all when the target is within this radius (in pixels)
  * of the current camera center. Beyond the dead zone, follow strength ramps up progressively.
+ *
+ * Both radii scale with the viewport's smallest dimension so the camera
+ * keeps following correctly on narrow / mobile viewports.
  */
-const DEAD_ZONE_RADIUS = 120;
-const FULL_FOLLOW_RADIUS = 400;
+const DEAD_ZONE_RATIO = 0.11; // fraction of smallest viewport dimension
+const FULL_FOLLOW_RATIO = 0.37; // fraction of smallest viewport dimension
+const MIN_DEAD_ZONE = 30;
+const MIN_FULL_FOLLOW = 100;
+
+/** Reference viewport size for lerp scaling (1080p shortest dimension). */
+const REFERENCE_VIEWPORT_SIZE = 1080;
+/** Maximum lerp multiplier on very small screens. */
+const MAX_LERP_MULTIPLIER = 16;
+
+function computeDeadZoneRadius(application: Application): number {
+  const shortest = Math.min(
+    application.screen.width,
+    application.screen.height,
+  );
+  return Math.max(shortest * DEAD_ZONE_RATIO, MIN_DEAD_ZONE);
+}
+
+function computeFullFollowRadius(application: Application): number {
+  const shortest = Math.min(
+    application.screen.width,
+    application.screen.height,
+  );
+  return Math.max(shortest * FULL_FOLLOW_RATIO, MIN_FULL_FOLLOW);
+}
+
+/**
+ * Returns a multiplier (≥ 1) that speeds up the follow lerp on smaller viewports.
+ * On a 1080p screen → 1×. On a 375px mobile → ~2.9×.
+ */
+function computeFollowLerpMultiplier(application: Application): number {
+  const shortest = Math.min(
+    application.screen.width,
+    application.screen.height,
+  );
+  return Math.min(
+    REFERENCE_VIEWPORT_SIZE / Math.max(shortest, 1),
+    MAX_LERP_MULTIPLIER,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Responsive base zoom — smaller viewports zoom out to show more of the scene
+// ---------------------------------------------------------------------------
+
+/** Below this viewport size (shortest dim), the camera starts zooming out. */
+const ZOOM_REFERENCE_SIZE = 1080;
+/** Minimum zoom scale on very small screens. */
+const MIN_BASE_ZOOM = 0.8;
+
+/**
+ * Computes a scale factor ≤ 1 based on the viewport's shortest dimension.
+ * On a 1080p+ screen → 1.0. On a 375px mobile → ~0.58.
+ */
+export function computeResponsiveBaseZoom(application: Application): number {
+  const shortest = Math.min(
+    application.screen.width,
+    application.screen.height,
+  );
+  if (shortest >= ZOOM_REFERENCE_SIZE) return 1;
+  return Math.max(shortest / ZOOM_REFERENCE_SIZE, MIN_BASE_ZOOM);
+}
 
 export interface CameraCommandTarget {
   targetX: number;
@@ -77,11 +140,20 @@ export function createCamera(pixiApplication: Application): CameraState {
     depthSortingEnabled: false,
   };
 
+  // Apply responsive base zoom on creation.
+  const initialBaseZoom = computeResponsiveBaseZoom(pixiApplication);
+  worldContainer.scale.set(initialBaseZoom);
+
   pixiApplication.ticker.add((time) => {
     updateCamera(cameraState, time.deltaTime);
   });
 
   pixiApplication.renderer.on("resize", () => {
+    // Update base zoom when viewport changes (sidebar collapse, window resize).
+    if (!cameraState.zoomTarget) {
+      const baseZoom = computeResponsiveBaseZoom(pixiApplication);
+      worldContainer.scale.set(baseZoom);
+    }
     snapCameraToFollowTarget(cameraState);
   });
 
@@ -154,7 +226,8 @@ export function resetCameraState(cameraState: CameraState): void {
   cameraState.commandTarget = null;
   cameraState.shakeState = null;
   cameraState.zoomTarget = null;
-  cameraState.worldContainer.scale.set(1);
+  const baseZoom = computeResponsiveBaseZoom(cameraState.pixiApplication);
+  cameraState.worldContainer.scale.set(baseZoom);
   cameraState.worldContainer.pivot.set(0, 0);
   cameraState.worldContainer.position.set(
     cameraState.pixiApplication.screen.width / 2,
@@ -185,8 +258,11 @@ export function zoomCamera(
   easingSpeed: number = 0.04,
   onComplete?: () => void,
 ): void {
+  // targetScale is a logical multiplier (1 = default view for this viewport).
+  // Compose with the responsive base zoom so 1.5× means "1.5× of the adaptive zoom".
+  const baseZoom = computeResponsiveBaseZoom(cameraState.pixiApplication);
   cameraState.zoomTarget = {
-    targetScale,
+    targetScale: targetScale * baseZoom,
     easingSpeed,
     onComplete,
   };
@@ -262,13 +338,23 @@ function updateCamera(cameraState: CameraState, deltaTime: number): void {
       cameraState.worldContainer.pivot.y;
     const distanceFromCenter = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-    if (distanceFromCenter > DEAD_ZONE_RADIUS) {
+    const deadZoneRadius = computeDeadZoneRadius(cameraState.pixiApplication);
+    const fullFollowRadius = computeFullFollowRadius(
+      cameraState.pixiApplication,
+    );
+
+    if (distanceFromCenter > deadZoneRadius) {
+      const lerpMultiplier = computeFollowLerpMultiplier(
+        cameraState.pixiApplication,
+      );
       const progressiveFactor =
         Math.min(
-          (distanceFromCenter - DEAD_ZONE_RADIUS) /
-            (FULL_FOLLOW_RADIUS - DEAD_ZONE_RADIUS),
+          (distanceFromCenter - deadZoneRadius) /
+            (fullFollowRadius - deadZoneRadius),
           1,
-        ) * cameraState.followLerpFactor;
+        ) *
+        cameraState.followLerpFactor *
+        lerpMultiplier;
 
       const lerpAmount = 1 - Math.pow(1 - progressiveFactor, deltaTime);
 

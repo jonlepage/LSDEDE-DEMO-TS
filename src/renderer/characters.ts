@@ -5,7 +5,7 @@
 
 import { Assets, Sprite, Texture } from "pixi.js";
 
-const BUNNY_TEXTURE_PATH = "/assets/bunny.png";
+const BUNNY_TEXTURE_PATH = `${import.meta.env.BASE_URL}assets/bunny.png`;
 
 export interface CharacterSpriteOptions {
   readonly characterId: string;

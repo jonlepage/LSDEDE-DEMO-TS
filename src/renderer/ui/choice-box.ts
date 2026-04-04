@@ -10,8 +10,6 @@ import { OutlineFilter, DropShadowFilter } from "pixi-filters";
 const CHOICE_BOX_PADDING_HORIZONTAL = 36;
 const CHOICE_BOX_PADDING_VERTICAL = 26;
 const CHOICE_BOX_FILL_COLOR = 0x1a1a2e;
-const CHOICE_BOX_STROKE_COLOR = 0xe0e0e0;
-const CHOICE_BOX_STROKE_WIDTH = 2.5;
 const CHOICE_ROW_HEIGHT = 28;
 const CHOICE_ROW_GAP = 6;
 const CHOICE_MAX_TEXT_WIDTH = 220;
@@ -33,6 +31,7 @@ const CHOICE_TEXT_STYLE = {
   fontSize: 13,
   wordWrap: true,
   wordWrapWidth: CHOICE_MAX_TEXT_WIDTH,
+  breakWords: true,
   fontFamily: "Arial, sans-serif",
 };
 
@@ -155,10 +154,6 @@ function drawTail(
   );
   graphics.closePath();
   graphics.fill(CHOICE_BOX_FILL_COLOR);
-  graphics.stroke({
-    color: CHOICE_BOX_STROKE_COLOR,
-    width: CHOICE_BOX_STROKE_WIDTH,
-  });
 }
 
 function drawAnimatedShape(
@@ -179,10 +174,6 @@ function drawAnimatedShape(
 
   drawCloudBody(graphics, positions);
   graphics.fill(CHOICE_BOX_FILL_COLOR);
-  graphics.stroke({
-    color: CHOICE_BOX_STROKE_COLOR,
-    width: CHOICE_BOX_STROKE_WIDTH,
-  });
 }
 
 export function createChoiceBox(options: ChoiceBoxOptions): Container {

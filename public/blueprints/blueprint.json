@@ -1,11 +1,13 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-03T12:15:05.546Z",
+  "exportDate": "2026-04-04T01:16:37.901Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
     "en",
-    "fr"
+    "fr",
+    "ja",
+    "zh"
   ],
   "dictionaries": [
     {
@@ -112,10 +114,12 @@
           "properties": [],
           "label": "player_suggestion-AI",
           "structureKey": "__blueprints__.simple-dialog-flow.player_suggestion-AI",
-          "content": "Restons calmes les amis. Si cette carotte géante est réelle, ce serait le festin du siècle pour tout notre clan. Si c'est un leurre, on aura au moins fait notre gym matinale et pris l'air. Qu'est-ce qu'on risque vraiment à aller voir ?",
+          "content": "Restons calmes les amis. \nSi cette carotte géante est réelle, ce serait le festin du siècle pour tout notre clan. \nSi c'est un leurre, on aura au moins fait notre gym matinale et pris l'air. \nQu'est-ce qu'on risque vraiment à aller voir ?",
           "dialogueText": {
-            "en": "",
-            "fr": "Restons calmes les amis. Si cette carotte géante est réelle, ce serait le festin du siècle pour tout notre clan. Si c'est un leurre, on aura au moins fait notre gym matinale et pris l'air. Qu'est-ce qu'on risque vraiment à aller voir ?"
+            "en": "Let's stay calm, friends.\nIf this giant carrot is real, it'd be the feast of the century for our whole clan.\nIf it's a decoy, at least we'll have gotten our morning exercise and some fresh air.\nWhat do we really have to lose by going to check it out?",
+            "fr": "Restons calmes les amis. \nSi cette carotte géante est réelle, ce serait le festin du siècle pour tout notre clan. \nSi c'est un leurre, on aura au moins fait notre gym matinale et pris l'air. \nQu'est-ce qu'on risque vraiment à aller voir ?",
+            "ja": "みんな、落ち着こう。\nもしこの巨大なニンジンが本物なら、僕たちの一族みんなにとって世紀のご馳走になるだろう。\nもしそれが作り物だったとしても、少なくとも朝の運動にはなるし、外の空気も吸える。\n見に行くだけで、一体何を失うって言うんだい？",
+            "zh": "保持冷静，朋友们。\n如果这根巨型胡萝卜是真的，那对我们整个族群来说，这将是世纪盛宴。\n如果只是个诱饵，我们至少也做了早间运动，呼吸了新鲜空气。\n我们去看看又能有什么真正的风险呢？"
           },
           "parentLabels": [
             "__blueprints__"
@@ -136,10 +140,12 @@
           "properties": [],
           "label": "player_warning-AI",
           "structureKey": "__blueprints__.simple-dialog-flow.player_warning-AI",
-          "content": "C'est ça, l3, on essaiera ta technique de distraction métaphysique si on croise un prédateur affamé. En attendant, on avance en silence. Et l1, si c'est encore une vieille chaussette humaine, tu assures les tours de garde tout le mois !",
+          "content": "C'est ça, l3, on essaiera ta technique de distraction métaphysique si on croise un prédateur affamé. En attendant, on avance en silence. \nEt l1, si c'est encore une vieille chaussette humaine, tu assures les tours de garde tout le mois !",
           "dialogueText": {
-            "en": "",
-            "fr": "C'est ça, l3, on essaiera ta technique de distraction métaphysique si on croise un prédateur affamé. En attendant, on avance en silence. Et l1, si c'est encore une vieille chaussette humaine, tu assures les tours de garde tout le mois !"
+            "en": "Right, l3, we'll try your metaphysical distraction technique if we run into a hungry predator. In the meantime, we move in silence.\nAnd l1, if it's another old human sock, you'll be on guard duty for the entire month!",
+            "fr": "C'est ça, l3, on essaiera ta technique de distraction métaphysique si on croise un prédateur affamé. En attendant, on avance en silence. \nEt l1, si c'est encore une vieille chaussette humaine, tu assures les tours de garde tout le mois !",
+            "ja": "ああ、そうかい、L3。もし腹を空かせた捕食者に出くわしたら、お前のその形而上学的な惑わしの戦法とやらを試してみるさ。それまでは、静かに進むんだ。\nそしてL1、もしそれがまた古い人間の靴下だったりしたら、その月は全部、お前が見張り番をやるんだからな！",
+            "zh": "好的吧，l3，如果我们遇到饥饿的捕食者，我们会试试你那套形而上学的注意力分散法。在此之前，我们先悄悄前进。\n还有l1，如果（我们找到的）又是什么人类的破烂玩意儿，你这个月就负责站岗放哨了！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -160,10 +166,12 @@
           "properties": [],
           "label": "rabbit_hype-AI",
           "structureKey": "__blueprints__.simple-dialog-flow.rabbit_hype-AI",
-          "content": "C'est exactement l'esprit d'aventure qu'il nous fallait, l4 ! On va devenir des légendes vivantes, les lapins qui ont découvert le trésor orange ! Je peux déjà sentir son parfum sucré flotter dans la brise, c'est forcément par là, suivez-moi !",
+          "content": "C'est exactement l'esprit d'aventure qu'il nous fallait, l4 ! \nOn va devenir des légendes vivantes, les lapins qui ont découvert le trésor orange ! \nJe peux déjà sentir son parfum sucré flotter dans la brise, c'est forcément par là, suivez-moi !",
           "dialogueText": {
-            "en": "",
-            "fr": "C'est exactement l'esprit d'aventure qu'il nous fallait, l4 ! On va devenir des légendes vivantes, les lapins qui ont découvert le trésor orange ! Je peux déjà sentir son parfum sucré flotter dans la brise, c'est forcément par là, suivez-moi !"
+            "en": "This is just the spirit of adventure we needed, l4!\nWe're going to become living legends, the rabbits who discovered the orange treasure!\nI can already smell its sweet scent floating on the breeze, it must be this way, follow me!",
+            "fr": "C'est exactement l'esprit d'aventure qu'il nous fallait, l4 ! \nOn va devenir des légendes vivantes, les lapins qui ont découvert le trésor orange ! \nJe peux déjà sentir son parfum sucré flotter dans la brise, c'est forcément par là, suivez-moi !",
+            "ja": "l4、これこそ僕らが求めていた冒険心ってやつさ！\n僕らがオレンジの宝を見つけたウサギとして、生きた伝説になるんだ！\nもう甘い香りが風に乗って漂ってくるのが分かるよ。間違いない、あっちだ！さあ、ついてきて！",
+            "zh": "这正是我们需要的冒险精神，l4！\n我们将会成为活着的传奇，那些发现了橙色宝藏的兔子！\n我已经能闻到它甜美的香气在微风中飘荡，肯定就在那边，跟我来！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -184,10 +192,12 @@
           "properties": [],
           "label": "rabbit_philosophy-AI",
           "structureKey": "__blueprints__.simple-dialog-flow.rabbit_philosophy-AI",
-          "content": "Mais le temps n'est qu'une construction mentale, l2. Est-ce que la carotte existe vraiment si personne n'est là pour la grignoter avec amour ? Peut-être que c'est nous qui sommes tous coincés dans le rêve d'un grand navet cosmique.",
+          "content": "Mais le temps n'est qu'une construction mentale, l2. \nEst-ce que la carotte existe vraiment si personne n'est là pour la grignoter avec amour ? \nPeut-être que c'est nous qui sommes tous coincés dans le rêve d'un grand navet cosmique.",
           "dialogueText": {
-            "en": "",
-            "fr": "Mais le temps n'est qu'une construction mentale, l2. Est-ce que la carotte existe vraiment si personne n'est là pour la grignoter avec amour ? Peut-être que c'est nous qui sommes tous coincés dans le rêve d'un grand navet cosmique."
+            "en": "But time is just a mental construct, l2.\nDoes the carrot truly exist if no one is there to lovingly nibble on it?\nPerhaps we are all just stuck in the dream of a giant cosmic turnip.",
+            "fr": "Mais le temps n'est qu'une construction mentale, l2. \nEst-ce que la carotte existe vraiment si personne n'est là pour la grignoter avec amour ? \nPeut-être que c'est nous qui sommes tous coincés dans le rêve d'un grand navet cosmique.",
+            "ja": "しかし、時間は単なる心の構造に過ぎない、l2。\n誰も愛情を込めてかじる者がいなければ、人参は本当に存在するのだろうか？\nもしかしたら、私たちみんなが閉じ込められているのは、巨大な宇宙のカブの夢の中なのかもしれない。",
+            "zh": "可是时间不过是一种心理建构，l2。\n如果没有人在那里带着爱意啃食它，胡萝卜真的存在吗？\n也许我们都只是被困在一个巨大宇宙萝卜的梦境里。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -208,10 +218,12 @@
           "properties": [],
           "label": "rabbit_resignation-AI",
           "structureKey": "__blueprints__.simple-dialog-flow.rabbit_resignation-AI",
-          "content": "Ton nez nous a déjà conduits dans une mare de boue malodorante la semaine dernière, triple idiot. Mais bon, je suppose que je dois vous accompagner pour m'assurer que vous ne finissiez pas en civet par pure distraction. Allez, en route.",
+          "content": "Ton nez nous a déjà conduits dans une mare de boue malodorante la semaine dernière, triple idiot. \nMais bon, je suppose que je dois vous accompagner pour m'assurer que vous ne finissiez pas en civet par pure distraction. \nAllez, en route.",
           "dialogueText": {
-            "en": "",
-            "fr": "Ton nez nous a déjà conduits dans une mare de boue malodorante la semaine dernière, triple idiot. Mais bon, je suppose que je dois vous accompagner pour m'assurer que vous ne finissiez pas en civet par pure distraction. Allez, en route."
+            "en": "Your nose already led us into a stinking mud puddle last week, you triple idiot. But anyway, I suppose I have to come with you to make sure you don't end up in a stew out of sheer absentmindedness. Come on, let's go.",
+            "fr": "Ton nez nous a déjà conduits dans une mare de boue malodorante la semaine dernière, triple idiot. \nMais bon, je suppose que je dois vous accompagner pour m'assurer que vous ne finissiez pas en civet par pure distraction. \nAllez, en route.",
+            "ja": "先週も、お前の鼻のせいで、俺たちは臭い泥沼に突っ込んだんだぞ、この大バカ者め！\nまあ、しょうがない。お前が油断して捕まって、シチューにでもされないように、俺がついていってやるよ。\nさあ、行くぞ。",
+            "zh": "你的鼻子上周就把我们带到了臭烘烘的泥坑里，你这糊涂蛋。\n但算了，我想我得跟着你，免得你因为心不在焉，最后成了别人的炖肉。\n走吧。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -233,10 +245,12 @@
           "label": "rabbit_rumor-AI",
           "isStartBlock": true,
           "structureKey": "__blueprints__.simple-dialog-flow.rabbit_rumor-AI",
-          "content": "Les copains, vous n'allez pas me croire, mais j'ai déniché le scoop du siècle : il y aurait une carotte de la taille d'un chêne juste derrière la colline de l'Est. On l'appelle la Carotte Sacrée et elle brille apparemment d'un éclat doré dans le noir total !",
+          "content": "Les copains, vous n'allez pas me croire, mais j'ai déniché le scoop du siècle : il y aurait une carotte de la taille d'un chêne juste derrière la colline de l'Est. \nOn l'appelle la Carotte Sacrée et elle brille apparemment d'un éclat doré dans le noir total !",
           "dialogueText": {
-            "en": "",
-            "fr": "Les copains, vous n'allez pas me croire, mais j'ai déniché le scoop du siècle : il y aurait une carotte de la taille d'un chêne juste derrière la colline de l'Est. On l'appelle la Carotte Sacrée et elle brille apparemment d'un éclat doré dans le noir total !"
+            "en": "Guys, you're not going to believe me, but I've unearthed the scoop of the century: there's supposedly a carrot the size of an oak tree just behind East Hill. It's called the Sacred Carrot and it apparently shines with a golden glow in total darkness!",
+            "fr": "Les copains, vous n'allez pas me croire, mais j'ai déniché le scoop du siècle : il y aurait une carotte de la taille d'un chêne juste derrière la colline de l'Est. \nOn l'appelle la Carotte Sacrée et elle brille apparemment d'un éclat doré dans le noir total !",
+            "ja": "みんな、信じられないかもしれないけど、とんでもない世紀の大スクープを見つけたんだ！東の丘のすぐ後ろに、樫の木ほどの大きさの人参があるらしいんだよ。\nそれは聖なる人参と呼ばれていて、どうやら真っ暗闇の中で黄金の輝きを放っているらしいんだ！",
+            "zh": "伙计们，你们肯定不会相信，但我挖到了本世纪最惊天的大发现：据说东山后面有根橡树那么大的胡萝卜！\n它被叫做圣胡萝卜，而且据说在漆黑一片里，它会发出金色的光芒！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -257,10 +271,12 @@
           "properties": [],
           "label": "rabbit_skepticism-AI",
           "structureKey": "__blueprints__.simple-dialog-flow.rabbit_skepticism-AI",
-          "content": "Encore une de tes inventions débiles, l1 ! La dernière fois, ta fameuse montagne de trèfles n'était qu'un vieux pull vert tout troué laissé par un randonneur malpropre. Tu nous fais perdre notre temps et nos calories pour absolument rien.",
+          "content": "Encore une de tes inventions débiles, l1 ! \nLa dernière fois, ta fameuse montagne de trèfles n'était qu'un vieux pull vert tout troué laissé par un randonneur malpropre. \nTu nous fais perdre notre temps et nos calories pour absolument rien.",
           "dialogueText": {
-            "en": "",
-            "fr": "Encore une de tes inventions débiles, l1 ! La dernière fois, ta fameuse montagne de trèfles n'était qu'un vieux pull vert tout troué laissé par un randonneur malpropre. Tu nous fais perdre notre temps et nos calories pour absolument rien."
+            "en": "Another one of your stupid inventions, l1!\nLast time, your famous mountain of clovers was just an old, torn green sweater left by a messy hiker.\nYou're making us waste our time and our calories for absolutely nothing.",
+            "fr": "Encore une de tes inventions débiles, l1 ! \nLa dernière fois, ta fameuse montagne de trèfles n'était qu'un vieux pull vert tout troué laissé par un randonneur malpropre. \nTu nous fais perdre notre temps et nos calories pour absolument rien.",
+            "ja": "またお前のくだらない発明か、l1！\n前回は、お前の言う「有名なクローバーの山」は、汚いハイカーが置き忘れたただの古くて穴だらけの緑のセーターだったじゃないか。\nお前は僕たちの時間とカロリーを、まったくの無駄にさせてるだけだ。",
+            "zh": "l1，又是你那些蠢主意！上次你那所谓的幸运草山，不过是一个不讲卫生的徒步者扔下的一件又旧又破的绿毛衣罢了。你让我们白白浪费了时间和体力，却一无所获。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -281,10 +297,12 @@
           "properties": [],
           "label": "rabbit_wisdom-AI",
           "structureKey": "__blueprints__.simple-dialog-flow.rabbit_wisdom-AI",
-          "content": "Saviez-vous que les renards ne sont que des chiens qui ont fait des études de philosophie ? Si on leur pose une question complexe sur l'être et le néant, ils s'endorment instantanément de fatigue intellectuelle. C'est mon oncle qui me l'a dit.",
+          "content": "Saviez-vous que les renards ne sont que des chiens qui ont fait des études de philosophie ? \nSi on leur pose une question complexe sur l'être et le néant, ils s'endorment instantanément de fatigue intellectuelle. \nC'est mon oncle qui me l'a dit.",
           "dialogueText": {
-            "en": "",
-            "fr": "Saviez-vous que les renards ne sont que des chiens qui ont fait des études de philosophie ? Si on leur pose une question complexe sur l'être et le néant, ils s'endorment instantanément de fatigue intellectuelle. C'est mon oncle qui me l'a dit."
+            "en": "Did you know that foxes are just dogs who have studied philosophy?\nIf you ask them a complex question about being and nothingness, they instantly fall asleep from intellectual fatigue.\nMy uncle told me that.",
+            "fr": "Saviez-vous que les renards ne sont que des chiens qui ont fait des études de philosophie ? \nSi on leur pose une question complexe sur l'être et le néant, ils s'endorment instantanément de fatigue intellectuelle. \nC'est mon oncle qui me l'a dit.",
+            "ja": "狐って、哲学を学んだ犬にすぎないって知ってました？\n存在と無について複雑な質問をすると、彼らは知的疲労で瞬時に眠り込んでしまうんです。\nこれはうちの叔父が言ってたことなんですけどね。",
+            "zh": "你知道吗，狐狸只不过是读过哲学的狗？如果你问它们一个关于存在与虚无的复杂问题，它们会因为脑力疲劳而立刻睡着。这是我叔叔告诉我的。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -378,7 +396,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "hey!"
+            "fr": "hey!",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -408,7 +428,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "oufff, je pu !!!"
+            "fr": "oufff, je pu !!!",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -437,7 +459,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "pfff..."
+            "fr": "pfff...",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -461,7 +485,9 @@
           "content": "Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus.",
           "dialogueText": {
             "en": "",
-            "fr": "Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus."
+            "fr": "Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -485,7 +511,9 @@
           "content": "L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro.",
           "dialogueText": {
             "en": "",
-            "fr": "L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro."
+            "fr": "L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -509,7 +537,9 @@
           "content": "Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner.",
           "dialogueText": {
             "en": "",
-            "fr": "Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner."
+            "fr": "Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -533,7 +563,9 @@
           "content": "Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer.",
           "dialogueText": {
             "en": "",
-            "fr": "Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer."
+            "fr": "Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -557,7 +589,9 @@
           "content": "*Scratch scratch scratch* ! ",
           "dialogueText": {
             "en": "",
-            "fr": "*Scratch scratch scratch* ! "
+            "fr": "*Scratch scratch scratch* ! ",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -585,7 +619,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !"
+            "fr": "*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -610,7 +646,9 @@
           "content": "Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret.",
           "dialogueText": {
             "en": "",
-            "fr": "Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret."
+            "fr": "Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -755,7 +793,9 @@
           "content": "Ton feu intérieur nous guidera peut-être à travers les ombres qui rampent vers nous.",
           "dialogueText": {
             "en": "",
-            "fr": "Ton feu intérieur nous guidera peut-être à travers les ombres qui rampent vers nous."
+            "fr": "Ton feu intérieur nous guidera peut-être à travers les ombres qui rampent vers nous.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -779,7 +819,9 @@
           "content": "Le déni ne changera pas le poids du silence qui s'abat désormais sur la prairie.",
           "dialogueText": {
             "en": "",
-            "fr": "Le déni ne changera pas le poids du silence qui s'abat désormais sur la prairie."
+            "fr": "Le déni ne changera pas le poids du silence qui s'abat désormais sur la prairie.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -804,7 +846,9 @@
           "content": "Le ciel s'assombrit, l4. La légende de la Carotte Éternelle n'était qu'un prélude à notre chute imminente.",
           "dialogueText": {
             "en": "",
-            "fr": "Le ciel s'assombrit, l4. La légende de la Carotte Éternelle n'était qu'un prélude à notre chute imminente."
+            "fr": "Le ciel s'assombrit, l4. La légende de la Carotte Éternelle n'était qu'un prélude à notre chute imminente.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -828,7 +872,9 @@
           "content": "La peur est un poison, mais elle est aussi le seul miroir de notre fragile vérité.",
           "dialogueText": {
             "en": "",
-            "fr": "La peur est un poison, mais elle est aussi le seul miroir de notre fragile vérité."
+            "fr": "La peur est un poison, mais elle est aussi le seul miroir de notre fragile vérité.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -852,7 +898,9 @@
           "content": "Écoute... le vent hurle déjà le nom de notre perte. Nous n'avons plus d'autre choix que d'avancer.",
           "dialogueText": {
             "en": "",
-            "fr": "Écoute... le vent hurle déjà le nom de notre perte. Nous n'avons plus d'autre choix que d'avancer."
+            "fr": "Écoute... le vent hurle déjà le nom de notre perte. Nous n'avons plus d'autre choix que d'avancer.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -876,7 +924,9 @@
           "content": "Je ne laisserai personne détruire notre foyer. Je me battrai jusqu'à mon dernier souffle s'il le faut.",
           "dialogueText": {
             "en": "",
-            "fr": "Je ne laisserai personne détruire notre foyer. Je me battrai jusqu'à mon dernier souffle s'il le faut."
+            "fr": "Je ne laisserai personne détruire notre foyer. Je me battrai jusqu'à mon dernier souffle s'il le faut.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -900,7 +950,9 @@
           "content": "Tu parles comme un vieux prophète fatigué, l1. Et si ce n'était qu'un simple piège des renards ?",
           "dialogueText": {
             "en": "",
-            "fr": "Tu parles comme un vieux prophète fatigué, l1. Et si ce n'était qu'un simple piège des renards ?"
+            "fr": "Tu parles comme un vieux prophète fatigué, l1. Et si ce n'était qu'un simple piège des renards ?",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -924,7 +976,9 @@
           "content": "Regarde-nous ! Nous ne sommes que des proies. Espérer vaincre ce destin est une folie pure.",
           "dialogueText": {
             "en": "",
-            "fr": "Regarde-nous ! Nous ne sommes que des proies. Espérer vaincre ce destin est une folie pure."
+            "fr": "Regarde-nous ! Nous ne sommes que des proies. Espérer vaincre ce destin est une folie pure.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -948,7 +1002,9 @@
           "content": "Alors qu'il en soit ainsi. Que le destin nous juge sur le champ de bataille, vers le terrier nord.",
           "dialogueText": {
             "en": "",
-            "fr": "Alors qu'il en soit ainsi. Que le destin nous juge sur le champ de bataille, vers le terrier nord."
+            "fr": "Alors qu'il en soit ainsi. Que le destin nous juge sur le champ de bataille, vers le terrier nord.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1291,7 +1347,9 @@
           "content": "RWMIAAAOUWWW ...... WROIUMOIWUUWWW....",
           "dialogueText": {
             "en": "",
-            "fr": "RWMIAAAOUWWW ...... WROIUMOIWUUWWW...."
+            "fr": "RWMIAAAOUWWW ...... WROIUMOIWUUWWW....",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1320,7 +1378,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "whaaaaaaa"
+            "fr": "whaaaaaaa",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1344,7 +1404,9 @@
           "content": "mmmmm !🐰🐰🐰",
           "dialogueText": {
             "en": "",
-            "fr": "mmmmm !🐰🐰🐰"
+            "fr": "mmmmm !🐰🐰🐰",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1372,7 +1434,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "Non dune carotte !! Sauve qui peut Haaaaa !!!!"
+            "fr": "Non dune carotte !! Sauve qui peut Haaaaa !!!!",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1401,7 +1465,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "J'aime les carotte mais pas a ce points !"
+            "fr": "J'aime les carotte mais pas a ce points !",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1430,7 +1496,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "Tes un gros lapin mouillé l1 ..... traitre !"
+            "fr": "Tes un gros lapin mouillé l1 ..... traitre !",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1459,7 +1527,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "whaaaa"
+            "fr": "whaaaa",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1484,7 +1554,9 @@
           "content": "Est-ce que tu sens ça ? La terre se déchire sous ses pas...",
           "dialogueText": {
             "en": "",
-            "fr": "Est-ce que tu sens ça ? La terre se déchire sous ses pas..."
+            "fr": "Est-ce que tu sens ça ? La terre se déchire sous ses pas...",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1508,7 +1580,9 @@
           "content": "Pour l'honneur du clan et la carotte éternelle, à l'attaque !",
           "dialogueText": {
             "en": "",
-            "fr": "Pour l'honneur du clan et la carotte éternelle, à l'attaque !"
+            "fr": "Pour l'honneur du clan et la carotte éternelle, à l'attaque !",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1532,7 +1606,9 @@
           "content": "Non mais tu me laisses seul !!!",
           "dialogueText": {
             "en": "",
-            "fr": "Non mais tu me laisses seul !!!"
+            "fr": "Non mais tu me laisses seul !!!",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1559,7 +1635,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "C'est beaucoup trop gros pour être un simple lapin, l1 !"
+            "fr": "C'est beaucoup trop gros pour être un simple lapin, l1 !",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1765,7 +1843,9 @@
           "content": "J'ai trouvez ta carotte !",
           "dialogueText": {
             "en": "",
-            "fr": "J'ai trouvez ta carotte !"
+            "fr": "J'ai trouvez ta carotte !",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1789,7 +1869,9 @@
           "content": ".... ok",
           "dialogueText": {
             "en": "",
-            "fr": ".... ok"
+            "fr": ".... ok",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1813,7 +1895,9 @@
           "content": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !\nGarde la, j'ai trop peur de la perde a nouveau finalement ! ",
           "dialogueText": {
             "en": "",
-            "fr": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !\nGarde la, j'ai trop peur de la perde a nouveau finalement ! "
+            "fr": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !\nGarde la, j'ai trop peur de la perde a nouveau finalement ! ",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1837,7 +1921,9 @@
           "content": "Pourquoi restes-tu là à brouter ? Cherche-la sur le champ, avant que le malheur ne nous frappe !",
           "dialogueText": {
             "en": "",
-            "fr": "Pourquoi restes-tu là à brouter ? Cherche-la sur le champ, avant que le malheur ne nous frappe !"
+            "fr": "Pourquoi restes-tu là à brouter ? Cherche-la sur le champ, avant que le malheur ne nous frappe !",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1862,7 +1948,9 @@
           "content": "Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !",
           "dialogueText": {
             "en": "",
-            "fr": "Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !"
+            "fr": "Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1886,7 +1974,9 @@
           "content": "Calme-toi, l1. Ce n'est qu'une racine séchée. On finira par la retrouver dans ce champ.",
           "dialogueText": {
             "en": "",
-            "fr": "Calme-toi, l1. Ce n'est qu'une racine séchée. On finira par la retrouver dans ce champ."
+            "fr": "Calme-toi, l1. Ce n'est qu'une racine séchée. On finira par la retrouver dans ce champ.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -1910,7 +2000,9 @@
           "content": "D'accord, d'accord. Ne faisons pas un drame pour un légume, même s'il est porte-bonheur.",
           "dialogueText": {
             "en": "",
-            "fr": "D'accord, d'accord. Ne faisons pas un drame pour un légume, même s'il est porte-bonheur."
+            "fr": "D'accord, d'accord. Ne faisons pas un drame pour un légume, même s'il est porte-bonheur.",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -2265,7 +2357,9 @@
           "content": "ho... grand esprit des carotte ...",
           "dialogueText": {
             "en": "",
-            "fr": "ho... grand esprit des carotte ..."
+            "fr": "ho... grand esprit des carotte ...",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -2289,7 +2383,9 @@
           "content": "Hey vien nous choisir avant dinvoquez les esprit de la carotte",
           "dialogueText": {
             "en": "",
-            "fr": "Hey vien nous choisir avant dinvoquez les esprit de la carotte"
+            "fr": "Hey vien nous choisir avant dinvoquez les esprit de la carotte",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -2318,7 +2414,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "Ho grande carotte rouge"
+            "fr": "Ho grande carotte rouge",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -2347,7 +2445,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "ho grande carotte jaune "
+            "fr": "ho grande carotte jaune ",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -2377,7 +2477,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "ho grande carrote bleue"
+            "fr": "ho grande carrote bleue",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -2404,7 +2506,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "ho grande carotte, merci de nous nourrire"
+            "fr": "ho grande carotte, merci de nous nourrire",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -2428,7 +2532,9 @@
           "content": "ca marcher !",
           "dialogueText": {
             "en": "",
-            "fr": "ca marcher !"
+            "fr": "ca marcher !",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -2452,7 +2558,9 @@
           "content": "il ce passe rien ! il manque une incantation !? ....",
           "dialogueText": {
             "en": "",
-            "fr": "il ce passe rien ! il manque une incantation !? ...."
+            "fr": "il ce passe rien ! il manque une incantation !? ....",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -2479,7 +2587,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "Oui moi"
+            "fr": "Oui moi",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"
@@ -2516,7 +2626,9 @@
           },
           "dialogueText": {
             "en": "",
-            "fr": "Ho !"
+            "fr": "Ho !",
+            "ja": "",
+            "zh": ""
           },
           "parentLabels": [
             "__blueprints__"

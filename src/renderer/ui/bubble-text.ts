@@ -5,7 +5,7 @@
  */
 
 import { Container, Graphics, Text } from "pixi.js";
-import type { Application } from "pixi.js";
+import type { Application, TextStyle } from "pixi.js";
 import { OutlineFilter, DropShadowFilter } from "pixi-filters";
 import {
   createTypewriterState,
@@ -18,7 +18,7 @@ import type { TypewriterState } from "../../shared/typewriter";
 const BUBBLE_PADDING_HORIZONTAL = 70;
 const BUBBLE_PADDING_VERTICAL = 48;
 const BUBBLE_FILL_COLOR = 0xffffff;
-const BUBBLE_MAX_TEXT_WIDTH = 220;
+const BUBBLE_MAX_TEXT_WIDTH = 265;
 
 const OUTLINE_COLOR = 0x222222;
 const OUTLINE_THICKNESS = 3;
@@ -40,11 +40,12 @@ const BULGE_VARIATION = 1;
 
 const DEFAULT_SPEAKER_NAME_COLOR = "#333333";
 
-const DIALOGUE_TEXT_STYLE = {
+const DIALOGUE_TEXT_STYLE: Partial<TextStyle> = {
   fill: "#222222",
   fontSize: 16,
   wordWrap: true,
   wordWrapWidth: BUBBLE_MAX_TEXT_WIDTH,
+  breakWords: true,
   fontFamily: "Comic Sans MS",
   lineHeight: 18,
 };

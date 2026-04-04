@@ -13,8 +13,13 @@ import { Pane } from "tweakpane";
 import { registerCrtFilterControls } from "./debug/debug-panel";
 import { createBlueprintPreview } from "./app/blueprint-preview";
 import { createMagicTrail } from "./renderer/magic-trail";
+import {
+  currentLanguage,
+  setCurrentLanguage,
+  type SupportedLanguage,
+} from "./engine/i18n";
 
-const BLUEPRINT_FILE_PATH = "/blueprints/blueprint.json";
+const BLUEPRINT_FILE_PATH = `${import.meta.env.BASE_URL}blueprints/blueprint.json`;
 
 /** Maps scene label → blueprint screenshot filename in public/blueprints/_images/ */
 const SCENE_BLUEPRINT_IMAGES: Record<string, string> = {
@@ -34,8 +39,12 @@ const POSTHOG_API_HOST =
 
 (async () => {
   initAnalytics(POSTHOG_API_KEY, POSTHOG_API_HOST);
-  const { sidebarContainer, canvasContainer } = createApplicationLayout();
+  const { sidebarContainer, canvasContainer, onSidebarTransitionEnd } =
+    createApplicationLayout();
   const pixiApplication = await createPixiApplication(canvasContainer);
+
+  // Re-fit the renderer when the sidebar finishes collapsing / expanding.
+  onSidebarTransitionEnd(() => pixiApplication.resize());
   const crtFilterState = applyCrtFilter(pixiApplication);
   const crtPane = new Pane({ title: "CRTFilter", expanded: false });
   registerCrtFilterControls(crtPane, crtFilterState);
@@ -47,6 +56,11 @@ const POSTHOG_API_HOST =
   const dialogueEngine = createDialogueEngine();
   dialogueEngine.init({ data: blueprintData });
   registerCharacterResolver(dialogueEngine);
+
+  // Set initial language from blueprint and register handlers with a live getter.
+  setCurrentLanguage(
+    (blueprintData.primaryLanguage as SupportedLanguage) ?? "fr",
+  );
   registerGlobalHandlers(
     dialogueEngine,
     {
@@ -54,7 +68,7 @@ const POSTHOG_API_HOST =
       onChoiceBlockReceived: () => {},
       onSceneCompleted: () => {},
     },
-    blueprintData.primaryLanguage ?? "fr",
+    () => currentLanguage,
   );
 
   const sceneNavigationEntries = blueprintData.scenes.map((scene) => ({

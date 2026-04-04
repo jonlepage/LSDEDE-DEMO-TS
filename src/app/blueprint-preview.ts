@@ -4,7 +4,7 @@
  * the full image in a new browser tab on click.
  */
 
-const BLUEPRINT_IMAGES_BASE_PATH = "/";
+const BLUEPRINT_IMAGES_BASE_PATH = import.meta.env.BASE_URL;
 
 export interface BlueprintPreviewHandle {
   /** Update the preview for a different scene. Pass null to hide. */

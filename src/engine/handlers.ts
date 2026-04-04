@@ -52,7 +52,7 @@ export function registerCharacterResolver(
 export function registerGlobalHandlers(
   dialogueEngine: DialogueEngine,
   callbacks: HandlerCallbacks,
-  locale: string,
+  getLocale: () => string,
 ): void {
   dialogueEngine.onDialog(
     ({
@@ -60,7 +60,7 @@ export function registerGlobalHandlers(
       context,
       next,
     }: BlockHandlerArgs<DialogBlock, DialogContext>) => {
-      const dialogueText = block.dialogueText?.[locale] ?? "";
+      const dialogueText = block.dialogueText?.[getLocale()] ?? "";
       const characterId = context.character?.id;
       const characterName = context.character?.name ?? "???";
       const blockLabel = block.label;
