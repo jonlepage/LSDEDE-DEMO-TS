@@ -9,7 +9,10 @@ import {
   registerMovementTicker,
 } from "../../renderer/movement";
 import { createCollidable, resolveCollisions } from "../../renderer/collision";
-import { setCameraFollowTarget, enableDepthSorting } from "../../renderer/camera";
+import {
+  setCameraFollowTarget,
+  enableDepthSorting,
+} from "../../renderer/camera";
 import type { CameraState } from "../../renderer/camera";
 import type { CollidableSprite } from "../../renderer/collision";
 import type { CharacterReference } from "../../game/game-actions";

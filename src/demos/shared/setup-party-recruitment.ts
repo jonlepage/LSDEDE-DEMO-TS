@@ -11,7 +11,10 @@
  */
 
 import { Text } from "pixi.js";
-import type { CharacterReference, GameActionFacade } from "../../game/game-actions";
+import type {
+  CharacterReference,
+  GameActionFacade,
+} from "../../game/game-actions";
 import type { CollidableSprite } from "../../renderer/collision";
 import type { SceneContext } from "../../shared/scene-context";
 
@@ -71,9 +74,7 @@ export function setupPartyRecruitment(
       if (gameActions.isInParty(characterId)) return;
       const deltaX = playerReference.sprite.x - characterRef.sprite.x;
       const deltaY = playerReference.sprite.y - characterRef.sprite.y;
-      if (
-        Math.sqrt(deltaX * deltaX + deltaY * deltaY) >= interactionDistance
-      )
+      if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) >= interactionDistance)
         return;
 
       gameActions.addToParty(characterId);
