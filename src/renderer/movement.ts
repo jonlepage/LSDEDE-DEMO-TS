@@ -17,62 +17,62 @@ const INERTIA_TILT_FACTOR = 0.055; // radians per pixel of smoothed horizontal v
 const INERTIA_VELOCITY_LERP = 0.1; // lag factor — lower = more inertia feel
 
 export interface MovementTarget {
-  targetX: number;
-  targetY: number;
+	targetX: number;
+	targetY: number;
 }
 
 export interface MovementState {
-  currentTarget: MovementTarget | null;
-  movementSpeed: number;
-  distanceSinceLastHop: number;
-  hopProgress: number;
-  smoothedHorizontalVelocity: number;
-  /** Per-character hop stride length — distance between hops (px). */
-  hopStrideDistance: number;
-  /** Per-character hop arc height (px). */
-  hopMaxHeight: number;
+	currentTarget: MovementTarget | null;
+	movementSpeed: number;
+	distanceSinceLastHop: number;
+	hopProgress: number;
+	smoothedHorizontalVelocity: number;
+	/** Per-character hop stride length — distance between hops (px). */
+	hopStrideDistance: number;
+	/** Per-character hop arc height (px). */
+	hopMaxHeight: number;
 }
 
 export interface MovementStateOptions {
-  readonly movementSpeed?: number;
-  readonly hopStrideDistance?: number;
-  readonly hopMaxHeight?: number;
+	readonly movementSpeed?: number;
+	readonly hopStrideDistance?: number;
+	readonly hopMaxHeight?: number;
 }
 
 export function createMovementState(
-  options: number | MovementStateOptions = {},
+	options: number | MovementStateOptions = {},
 ): MovementState {
-  // Backward-compatible: accept a bare number as movementSpeed.
-  const resolved =
-    typeof options === "number" ? { movementSpeed: options } : options;
-  return {
-    currentTarget: null,
-    movementSpeed: resolved.movementSpeed ?? DEFAULT_MOVEMENT_SPEED,
-    distanceSinceLastHop: 0,
-    hopProgress: -1,
-    smoothedHorizontalVelocity: 0,
-    hopStrideDistance: resolved.hopStrideDistance ?? HOP_DISTANCE_PER_STRIDE,
-    hopMaxHeight: resolved.hopMaxHeight ?? HOP_MAX_HEIGHT,
-  };
+	// Backward-compatible: accept a bare number as movementSpeed.
+	const resolved =
+		typeof options === "number" ? { movementSpeed: options } : options;
+	return {
+		currentTarget: null,
+		movementSpeed: resolved.movementSpeed ?? DEFAULT_MOVEMENT_SPEED,
+		distanceSinceLastHop: 0,
+		hopProgress: -1,
+		smoothedHorizontalVelocity: 0,
+		hopStrideDistance: resolved.hopStrideDistance ?? HOP_DISTANCE_PER_STRIDE,
+		hopMaxHeight: resolved.hopMaxHeight ?? HOP_MAX_HEIGHT,
+	};
 }
 
 export function setMovementTarget(
-  movementState: MovementState,
-  targetX: number,
-  targetY: number,
+	movementState: MovementState,
+	targetX: number,
+	targetY: number,
 ): void {
-  movementState.currentTarget = { targetX, targetY };
+	movementState.currentTarget = { targetX, targetY };
 }
 
 export function clearMovementTarget(movementState: MovementState): void {
-  movementState.currentTarget = null;
+	movementState.currentTarget = null;
 }
 
 /**
  * Ease-out quadratic — fast start, smooth deceleration.
  */
 function easeOutQuadratic(progressRatio: number): number {
-  return 1 - (1 - progressRatio) * (1 - progressRatio);
+	return 1 - (1 - progressRatio) * (1 - progressRatio);
 }
 
 /**
@@ -81,23 +81,23 @@ function easeOutQuadratic(progressRatio: number): number {
  * with deceleration as the sprite approaches the target.
  */
 function computeEasedStep(
-  currentPosition: number,
-  targetPosition: number,
-  distanceRemaining: number,
-  totalStepSize: number,
+	currentPosition: number,
+	targetPosition: number,
+	distanceRemaining: number,
+	totalStepSize: number,
 ): number {
-  if (distanceRemaining < ARRIVAL_THRESHOLD) return targetPosition;
+	if (distanceRemaining < ARRIVAL_THRESHOLD) return targetPosition;
 
-  const directionSign = targetPosition > currentPosition ? 1 : -1;
-  const axisDistance = Math.abs(targetPosition - currentPosition);
-  const axisRatio = axisDistance / distanceRemaining;
+	const directionSign = targetPosition > currentPosition ? 1 : -1;
+	const axisDistance = Math.abs(targetPosition - currentPosition);
+	const axisRatio = axisDistance / distanceRemaining;
 
-  const proximityRatio = Math.min(distanceRemaining / 150, 1);
-  const easedSpeed =
-    easeOutQuadratic(proximityRatio) * totalStepSize * axisRatio;
-  const clampedStep = Math.min(easedSpeed, axisDistance);
+	const proximityRatio = Math.min(distanceRemaining / 150, 1);
+	const easedSpeed =
+		easeOutQuadratic(proximityRatio) * totalStepSize * axisRatio;
+	const clampedStep = Math.min(easedSpeed, axisDistance);
 
-  return currentPosition + directionSign * clampedStep;
+	return currentPosition + directionSign * clampedStep;
 }
 
 /**
@@ -106,114 +106,114 @@ function computeEasedStep(
  * The `onBeforeMove` callback can reject a position (e.g. collision).
  */
 export function registerMovementTicker(
-  pixiApplication: Application,
-  characterSprite: Sprite,
-  movementState: MovementState,
-  onBeforeMove?: (
-    proposedX: number,
-    proposedY: number,
-  ) => { allowedX: number; allowedY: number },
+	pixiApplication: Application,
+	characterSprite: Sprite,
+	movementState: MovementState,
+	onBeforeMove?: (
+		proposedX: number,
+		proposedY: number,
+	) => { allowedX: number; allowedY: number },
 ): () => void {
-  const tickerCallback = (time: { deltaTime: number }) => {
-    if (!movementState.currentTarget) {
-      characterSprite.pivot.y = 0;
-      movementState.smoothedHorizontalVelocity *= 0.85;
-      characterSprite.rotation =
-        movementState.smoothedHorizontalVelocity * INERTIA_TILT_FACTOR;
-      return;
-    }
+	const tickerCallback = (time: { deltaTime: number }) => {
+		if (!movementState.currentTarget) {
+			characterSprite.pivot.y = 0;
+			movementState.smoothedHorizontalVelocity *= 0.85;
+			characterSprite.rotation =
+				movementState.smoothedHorizontalVelocity * INERTIA_TILT_FACTOR;
+			return;
+		}
 
-    const { targetX, targetY } = movementState.currentTarget;
-    const deltaX = targetX - characterSprite.x;
-    const deltaY = targetY - characterSprite.y;
-    const distanceRemaining = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+		const { targetX, targetY } = movementState.currentTarget;
+		const deltaX = targetX - characterSprite.x;
+		const deltaY = targetY - characterSprite.y;
+		const distanceRemaining = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-    if (distanceRemaining < ARRIVAL_THRESHOLD) {
-      characterSprite.x = targetX;
-      characterSprite.y = targetY;
-      characterSprite.pivot.y = 0;
-      movementState.distanceSinceLastHop = 0;
-      movementState.hopProgress = -1;
-      movementState.smoothedHorizontalVelocity = 0;
-      characterSprite.rotation = 0;
-      clearMovementTarget(movementState);
-      return;
-    }
+		if (distanceRemaining < ARRIVAL_THRESHOLD) {
+			characterSprite.x = targetX;
+			characterSprite.y = targetY;
+			characterSprite.pivot.y = 0;
+			movementState.distanceSinceLastHop = 0;
+			movementState.hopProgress = -1;
+			movementState.smoothedHorizontalVelocity = 0;
+			characterSprite.rotation = 0;
+			clearMovementTarget(movementState);
+			return;
+		}
 
-    const totalStepSize = movementState.movementSpeed * time.deltaTime;
+		const totalStepSize = movementState.movementSpeed * time.deltaTime;
 
-    const proposedX = computeEasedStep(
-      characterSprite.x,
-      targetX,
-      distanceRemaining,
-      totalStepSize,
-    );
-    const proposedY = computeEasedStep(
-      characterSprite.y,
-      targetY,
-      distanceRemaining,
-      totalStepSize,
-    );
+		const proposedX = computeEasedStep(
+			characterSprite.x,
+			targetX,
+			distanceRemaining,
+			totalStepSize,
+		);
+		const proposedY = computeEasedStep(
+			characterSprite.y,
+			targetY,
+			distanceRemaining,
+			totalStepSize,
+		);
 
-    const previousX = characterSprite.x;
-    const previousY = characterSprite.y;
+		const previousX = characterSprite.x;
+		const previousY = characterSprite.y;
 
-    if (onBeforeMove) {
-      const corrected = onBeforeMove(proposedX, proposedY);
-      characterSprite.x = corrected.allowedX;
-      characterSprite.y = corrected.allowedY;
-    } else {
-      characterSprite.x = proposedX;
-      characterSprite.y = proposedY;
-    }
+		if (onBeforeMove) {
+			const corrected = onBeforeMove(proposedX, proposedY);
+			characterSprite.x = corrected.allowedX;
+			characterSprite.y = corrected.allowedY;
+		} else {
+			characterSprite.x = proposedX;
+			characterSprite.y = proposedY;
+		}
 
-    const frameDeltaX = characterSprite.x - previousX;
-    const frameDeltaY = characterSprite.y - previousY;
-    const frameDistance = Math.sqrt(
-      frameDeltaX * frameDeltaX + frameDeltaY * frameDeltaY,
-    );
+		const frameDeltaX = characterSprite.x - previousX;
+		const frameDeltaY = characterSprite.y - previousY;
+		const frameDistance = Math.sqrt(
+			frameDeltaX * frameDeltaX + frameDeltaY * frameDeltaY,
+		);
 
-    // Inertia tilt — smoothed horizontal velocity lags behind real velocity,
-    // creating a lean that overshoots momentarily on direction reversal.
-    movementState.smoothedHorizontalVelocity +=
-      (frameDeltaX - movementState.smoothedHorizontalVelocity) *
-      INERTIA_VELOCITY_LERP;
-    characterSprite.rotation =
-      movementState.smoothedHorizontalVelocity * INERTIA_TILT_FACTOR;
+		// Inertia tilt — smoothed horizontal velocity lags behind real velocity,
+		// creating a lean that overshoots momentarily on direction reversal.
+		movementState.smoothedHorizontalVelocity +=
+			(frameDeltaX - movementState.smoothedHorizontalVelocity) *
+			INERTIA_VELOCITY_LERP;
+		characterSprite.rotation =
+			movementState.smoothedHorizontalVelocity * INERTIA_TILT_FACTOR;
 
-    const strideDistance = movementState.hopStrideDistance;
-    const maxHeight = movementState.hopMaxHeight;
+		const strideDistance = movementState.hopStrideDistance;
+		const maxHeight = movementState.hopMaxHeight;
 
-    if (frameDistance < HOP_SPEED_FLOOR) {
-      characterSprite.pivot.y *= 0.85;
-      if (characterSprite.pivot.y < 0.5) characterSprite.pivot.y = 0;
-      movementState.hopProgress = -1;
-    } else {
-      movementState.distanceSinceLastHop += frameDistance;
+		if (frameDistance < HOP_SPEED_FLOOR) {
+			characterSprite.pivot.y *= 0.85;
+			if (characterSprite.pivot.y < 0.5) characterSprite.pivot.y = 0;
+			movementState.hopProgress = -1;
+		} else {
+			movementState.distanceSinceLastHop += frameDistance;
 
-      if (
-        movementState.hopProgress < 0 &&
-        movementState.distanceSinceLastHop >= strideDistance
-      ) {
-        movementState.hopProgress = 0;
-        movementState.distanceSinceLastHop = 0;
-      }
+			if (
+				movementState.hopProgress < 0 &&
+				movementState.distanceSinceLastHop >= strideDistance
+			) {
+				movementState.hopProgress = 0;
+				movementState.distanceSinceLastHop = 0;
+			}
 
-      if (movementState.hopProgress >= 0) {
-        movementState.hopProgress += frameDistance / strideDistance;
-        if (movementState.hopProgress >= 1) {
-          movementState.hopProgress = -1;
-          characterSprite.pivot.y = 0;
-        } else {
-          const arc =
-            4 * movementState.hopProgress * (1 - movementState.hopProgress);
-          characterSprite.pivot.y = arc * maxHeight;
-        }
-      }
-    }
-  };
+			if (movementState.hopProgress >= 0) {
+				movementState.hopProgress += frameDistance / strideDistance;
+				if (movementState.hopProgress >= 1) {
+					movementState.hopProgress = -1;
+					characterSprite.pivot.y = 0;
+				} else {
+					const arc =
+						4 * movementState.hopProgress * (1 - movementState.hopProgress);
+					characterSprite.pivot.y = arc * maxHeight;
+				}
+			}
+		}
+	};
 
-  pixiApplication.ticker.add(tickerCallback);
+	pixiApplication.ticker.add(tickerCallback);
 
-  return () => pixiApplication.ticker.remove(tickerCallback);
+	return () => pixiApplication.ticker.remove(tickerCallback);
 }

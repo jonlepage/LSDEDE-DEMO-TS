@@ -45,130 +45,115 @@
  */
 
 import { Graphics, Sprite, Text } from "pixi.js";
-import type { Application, Container } from "pixi.js";
-import type {
-  DialogueEngine,
-  BlueprintExport,
-  ConditionBlock,
-} from "@lsde/dialog-engine";
+import type { ConditionBlock } from "@lsde/dialog-engine";
 import { LsdeUtils } from "@lsde/dialog-engine";
 import { createSceneContext } from "../../shared/scene-context";
 import { setupCharacters } from "../shared/setup-characters";
 import { setupPlayerMovement } from "../shared/setup-player-movement";
 import {
-  createGameActionFacade,
-  type CharacterReference,
-  type GameActionFacade,
+	createGameActionFacade,
+	type CharacterReference,
+	type GameActionFacade,
 } from "../../game/game-actions";
 import {
-  registerMovementTicker,
-  createMovementState,
+	registerMovementTicker,
+	createMovementState,
 } from "../../renderer/movement";
 import { createCollidable, resolveCollisions } from "../../renderer/collision";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
 import { setupPartyRecruitment } from "../shared/setup-party-recruitment";
 import { setupPartyFollow } from "../shared/setup-party-follow";
 import {
-  createDebugPanel,
-  registerLiveMonitorTicker,
-  registerActionButtons,
-  refreshGameStoreBindings,
+	createDebugPanel,
+	registerLiveMonitorTicker,
+	registerActionButtons,
+	refreshGameStoreBindings,
 } from "../../debug/debug-panel";
 import { createGameStore, GAME_ACTORS } from "../../game/game-store";
-import type { CameraState } from "../../renderer/camera";
 import { currentLanguage, setCurrentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import type { ExportCondition } from "../../../public/blueprints/blueprint.types";
 import {
-  trackDialogueShown,
-  trackDialogueAdvanced,
-  trackConditionEvaluated,
-  trackActionExecuted,
-  trackNpcInteraction,
-  trackPartyMemberRecruited,
-  trackSceneCompleted,
+	trackDialogueShown,
+	trackDialogueAdvanced,
+	trackConditionEvaluated,
+	trackActionExecuted,
+	trackNpcInteraction,
+	trackPartyMemberRecruited,
+	trackSceneCompleted,
 } from "../../analytics/posthog";
 import { translate } from "../shared/translate";
+import type { DemoDependencies, SceneCleanup } from "../shared/types";
 
 // ---------------------------------------------------------------------------
 // Lightweight action type — mirrors the shape LSDE puts in block.actions[].
 // ---------------------------------------------------------------------------
 interface BlueprintAction {
-  readonly actionId: string;
-  readonly params: readonly (string | number | boolean | null)[];
+	readonly actionId: string;
+	readonly params: readonly (string | number | boolean | null)[];
 }
 
 function executeAction(
-  action: BlueprintAction,
-  gameActions: GameActionFacade,
+	action: BlueprintAction,
+	gameActions: GameActionFacade,
 ): Promise<void> {
-  switch (action.actionId) {
-    case "shakeCamera": {
-      const intensity = action.params[0] as number;
-      const duration = action.params[1] as number;
-      return gameActions.shakeCamera(intensity, duration);
-    }
+	switch (action.actionId) {
+	case "shakeCamera": {
+		const intensity = action.params[0] as number;
+		const duration = action.params[1] as number;
+		return gameActions.shakeCamera(intensity, duration);
+	}
 
-    case "moveCameraToLabel": {
-      const targetLabel = action.params[0] as string;
-      const durationSeconds = action.params[1] as number | undefined;
-      return gameActions.moveCameraToCharacter(targetLabel, durationSeconds);
-    }
+	case "moveCameraToLabel": {
+		const targetLabel = action.params[0] as string;
+		const durationSeconds = action.params[1] as number | undefined;
+		return gameActions.moveCameraToCharacter(targetLabel, durationSeconds);
+	}
 
-    case "moveCharacterAt": {
-      const characterId = action.params[0] as string;
-      const offsetX = action.params[1] as number;
-      const offsetY = (action.params[2] as number) ?? 0;
-      const isAbsolute = action.params[3] === true;
+	case "moveCharacterAt": {
+		const characterId = action.params[0] as string;
+		const offsetX = action.params[1] as number;
+		const offsetY = (action.params[2] as number) ?? 0;
+		const isAbsolute = action.params[3] === true;
 
-      if (isAbsolute) {
-        // Absolute mode: offsets are relative to the world center (screen center).
-        const worldCenterX = gameActions.getWorldCenter().x;
-        const worldCenterY = gameActions.getWorldCenter().y;
-        return gameActions.moveCharacterToWorldPosition(
-          characterId,
-          worldCenterX + offsetX,
-          worldCenterY + offsetY,
-        );
-      }
-      return gameActions.moveCharacterRelative(characterId, offsetX, offsetY);
-    }
+		if (isAbsolute) {
+			// Absolute mode: offsets are relative to the world center (screen center).
+			const worldCenterX = gameActions.getWorldCenter().x;
+			const worldCenterY = gameActions.getWorldCenter().y;
+			return gameActions.moveCharacterToWorldPosition(
+				characterId,
+				worldCenterX + offsetX,
+				worldCenterY + offsetY,
+			);
+		}
+		return gameActions.moveCharacterRelative(characterId, offsetX, offsetY);
+	}
 
-    default:
-      console.warn(
-        `[condition-dispatch] Unknown actionId: "${action.actionId}"`,
-      );
-      return Promise.resolve();
-  }
+	default:
+		console.warn(
+			`[condition-dispatch] Unknown actionId: "${action.actionId}"`,
+		);
+		return Promise.resolve();
+	}
 }
 
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const SCENE_UUID = LSDE_SCENES.conditionDispatch;
-const PARTY_NPC_IDS = [GAME_ACTORS.l1, GAME_ACTORS.l2, GAME_ACTORS.l3] as const;
+const PARTY_NPC_IDS = [
+	GAME_ACTORS.l1, GAME_ACTORS.l2, GAME_ACTORS.l3,
+] as const;
 const BIG_CARROT_INTERACT_DISTANCE = 90;
 
 // Per-NPC movement personalities — varied speed and hop parameters so
 // followers don't all bounce in lockstep.
 const NPC_MOVEMENT_PROFILES: Record<
-  string,
-  { speed: number; hopStride: number; hopHeight: number }
+	string,
+	{ speed: number; hopStride: number; hopHeight: number }
 > = {
-  [GAME_ACTORS.l1]: { speed: 3.6, hopStride: 26, hopHeight: 6 },
-  [GAME_ACTORS.l2]: { speed: 3.2, hopStride: 34, hopHeight: 4 },
-  [GAME_ACTORS.l3]: { speed: 3.9, hopStride: 22, hopHeight: 5.5 },
+	[GAME_ACTORS.l1]: { speed: 3.6, hopStride: 26, hopHeight: 6 },
+	[GAME_ACTORS.l2]: { speed: 3.2, hopStride: 34, hopHeight: 4 },
+	[GAME_ACTORS.l3]: { speed: 3.9, hopStride: 22, hopHeight: 5.5 },
 };
-
-export interface ConditionDispatchDependencies {
-  readonly pixiApplication: Application;
-  readonly cameraState: CameraState;
-  readonly worldContainer: Container;
-  readonly dialogueEngine: DialogueEngine;
-  readonly blueprintData: BlueprintExport;
-}
-
-export interface SceneCleanup {
-  readonly teardown: () => void;
-}
 
 // ---------------------------------------------------------------------------
 // Condition evaluator — maps LSDE condition keys to game facade lookups.
@@ -178,497 +163,488 @@ export interface SceneCleanup {
 // ---------------------------------------------------------------------------
 
 function evaluateGameCondition(
-  condition: ExportCondition,
-  gameActions: GameActionFacade,
+	condition: ExportCondition,
+	gameActions: GameActionFacade,
 ): boolean {
-  const { key, operator, value } = condition;
-  const dotIndex = key.indexOf(".");
-  const dictionaryGroup = dotIndex !== -1 ? key.slice(0, dotIndex) : "";
-  const itemKey = dotIndex !== -1 ? key.slice(dotIndex + 1) : key;
+	const { key, operator, value } = condition;
+	const dotIndex = key.indexOf(".");
+	const dictionaryGroup = dotIndex !== -1 ? key.slice(0, dotIndex) : "";
+	const itemKey = dotIndex !== -1 ? key.slice(dotIndex + 1) : key;
 
-  switch (dictionaryGroup) {
-    case "party": {
-      const isMember = gameActions.isInParty(itemKey);
-      const expectedTrue = value === "true" || value === "1";
-      switch (operator) {
-        case "=":
-        case "==":
-          return isMember === expectedTrue;
-        case "!=":
-          return isMember !== expectedTrue;
-        default:
-          console.warn(
-            `[condition-dispatch] Unknown party operator: "${operator}"`,
-          );
-          return false;
-      }
-    }
-    case "inventory": {
-      const currentValue = gameActions.getItemQuantity(itemKey);
-      const targetValue = Number(value);
-      switch (operator) {
-        case "=":
-        case "==":
-          return currentValue === targetValue;
-        case "!=":
-          return currentValue !== targetValue;
-        case ">=":
-          return currentValue >= targetValue;
-        case "<=":
-          return currentValue <= targetValue;
-        case ">":
-          return currentValue > targetValue;
-        case "<":
-          return currentValue < targetValue;
-        default:
-          return false;
-      }
-    }
-    default: {
-      const currentValue = gameActions.getVariable(key);
-      const targetValue = Number(value);
-      switch (operator) {
-        case "=":
-        case "==":
-          return currentValue === targetValue;
-        case "!=":
-          return currentValue !== targetValue;
-        case ">=":
-          return currentValue >= targetValue;
-        case "<=":
-          return currentValue <= targetValue;
-        case ">":
-          return currentValue > targetValue;
-        case "<":
-          return currentValue < targetValue;
-        default:
-          console.warn(
-            `[condition-dispatch] Unknown operator: "${operator}" in key "${key}"`,
-          );
-          return false;
-      }
-    }
-  }
+	switch (dictionaryGroup) {
+	case "party": {
+		const isMember = gameActions.isInParty(itemKey);
+		const expectedTrue = value === "true" || value === "1";
+		switch (operator) {
+		case "=":
+		case "==":
+			return isMember === expectedTrue;
+		case "!=":
+			return isMember !== expectedTrue;
+		default:
+			console.warn(
+				`[condition-dispatch] Unknown party operator: "${operator}"`,
+			);
+			return false;
+		}
+	}
+	case "inventory": {
+		const currentValue = gameActions.getItemQuantity(itemKey);
+		const targetValue = Number(value);
+		switch (operator) {
+		case "=":
+		case "==":
+			return currentValue === targetValue;
+		case "!=":
+			return currentValue !== targetValue;
+		case ">=":
+			return currentValue >= targetValue;
+		case "<=":
+			return currentValue <= targetValue;
+		case ">":
+			return currentValue > targetValue;
+		case "<":
+			return currentValue < targetValue;
+		default:
+			return false;
+		}
+	}
+	default: {
+		const currentValue = gameActions.getVariable(key);
+		const targetValue = Number(value);
+		switch (operator) {
+		case "=":
+		case "==":
+			return currentValue === targetValue;
+		case "!=":
+			return currentValue !== targetValue;
+		case ">=":
+			return currentValue >= targetValue;
+		case "<=":
+			return currentValue <= targetValue;
+		case ">":
+			return currentValue > targetValue;
+		case "<":
+			return currentValue < targetValue;
+		default:
+			console.warn(
+				`[condition-dispatch] Unknown operator: "${operator}" in key "${key}"`,
+			);
+			return false;
+		}
+	}
+	}
 }
 
 export async function runScene(
-  dependencies: ConditionDispatchDependencies,
+	dependencies: DemoDependencies,
 ): Promise<SceneCleanup> {
-  const { pixiApplication, cameraState, worldContainer, dialogueEngine } =
-    dependencies;
+	const { pixiApplication, cameraState, worldContainer, dialogueEngine } =
+		dependencies;
 
-  const sceneContext = createSceneContext(pixiApplication);
-  const screenCenterX = pixiApplication.screen.width / 2;
-  const screenCenterY = pixiApplication.screen.height / 2;
+	const sceneContext = createSceneContext(pixiApplication);
+	const screenCenterX = pixiApplication.screen.width / 2;
+	const screenCenterY = pixiApplication.screen.height / 2;
 
-  // --- Characters ---
-  // l4 starts left; l1/l2/l3 scattered around the ritual carrot in the center.
-  const { characters, playerReference, npcObstacles } = await setupCharacters({
-    characterConfigurations: [
-      {
-        characterId: GAME_ACTORS.l1,
-        displayName: GAME_ACTORS.l1,
-        tintColor: 0xff4444,
-        startX: screenCenterX - 560,
-        startY: screenCenterY + 60,
-      },
-      {
-        characterId: GAME_ACTORS.l2,
-        displayName: GAME_ACTORS.l2,
-        tintColor: 0xffcc00,
-        startX: screenCenterX - 740,
-        startY: screenCenterY + 20,
-      },
-      {
-        characterId: GAME_ACTORS.l3,
-        displayName: GAME_ACTORS.l3,
-        tintColor: 0x4488ff,
-        startX: screenCenterX + -850,
-        startY: screenCenterY - 80,
-      },
-      {
-        characterId: GAME_ACTORS.l4,
-        displayName: GAME_ACTORS.l4,
-        tintColor: 0x777777,
-        startX: screenCenterX - 280,
-        startY: screenCenterY + 20,
-      },
-    ],
-    playerCharacterId: PLAYER_CHARACTER_ID,
-    worldContainer,
-    sceneContext,
-  });
+	// --- Characters ---
+	// l4 starts left; l1/l2/l3 scattered around the ritual carrot in the center.
+	const { characters, playerReference, npcObstacles } = await setupCharacters({
+		characterConfigurations: [
+			{
+				characterId: GAME_ACTORS.l1,
+				displayName: GAME_ACTORS.l1,
+				tintColor: 0xff4444,
+				startX: screenCenterX - 560,
+				startY: screenCenterY + 60,
+			},
+			{
+				characterId: GAME_ACTORS.l2,
+				displayName: GAME_ACTORS.l2,
+				tintColor: 0xffcc00,
+				startX: screenCenterX - 740,
+				startY: screenCenterY + 20,
+			},
+			{
+				characterId: GAME_ACTORS.l3,
+				displayName: GAME_ACTORS.l3,
+				tintColor: 0x4488ff,
+				startX: screenCenterX + -850,
+				startY: screenCenterY - 80,
+			},
+			{
+				characterId: GAME_ACTORS.l4,
+				displayName: GAME_ACTORS.l4,
+				tintColor: 0x777777,
+				startX: screenCenterX - 280,
+				startY: screenCenterY + 20,
+			},
+		],
+		playerCharacterId: PLAYER_CHARACTER_ID,
+		worldContainer,
+		sceneContext,
+	});
 
-  // --- NPC movement tickers (with per-character hop variation + collision) ---
-  // Build per-NPC collidable list: each NPC collides with the player + other NPCs.
-  const playerCollidable = createCollidable(playerReference.sprite);
+	// --- NPC movement tickers (with per-character hop variation + collision) ---
+	// Build per-NPC collidable list: each NPC collides with the player + other NPCs.
+	const playerCollidable = createCollidable(playerReference.sprite);
 
-  for (const characterId of PARTY_NPC_IDS) {
-    const characterRef = characters.get(characterId) as CharacterReference;
-    const profile = NPC_MOVEMENT_PROFILES[characterId];
-    if (profile) {
-      const customMovementState = createMovementState({
-        movementSpeed: profile.speed,
-        hopStrideDistance: profile.hopStride,
-        hopMaxHeight: profile.hopHeight,
-      });
-      // Seed a random distanceSinceLastHop so hops start at different phases.
-      customMovementState.distanceSinceLastHop =
-        Math.random() * customMovementState.hopStrideDistance;
-      characters.set(characterId, {
-        characterId: characterRef.characterId,
-        sprite: characterRef.sprite,
-        movementState: customMovementState,
-      });
-    }
+	for (const characterId of PARTY_NPC_IDS) {
+		const characterRef = characters.get(characterId) as CharacterReference;
+		const profile = NPC_MOVEMENT_PROFILES[characterId];
+		if (profile) {
+			const customMovementState = createMovementState({
+				movementSpeed: profile.speed,
+				hopStrideDistance: profile.hopStride,
+				hopMaxHeight: profile.hopHeight,
+			});
+			// Seed a random distanceSinceLastHop so hops start at different phases.
+			customMovementState.distanceSinceLastHop =
+				Math.random() * customMovementState.hopStrideDistance;
+			characters.set(characterId, {
+				characterId: characterRef.characterId,
+				sprite: characterRef.sprite,
+				movementState: customMovementState,
+			});
+		}
 
-    const finalRef = characters.get(characterId) as CharacterReference;
-    const npcCollidable = createCollidable(finalRef.sprite);
+		const finalRef = characters.get(characterId) as CharacterReference;
+		const npcCollidable = createCollidable(finalRef.sprite);
 
-    // Obstacles for this NPC: every other NPC + the player.
-    const obstaclesForThisNpc = [
-      playerCollidable,
-      ...PARTY_NPC_IDS.filter((id) => id !== characterId)
-        .map((id) => characters.get(id))
-        .filter((ref): ref is CharacterReference => !!ref)
-        .map((ref) => createCollidable(ref.sprite)),
-    ];
+		// Obstacles for this NPC: every other NPC + the player.
+		const obstaclesForThisNpc = [
+			playerCollidable,
+			...PARTY_NPC_IDS.filter((id) => id !== characterId)
+				.map((id) => characters.get(id))
+				.filter((ref): ref is CharacterReference => !!ref)
+				.map((ref) => createCollidable(ref.sprite)),
+		];
 
-    const unregisterNpcMovement = registerMovementTicker(
-      pixiApplication,
-      finalRef.sprite,
-      finalRef.movementState,
-      (proposedX: number, proposedY: number) =>
-        resolveCollisions(
-          npcCollidable,
-          proposedX,
-          proposedY,
-          obstaclesForThisNpc,
-        ),
-    );
-    sceneContext.addDisposable(unregisterNpcMovement);
-  }
+		const unregisterNpcMovement = registerMovementTicker(
+			pixiApplication,
+			finalRef.sprite,
+			finalRef.movementState,
+			(proposedX: number, proposedY: number) =>
+				resolveCollisions(
+					npcCollidable,
+					proposedX,
+					proposedY,
+					obstaclesForThisNpc,
+				),
+		);
+		sceneContext.addDisposable(unregisterNpcMovement);
+	}
 
-  // --- Player movement + collision + camera ---
-  setupPlayerMovement({
-    pixiApplication,
-    cameraState,
-    worldContainer,
-    playerReference,
-    npcObstacles,
-    sceneContext,
-  });
+	// --- Player movement + collision + camera ---
+	setupPlayerMovement({
+		pixiApplication,
+		cameraState,
+		worldContainer,
+		playerReference,
+		npcObstacles,
+		sceneContext,
+	});
 
-  // --- Game store + facade ---
-  const gameStore = createGameStore();
-  // Pre-populate party entries so the debug panel shows them from the start.
-  for (const characterId of PARTY_NPC_IDS) {
-    gameStore.party.set(characterId, false);
-  }
-  const gameActions = createGameActionFacade({
-    pixiApplication,
-    cameraState,
-    worldContainer,
-    gameStore,
-    characters,
-  });
+	// --- Game store + facade ---
+	const gameStore = createGameStore();
+	// Pre-populate party entries so the debug panel shows them from the start.
+	for (const characterId of PARTY_NPC_IDS) {
+		gameStore.party.set(characterId, false);
+	}
+	const gameActions = createGameActionFacade({
+		pixiApplication,
+		cameraState,
+		worldContainer,
+		gameStore,
+		characters,
+	});
 
-  // --- Debug panel ---
-  const debugPanelState = createDebugPanel({
-    onLanguageChanged: setCurrentLanguage,
-  });
-  registerLiveMonitorTicker(debugPanelState, pixiApplication);
-  registerActionButtons(debugPanelState, gameActions, GAME_ACTORS.l1);
-  refreshGameStoreBindings(debugPanelState, gameStore);
+	// --- Debug panel ---
+	const debugPanelState = createDebugPanel({
+		onLanguageChanged: setCurrentLanguage,
+	});
+	registerLiveMonitorTicker(debugPanelState, pixiApplication);
+	registerActionButtons(debugPanelState, gameActions, GAME_ACTORS.l1);
+	refreshGameStoreBindings(debugPanelState, gameStore);
 
-  const followToggle = { paused: false };
-  debugPanelState.pane
-    .addBinding(followToggle, "paused", { label: "pause follow" })
-    .on("change", ({ value }) => {
-      if (value) {
-        partyFollowHandle.pause();
-      } else {
-        partyFollowHandle.resume();
-      }
-    });
+	const followToggle = { paused: false };
+	debugPanelState.pane
+		.addBinding(followToggle, "paused", { label: "pause follow" })
+		.on("change", ({ value }) => {
+			if (value) {
+				partyFollowHandle.pause();
+			} else {
+				partyFollowHandle.resume();
+			}
+		});
 
-  sceneContext.addDisposable(() => debugPanelState.pane.dispose());
+	sceneContext.addDisposable(() => debugPanelState.pane.dispose());
 
-  // --- Party follow — single-file chain (breadcrumb trail) ---
-  const partyFollowHandle = setupPartyFollow({
-    playerReference,
-    partyNpcIds: PARTY_NPC_IDS,
-    characters,
-    sceneContext,
-    gameActions,
-    followDistance: 99,
-  });
+	// --- Party follow — single-file chain (breadcrumb trail) ---
+	const partyFollowHandle = setupPartyFollow({
+		playerReference,
+		partyNpcIds: PARTY_NPC_IDS,
+		characters,
+		sceneContext,
+		gameActions,
+		followDistance: 99,
+	});
 
-  // --- Big ritual carrot ---
-  // Clicking it starts the dialogue. It stays in the scene permanently.
-  const bigCarrotGraphics = new Graphics();
-  bigCarrotGraphics.rect(0, 0, 18, 32).fill(0xff6600);
-  const bigCarrotTexture =
-    pixiApplication.renderer.generateTexture(bigCarrotGraphics);
-  bigCarrotGraphics.destroy();
+	// --- Big ritual carrot ---
+	// Clicking it starts the dialogue. It stays in the scene permanently.
+	const bigCarrotGraphics = new Graphics();
+	bigCarrotGraphics.rect(0, 0, 18, 32).fill(0xff6600);
+	const bigCarrotTexture =
+		pixiApplication.renderer.generateTexture(bigCarrotGraphics);
+	bigCarrotGraphics.destroy();
 
-  const bigCarrotSprite = new Sprite(bigCarrotTexture);
-  bigCarrotSprite.anchor.set(0.5, 1);
-  bigCarrotSprite.position.set(screenCenterX, screenCenterY - 10);
-  bigCarrotSprite.scale.set(3);
-  sceneContext.addSprite(bigCarrotSprite, worldContainer);
+	const bigCarrotSprite = new Sprite(bigCarrotTexture);
+	bigCarrotSprite.anchor.set(0.5, 1);
+	bigCarrotSprite.position.set(screenCenterX, screenCenterY - 10);
+	bigCarrotSprite.scale.set(3);
+	sceneContext.addSprite(bigCarrotSprite, worldContainer);
 
-  const carrotHint = new Text({
-    text: "🥕 invoke!",
-    style: { fontSize: 12, fill: "#ffcc00" },
-  });
-  carrotHint.anchor.set(0.5, 1);
-  // Position in local space: above the top edge of the texture (height=32 local units).
-  carrotHint.position.set(0, -(32 + 6));
-  bigCarrotSprite.addChild(carrotHint);
-  sceneContext.addDisposable(() => {
-    if (!carrotHint.destroyed) carrotHint.destroy();
-  });
+	const carrotHint = new Text({
+		text: "🥕 invoke!",
+		style: { fontSize: 12, fill: "#ffcc00" },
+	});
+	carrotHint.anchor.set(0.5, 1);
+	// Position in local space: above the top edge of the texture (height=32 local units).
+	carrotHint.position.set(0, -(32 + 6));
+	bigCarrotSprite.addChild(carrotHint);
+	sceneContext.addDisposable(() => {
+		if (!carrotHint.destroyed) carrotHint.destroy();
+	});
 
-  function isPlayerNearBigCarrot(): boolean {
-    const deltaX = playerReference.sprite.x - bigCarrotSprite.x;
-    const deltaY = playerReference.sprite.y - bigCarrotSprite.y;
-    return (
-      Math.sqrt(deltaX * deltaX + deltaY * deltaY) <
-      BIG_CARROT_INTERACT_DISTANCE
-    );
-  }
+	function isPlayerNearBigCarrot(): boolean {
+		const deltaX = playerReference.sprite.x - bigCarrotSprite.x;
+		const deltaY = playerReference.sprite.y - bigCarrotSprite.y;
+		return (
+			Math.sqrt(deltaX * deltaX + deltaY * deltaY) <
+			BIG_CARROT_INTERACT_DISTANCE
+		);
+	}
 
-  // Show hint only when player is in range and no dialogue is running.
-  sceneContext.addTickerCallback(() => {
-    if (!carrotHint.destroyed) {
-      carrotHint.visible = !isDialogueActive && isPlayerNearBigCarrot();
-    }
-  });
+	// Show hint only when player is in range and no dialogue is running.
+	sceneContext.addTickerCallback(() => {
+		if (!carrotHint.destroyed) {
+			carrotHint.visible = !isDialogueActive && isPlayerNearBigCarrot();
+		}
+	});
 
-  // --- Party recruitment ---
-  setupPartyRecruitment({
-    playerReference,
-    partyNpcIds: PARTY_NPC_IDS,
-    characters,
-    npcObstacles,
-    sceneContext,
-    gameActions,
-    onMemberRecruited: (characterId) => {
-      refreshGameStoreBindings(debugPanelState, gameStore);
-      trackPartyMemberRecruited("condition-dispatch", characterId);
-      trackNpcInteraction("condition-dispatch", characterId, "recruitment");
-      console.log(`[condition-dispatch] ${characterId} joined the party!`);
-    },
-  });
+	// --- Party recruitment ---
+	setupPartyRecruitment({
+		playerReference,
+		partyNpcIds: PARTY_NPC_IDS,
+		characters,
+		npcObstacles,
+		sceneContext,
+		gameActions,
+		onMemberRecruited: (characterId) => {
+			refreshGameStoreBindings(debugPanelState, gameStore);
+			trackPartyMemberRecruited("condition-dispatch", characterId);
+			trackNpcInteraction("condition-dispatch", characterId, "recruitment");
+		},
+	});
 
-  // --- Dialogue state ---
-  let isDialogueActive = false;
-  const activeBubbles = new Map<string, BubbleTextHandle>();
-  const blocksWaitingForInput = new Map<string, () => void>();
+	// --- Dialogue state ---
+	let isDialogueActive = false;
+	const activeBubbles = new Map<string, BubbleTextHandle>();
+	const blocksWaitingForInput = new Map<string, () => void>();
 
-  function startDialogueScene(): void {
-    isDialogueActive = true;
-    partyFollowHandle.pause();
-    console.log("[condition-dispatch] Ritual started!");
+	function startDialogueScene(): void {
+		isDialogueActive = true;
+		partyFollowHandle.pause();
 
-    const sceneHandle = dialogueEngine.scene(SCENE_UUID);
+		const sceneHandle = dialogueEngine.scene(SCENE_UUID);
 
-    // --- DIALOG handler (multi-track + delay-aware) ---
-    //
-    // Dispatched async tracks (DIALOG-003/004/005) have isAsync + delay + timeout:
-    //   - delay:   pre-display wait (engine skips onBeforeBlock for async tracks,
-    //              so the handler must enforce delay itself)
-    //   - timeout: auto-advance after N ms (bubble disappears on its own)
-    //
-    // Main track (DIALOG-006) has only delay — which the global onBeforeBlock
-    // already handles. The handler just waits for user input like normal.
-    //
-    // Pattern matches multi-tracks demo: distinguish isAsync vs main track,
-    // and handle delay + timeout + waitInput correctly per block.
-    sceneHandle.onDialog(({ block, context, next }) => {
-      const dialogueText = translate(block.dialogueText, currentLanguage);
-      // DIALOG-004 has no character in blueprint metadata; fall back to player.
-      const characterId = context.character?.id ?? PLAYER_CHARACTER_ID;
-      const characterName = context.character?.name ?? characterId;
+		// --- DIALOG handler (multi-track + delay-aware) ---
+		//
+		// Dispatched async tracks (DIALOG-003/004/005) have isAsync + delay + timeout:
+		//   - delay:   pre-display wait (engine skips onBeforeBlock for async tracks,
+		//              so the handler must enforce delay itself)
+		//   - timeout: auto-advance after N ms (bubble disappears on its own)
+		//
+		// Main track (DIALOG-006) has only delay — which the global onBeforeBlock
+		// already handles. The handler just waits for user input like normal.
+		//
+		// Pattern matches multi-tracks demo: distinguish isAsync vs main track,
+		// and handle delay + timeout + waitInput correctly per block.
+		sceneHandle.onDialog(({ block, context, next }) => {
+			const dialogueText = translate(block.dialogueText, currentLanguage);
+			// DIALOG-004 has no character in blueprint metadata; fall back to player.
+			const characterId = context.character?.id ?? PLAYER_CHARACTER_ID;
+			const characterName = context.character?.name ?? characterId;
 
-      if (!dialogueText.trim()) {
-        next();
-        return;
-      }
+			if (!dialogueText.trim()) {
+				next();
+				return;
+			}
 
-      const isAsyncBlock = block.nativeProperties?.isAsync === true;
-      const delayMs = block.nativeProperties?.delay ?? 0;
-      const timeoutMs = block.nativeProperties?.timeout;
-      const needsUserInput =
-        block.nativeProperties?.waitInput === true || !isAsyncBlock;
+			const isAsyncBlock = block.nativeProperties?.isAsync === true;
+			const delayMs = block.nativeProperties?.delay ?? 0;
+			const timeoutMs = block.nativeProperties?.timeout;
+			const needsUserInput =
+				block.nativeProperties?.waitInput === true || !isAsyncBlock;
 
-      const blockUuid = block.uuid;
-      let delayTimer: ReturnType<typeof setTimeout> | null = null;
-      const timers: ReturnType<typeof setTimeout>[] = [];
+			const blockUuid = block.uuid;
+			let delayTimer: ReturnType<typeof setTimeout> | null = null;
+			const timers: ReturnType<typeof setTimeout>[] = [];
 
-      /** Show the bubble and decide how to advance. */
-      const showAndAdvance = () => {
-        if (characters.has(characterId)) {
-          const bubbleHandle = gameActions.showBubbleOnCharacter(
-            characterId,
-            characterName,
-            dialogueText,
-          );
-          activeBubbles.set(blockUuid, bubbleHandle);
-        }
+			/** Show the bubble and decide how to advance. */
+			const showAndAdvance = () => {
+				if (characters.has(characterId)) {
+					const bubbleHandle = gameActions.showBubbleOnCharacter(
+						characterId,
+						characterName,
+						dialogueText,
+					);
+					activeBubbles.set(blockUuid, bubbleHandle);
+				}
 
-        trackDialogueShown("condition-dispatch", blockUuid, characterId);
+				trackDialogueShown("condition-dispatch", blockUuid, characterId);
 
-        if (needsUserInput) {
-          // Main track or waitInput=true: wait for user click.
-          blocksWaitingForInput.set(blockUuid, next);
+				if (needsUserInput) {
+					// Main track or waitInput=true: wait for user click.
+					blocksWaitingForInput.set(blockUuid, next);
 
-          if (timeoutMs && timeoutMs > 0) {
-            const autoAdvanceTimer = setTimeout(() => {
-              if (blocksWaitingForInput.delete(blockUuid)) {
-                next();
-              }
-            }, timeoutMs);
-            timers.push(autoAdvanceTimer);
-          }
-        } else {
-          // Async track without waitInput: auto-advance after timeout.
-          if (timeoutMs && timeoutMs > 0) {
-            const autoTimer = setTimeout(() => next(), timeoutMs);
-            timers.push(autoTimer);
-          } else {
-            next();
-          }
-        }
-      };
+					if (timeoutMs && timeoutMs > 0) {
+						const autoAdvanceTimer = setTimeout(() => {
+							if (blocksWaitingForInput.delete(blockUuid)) {
+								next();
+							}
+						}, timeoutMs);
+						timers.push(autoAdvanceTimer);
+					}
+				} else {
+					// Async track without waitInput: auto-advance after timeout.
+					if (timeoutMs && timeoutMs > 0) {
+						const autoTimer = setTimeout(() => next(), timeoutMs);
+						timers.push(autoTimer);
+					} else {
+						next();
+					}
+				}
+			};
 
-      // Async tracks: engine skips onBeforeBlock, so enforce delay here.
-      // Main track: onBeforeBlock already handles delay, show immediately.
-      if (isAsyncBlock && delayMs > 0) {
-        delayTimer = setTimeout(showAndAdvance, delayMs);
-      } else {
-        showAndAdvance();
-      }
+			// Async tracks: engine skips onBeforeBlock, so enforce delay here.
+			// Main track: onBeforeBlock already handles delay, show immediately.
+			if (isAsyncBlock && delayMs > 0) {
+				delayTimer = setTimeout(showAndAdvance, delayMs);
+			} else {
+				showAndAdvance();
+			}
 
-      return () => {
-        if (delayTimer) clearTimeout(delayTimer);
-        for (const timer of timers) clearTimeout(timer);
-        blocksWaitingForInput.delete(blockUuid);
-        const handle = activeBubbles.get(blockUuid);
-        if (handle) {
-          gameActions.removeBubbleFromWorld(handle);
-          activeBubbles.delete(blockUuid);
-        }
-      };
-    });
+			return () => {
+				if (delayTimer) clearTimeout(delayTimer);
+				for (const timer of timers) clearTimeout(timer);
+				blocksWaitingForInput.delete(blockUuid);
+				const handle = activeBubbles.get(blockUuid);
+				if (handle) {
+					gameActions.removeBubbleFromWorld(handle);
+					activeBubbles.delete(blockUuid);
+				}
+			};
+		});
 
-    // --- CONDITION handler ---
-    // Evaluates party membership for CONDITION-002 (gate) and CONDITION-001 (dispatcher).
-    // preventGlobalHandler() stops the global onCondition from resolving true by default.
-    sceneHandle.onCondition(({ block, context, next }) => {
-      context.preventGlobalHandler();
+		// --- CONDITION handler ---
+		// Evaluates party membership for CONDITION-002 (gate) and CONDITION-001 (dispatcher).
+		// preventGlobalHandler() stops the global onCondition from resolving true by default.
+		sceneHandle.onCondition(({ block, context, next }) => {
+			context.preventGlobalHandler();
 
-      const conditionBlock = block as ConditionBlock;
-      const result = LsdeUtils.evaluateConditionGroups(
-        conditionBlock.conditions ?? [],
-        (condition) => evaluateGameCondition(condition, gameActions),
-        !!block.nativeProperties?.enableDispatcher,
-      );
+			const conditionBlock = block as ConditionBlock;
+			const result = LsdeUtils.evaluateConditionGroups(
+				conditionBlock.conditions ?? [],
+				(condition) => evaluateGameCondition(condition, gameActions),
+				!!block.nativeProperties?.enableDispatcher,
+			);
 
-      console.log(
-        `[CONDITION] ${conditionBlock.label}: evaluated →`,
-        result,
-        `(party: l1=${gameActions.isInParty(GAME_ACTORS.l1)}, l2=${gameActions.isInParty(GAME_ACTORS.l2)}, l3=${gameActions.isInParty(GAME_ACTORS.l3)})`,
-      );
+			context.resolve(result);
+			trackConditionEvaluated("condition-dispatch", block.uuid, result);
+			next();
+		});
 
-      context.resolve(result);
-      trackConditionEvaluated("condition-dispatch", block.uuid, result);
-      next();
-    });
+		// --- ACTION handler ---
+		// Executes blueprint-defined actions (moveCharacterAt, shakeCamera, etc.)
+		// and waits for all of them to complete before advancing.
+		sceneHandle.onAction(({ block, context, next }) => {
+			context.preventGlobalHandler();
 
-    // --- ACTION handler ---
-    // Executes blueprint-defined actions (moveCharacterAt, shakeCamera, etc.)
-    // and waits for all of them to complete before advancing.
-    sceneHandle.onAction(({ block, context, next }) => {
-      context.preventGlobalHandler();
+			trackActionExecuted(
+				"condition-dispatch",
+				block.uuid,
+				(block.actions ?? []).map(
+					(action) => (action as BlueprintAction).actionId,
+				),
+			);
 
-      trackActionExecuted(
-        "condition-dispatch",
-        block.uuid,
-        (block.actions ?? []).map(
-          (action) => (action as BlueprintAction).actionId,
-        ),
-      );
+			const actionPromises = (block.actions ?? []).map((action) =>
+				executeAction(action as BlueprintAction, gameActions),
+			);
 
-      const actionPromises = (block.actions ?? []).map((action) =>
-        executeAction(action as BlueprintAction, gameActions),
-      );
+			Promise.all(actionPromises)
+				.then(() => {
+					context.resolve();
+				})
+				.catch((error) => {
+					console.error("[condition-dispatch] Action failed:", error);
+					context.reject(error);
+				})
+				.finally(() => next());
+		});
 
-      Promise.all(actionPromises)
-        .then(() => {
-          context.resolve();
-        })
-        .catch((error) => {
-          console.error("[condition-dispatch] Action failed:", error);
-          context.reject(error);
-        })
-        .finally(() => next());
-    });
+		sceneHandle.onExit(() => {
+			isDialogueActive = false;
+			blocksWaitingForInput.clear();
+			activeBubbles.clear();
+			partyFollowHandle.resume();
+			trackSceneCompleted("condition-dispatch");
+		});
 
-    sceneHandle.onExit(() => {
-      isDialogueActive = false;
-      blocksWaitingForInput.clear();
-      activeBubbles.clear();
-      partyFollowHandle.resume();
-      trackSceneCompleted("condition-dispatch");
-      console.log("[condition-dispatch] Ritual completed.");
-    });
+		sceneHandle.start();
+	}
 
-    sceneHandle.start();
-  }
+	// Clicking the ritual carrot starts the scene (proximity + not already active).
+	bigCarrotSprite.eventMode = "static";
+	bigCarrotSprite.cursor = "pointer";
+	bigCarrotSprite.on("pointerdown", () => {
+		if (isDialogueActive || !isPlayerNearBigCarrot()) return;
+		startDialogueScene();
+	});
 
-  // Clicking the ritual carrot starts the scene (proximity + not already active).
-  bigCarrotSprite.eventMode = "static";
-  bigCarrotSprite.cursor = "pointer";
-  bigCarrotSprite.on("pointerdown", () => {
-    if (isDialogueActive || !isPlayerNearBigCarrot()) return;
-    startDialogueScene();
-  });
+	// --- Broadcast click: advance all waiting dialogue blocks at once ---
+	// First click skips all typewriters still animating.
+	// Second click (or first if all complete) advances every waiting block.
+	const onPointerDownForDialogue = () => {
+		if (blocksWaitingForInput.size === 0) return;
 
-  // --- Broadcast click: advance all waiting dialogue blocks at once ---
-  // First click skips all typewriters still animating.
-  // Second click (or first if all complete) advances every waiting block.
-  const onPointerDownForDialogue = () => {
-    if (blocksWaitingForInput.size === 0) return;
+		for (const blockUuid of blocksWaitingForInput.keys()) {
+			const bubbleHandle = activeBubbles.get(blockUuid);
+			if (bubbleHandle && !bubbleHandle.typewriterState.isComplete) {
+				for (const uuid of blocksWaitingForInput.keys()) {
+					activeBubbles.get(uuid)?.skipTypewriter();
+				}
+				return;
+			}
+		}
 
-    for (const blockUuid of blocksWaitingForInput.keys()) {
-      const bubbleHandle = activeBubbles.get(blockUuid);
-      if (bubbleHandle && !bubbleHandle.typewriterState.isComplete) {
-        for (const uuid of blocksWaitingForInput.keys()) {
-          activeBubbles.get(uuid)?.skipTypewriter();
-        }
-        return;
-      }
-    }
+		trackDialogueAdvanced("condition-dispatch", "broadcast");
+		const toAdvance = [...blocksWaitingForInput.values()];
+		blocksWaitingForInput.clear();
+		for (const advance of toAdvance) {
+			advance();
+		}
+	};
 
-    trackDialogueAdvanced("condition-dispatch", "broadcast");
-    const toAdvance = [...blocksWaitingForInput.values()];
-    blocksWaitingForInput.clear();
-    for (const advance of toAdvance) {
-      advance();
-    }
-  };
+	sceneContext.addStageListener(
+		"pointerdown",
+		onPointerDownForDialogue as (...args: unknown[]) => void,
+	);
 
-  sceneContext.addStageListener(
-    "pointerdown",
-    onPointerDownForDialogue as (...args: unknown[]) => void,
-  );
-
-  return {
-    teardown: () => {
-      sceneContext.dispose();
-      characters.clear();
-    },
-  };
+	return {
+		teardown: () => {
+			sceneContext.dispose();
+			characters.clear();
+		},
+	};
 }

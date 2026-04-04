@@ -14,260 +14,260 @@ import { currentLanguage } from "../engine/i18n";
 import type { CrtFilterState } from "../renderer/stage";
 
 export interface DebugPanelState {
-  readonly pane: Pane;
-  readonly gameStoreFolder: FolderApi;
-  readonly engineFolder: FolderApi;
-  readonly liveMonitor: LiveMonitorState;
+	readonly pane: Pane;
+	readonly gameStoreFolder: FolderApi;
+	readonly engineFolder: FolderApi;
+	readonly liveMonitor: LiveMonitorState;
 }
 
 export interface DebugPanelCallbacks {
-  readonly onLanguageChanged?: (language: SupportedLanguage) => void;
+	readonly onLanguageChanged?: (language: SupportedLanguage) => void;
 }
 
 interface LiveMonitorState {
-  fps: number;
+	fps: number;
 }
 
 export function createDebugPanel(
-  callbacks: DebugPanelCallbacks = {},
+	callbacks: DebugPanelCallbacks = {},
 ): DebugPanelState {
-  const pane = new Pane({ title: "Debug Panel", expanded: true });
+	const pane = new Pane({ title: "Debug Panel", expanded: true });
 
-  const liveMonitor: LiveMonitorState = { fps: 0 };
+	const liveMonitor: LiveMonitorState = { fps: 0 };
 
-  pane.addBinding(liveMonitor, "fps", { readonly: true, label: "FPS" });
+	pane.addBinding(liveMonitor, "fps", { readonly: true, label: "FPS" });
 
-  pane.addBlade({ view: "separator" });
+	pane.addBlade({ view: "separator" });
 
-  const engineFolder = pane.addFolder({ title: "Engine", expanded: true });
-  const gameStoreFolder = pane.addFolder({
-    title: "Game Store",
-    expanded: true,
-  });
+	const engineFolder = pane.addFolder({ title: "Engine", expanded: true });
+	const gameStoreFolder = pane.addFolder({
+		title: "Game Store",
+		expanded: true,
+	});
 
-  const languageBlade = engineFolder.addBlade({
-    view: "list",
-    label: "Language",
-    options: [
-      { text: "English [en]", value: "en" },
-      { text: "Français [fr]", value: "fr" },
-      { text: "日本語 [ja]", value: "ja" },
-      { text: "中文 [zh]", value: "zh" },
-    ],
-    value: currentLanguage,
-  }) as ListBladeApi<string>;
+	const languageBlade = engineFolder.addBlade({
+		view: "list",
+		label: "Language",
+		options: [
+			{ text: "English [en]", value: "en" },
+			{ text: "Français [fr]", value: "fr" },
+			{ text: "日本語 [ja]", value: "ja" },
+			{ text: "中文 [zh]", value: "zh" },
+		],
+		value: currentLanguage,
+	}) as ListBladeApi<string>;
 
-  languageBlade.on("change", (event) => {
-    callbacks.onLanguageChanged?.(event.value as SupportedLanguage);
-  });
+	languageBlade.on("change", (event) => {
+		callbacks.onLanguageChanged?.(event.value as SupportedLanguage);
+	});
 
-  return { pane, gameStoreFolder, engineFolder, liveMonitor };
+	return { pane, gameStoreFolder, engineFolder, liveMonitor };
 }
 
 function addButton(
-  folder: FolderApi,
-  title: string,
-  onClick: () => void,
+	folder: FolderApi,
+	title: string,
+	onClick: () => void,
 ): void {
-  (folder.addBlade({ view: "button", title }) as ButtonApi).on(
-    "click",
-    onClick,
-  );
+	(folder.addBlade({ view: "button", title }) as ButtonApi).on(
+		"click",
+		onClick,
+	);
 }
 
 export function registerActionButtons(
-  debugPanelState: DebugPanelState,
-  gameActions: GameActionFacade,
-  firstNpcCharacterId: string,
+	debugPanelState: DebugPanelState,
+	gameActions: GameActionFacade,
+	firstNpcCharacterId: string,
 ): void {
-  const actionsFolder = debugPanelState.pane.addFolder({
-    title: "Actions",
-    expanded: true,
-  });
+	const actionsFolder = debugPanelState.pane.addFolder({
+		title: "Actions",
+		expanded: true,
+	});
 
-  const cameraFolder = actionsFolder.addFolder({
-    title: "Camera",
-    expanded: false,
-  });
-  addButton(cameraFolder, "Shake", () => gameActions.shakeCamera());
-  addButton(cameraFolder, "Zoom In (1.5x)", () => gameActions.zoomCamera(1.5));
-  addButton(cameraFolder, "Zoom Reset (1x)", () => gameActions.zoomCamera(1));
-  addButton(cameraFolder, "Move to 0,0", () =>
-    gameActions.moveCameraToPosition(0, 0),
-  );
+	const cameraFolder = actionsFolder.addFolder({
+		title: "Camera",
+		expanded: false,
+	});
+	addButton(cameraFolder, "Shake", () => gameActions.shakeCamera());
+	addButton(cameraFolder, "Zoom In (1.5x)", () => gameActions.zoomCamera(1.5));
+	addButton(cameraFolder, "Zoom Reset (1x)", () => gameActions.zoomCamera(1));
+	addButton(cameraFolder, "Move to 0,0", () =>
+		gameActions.moveCameraToPosition(0, 0),
+	);
 
-  const characterFolder = actionsFolder.addFolder({
-    title: "Character",
-    expanded: false,
-  });
-  addButton(characterFolder, "Jump NPC", () =>
-    gameActions.jumpCharacter(firstNpcCharacterId),
-  );
-  addButton(characterFolder, "Spin NPC", () =>
-    gameActions.playCharacterAnimation(firstNpcCharacterId, "spin"),
-  );
-  addButton(characterFolder, "Bounce NPC", () =>
-    gameActions.playCharacterAnimation(firstNpcCharacterId, "bounce"),
-  );
+	const characterFolder = actionsFolder.addFolder({
+		title: "Character",
+		expanded: false,
+	});
+	addButton(characterFolder, "Jump NPC", () =>
+		gameActions.jumpCharacter(firstNpcCharacterId),
+	);
+	addButton(characterFolder, "Spin NPC", () =>
+		gameActions.playCharacterAnimation(firstNpcCharacterId, "spin"),
+	);
+	addButton(characterFolder, "Bounce NPC", () =>
+		gameActions.playCharacterAnimation(firstNpcCharacterId, "bounce"),
+	);
 
-  const dialogueFolder = actionsFolder.addFolder({
-    title: "Dialogue",
-    expanded: false,
-  });
-  addButton(dialogueFolder, "Show Bubble on NPC", () =>
-    gameActions.showBubbleOnCharacter(
-      firstNpcCharacterId,
-      "Red Bunny",
-      "Hello! This is a test bubble from the debug panel.",
-      "#cc3333",
-    ),
-  );
-  addButton(dialogueFolder, "Show Choices on NPC", () =>
-    gameActions.showChoicesOnCharacter(
-      firstNpcCharacterId,
-      [
-        { choiceUuid: "a", text: "Option A" },
-        { choiceUuid: "b", text: "Option B" },
-      ],
-      (uuid) => console.log("Debug choice:", uuid),
-    ),
-  );
+	const dialogueFolder = actionsFolder.addFolder({
+		title: "Dialogue",
+		expanded: false,
+	});
+	addButton(dialogueFolder, "Show Bubble on NPC", () =>
+		gameActions.showBubbleOnCharacter(
+			firstNpcCharacterId,
+			"Red Bunny",
+			"Hello! This is a test bubble from the debug panel.",
+			"#cc3333",
+		),
+	);
+	addButton(dialogueFolder, "Show Choices on NPC", () =>
+		gameActions.showChoicesOnCharacter(
+			firstNpcCharacterId,
+			[
+				{ choiceUuid: "a", text: "Option A" },
+				{ choiceUuid: "b", text: "Option B" },
+			],
+			(uuid) => console.log("Debug choice:", uuid),
+		),
+	);
 
-  const stateFolder = actionsFolder.addFolder({
-    title: "Game State",
-    expanded: false,
-  });
-  addButton(stateFolder, "Set testVar = 42", () =>
-    gameActions.setVariable("testVar", 42),
-  );
-  addButton(stateFolder, "Toggle testSwitch", () =>
-    gameActions.setSwitch("testSwitch", true),
-  );
+	const stateFolder = actionsFolder.addFolder({
+		title: "Game State",
+		expanded: false,
+	});
+	addButton(stateFolder, "Set testVar = 42", () =>
+		gameActions.setVariable("testVar", 42),
+	);
+	addButton(stateFolder, "Toggle testSwitch", () =>
+		gameActions.setSwitch("testSwitch", true),
+	);
 }
 
 export function registerLiveMonitorTicker(
-  debugPanelState: DebugPanelState,
-  pixiApplication: Application,
+	debugPanelState: DebugPanelState,
+	pixiApplication: Application,
 ): void {
-  const monitor = debugPanelState.liveMonitor;
+	const monitor = debugPanelState.liveMonitor;
 
-  pixiApplication.ticker.add(() => {
-    monitor.fps = Math.round(pixiApplication.ticker.FPS);
-  });
+	pixiApplication.ticker.add(() => {
+		monitor.fps = Math.round(pixiApplication.ticker.FPS);
+	});
 }
 
 export function refreshGameStoreBindings(
-  debugPanelState: DebugPanelState,
-  gameStore: GameStore,
+	debugPanelState: DebugPanelState,
+	gameStore: GameStore,
 ): void {
-  const folder = debugPanelState.gameStoreFolder;
+	const folder = debugPanelState.gameStoreFolder;
 
-  for (const child of [...folder.children]) {
-    folder.remove(child);
-  }
+	for (const child of [...folder.children]) {
+		folder.remove(child);
+	}
 
-  if (gameStore.variables.size > 0) {
-    const variablesFolder = folder.addFolder({
-      title: "Variables",
-      expanded: true,
-    });
-    const variablesProxy: Record<string, number> = {};
-    for (const [variableName, value] of gameStore.variables) {
-      variablesProxy[variableName] = value;
-    }
-    for (const variableName of Object.keys(variablesProxy)) {
-      variablesFolder
-        .addBinding(variablesProxy, variableName, { step: 1 })
-        .on("change", ({ value }) => {
-          gameStore.variables.set(variableName, value);
-        });
-    }
-  }
+	if (gameStore.variables.size > 0) {
+		const variablesFolder = folder.addFolder({
+			title: "Variables",
+			expanded: true,
+		});
+		const variablesProxy: Record<string, number> = {};
+		for (const [variableName, value] of gameStore.variables) {
+			variablesProxy[variableName] = value;
+		}
+		for (const variableName of Object.keys(variablesProxy)) {
+			variablesFolder
+				.addBinding(variablesProxy, variableName, { step: 1 })
+				.on("change", ({ value }) => {
+					gameStore.variables.set(variableName, value);
+				});
+		}
+	}
 
-  if (gameStore.switches.size > 0) {
-    const switchesFolder = folder.addFolder({
-      title: "Switches",
-      expanded: true,
-    });
-    const switchesProxy: Record<string, boolean> = {};
-    for (const [switchName, isEnabled] of gameStore.switches) {
-      switchesProxy[switchName] = isEnabled;
-    }
-    for (const switchName of Object.keys(switchesProxy)) {
-      switchesFolder
-        .addBinding(switchesProxy, switchName)
-        .on("change", ({ value }) => {
-          gameStore.switches.set(switchName, value);
-        });
-    }
-  }
+	if (gameStore.switches.size > 0) {
+		const switchesFolder = folder.addFolder({
+			title: "Switches",
+			expanded: true,
+		});
+		const switchesProxy: Record<string, boolean> = {};
+		for (const [switchName, isEnabled] of gameStore.switches) {
+			switchesProxy[switchName] = isEnabled;
+		}
+		for (const switchName of Object.keys(switchesProxy)) {
+			switchesFolder
+				.addBinding(switchesProxy, switchName)
+				.on("change", ({ value }) => {
+					gameStore.switches.set(switchName, value);
+				});
+		}
+	}
 
-  if (gameStore.party.size > 0) {
-    const partyFolder = folder.addFolder({
-      title: "Party",
-      expanded: true,
-    });
-    const partyProxy: Record<string, boolean> = {};
-    for (const [characterId, isMember] of gameStore.party) {
-      partyProxy[characterId] = isMember;
-    }
-    for (const characterId of Object.keys(partyProxy)) {
-      partyFolder
-        .addBinding(partyProxy, characterId)
-        .on("change", ({ value }) => {
-          gameStore.party.set(characterId, value);
-        });
-    }
-  }
+	if (gameStore.party.size > 0) {
+		const partyFolder = folder.addFolder({
+			title: "Party",
+			expanded: true,
+		});
+		const partyProxy: Record<string, boolean> = {};
+		for (const [characterId, isMember] of gameStore.party) {
+			partyProxy[characterId] = isMember;
+		}
+		for (const characterId of Object.keys(partyProxy)) {
+			partyFolder
+				.addBinding(partyProxy, characterId)
+				.on("change", ({ value }) => {
+					gameStore.party.set(characterId, value);
+				});
+		}
+	}
 
-  if (gameStore.inventory.size > 0) {
-    const inventoryFolder = folder.addFolder({
-      title: "Inventory",
-      expanded: true,
-    });
-    const inventoryProxy: Record<string, number> = {};
-    for (const [itemId, item] of gameStore.inventory) {
-      inventoryProxy[itemId] = item.quantity;
-    }
-    for (const itemId of Object.keys(inventoryProxy)) {
-      inventoryFolder
-        .addBinding(inventoryProxy, itemId, { step: 1, min: 0 })
-        .on("change", ({ value }) => {
-          const existing = gameStore.inventory.get(itemId);
-          if (existing) {
-            gameStore.inventory.set(itemId, { ...existing, quantity: value });
-          }
-        });
-    }
-  }
+	if (gameStore.inventory.size > 0) {
+		const inventoryFolder = folder.addFolder({
+			title: "Inventory",
+			expanded: true,
+		});
+		const inventoryProxy: Record<string, number> = {};
+		for (const [itemId, item] of gameStore.inventory) {
+			inventoryProxy[itemId] = item.quantity;
+		}
+		for (const itemId of Object.keys(inventoryProxy)) {
+			inventoryFolder
+				.addBinding(inventoryProxy, itemId, { step: 1, min: 0 })
+				.on("change", ({ value }) => {
+					const existing = gameStore.inventory.get(itemId);
+					if (existing) {
+						gameStore.inventory.set(itemId, { ...existing, quantity: value });
+					}
+				});
+		}
+	}
 }
 
 export function registerCrtFilterControls(
-  parentFolder: FolderApi | Pane,
-  crtFilterState: CrtFilterState,
+	parentFolder: FolderApi | Pane,
+	crtFilterState: CrtFilterState,
 ): void {
-  const crtFolder = parentFolder.addFolder({
-    title: "CRTFilter",
-    expanded: false,
-  });
+	const crtFolder = parentFolder.addFolder({
+		title: "CRTFilter",
+		expanded: false,
+	});
 
-  crtFolder.addBinding(crtFilterState, "enabled");
-  crtFolder.addBinding(crtFilterState, "animating", { label: "(animating)" });
+	crtFolder.addBinding(crtFilterState, "enabled");
+	crtFolder.addBinding(crtFilterState, "animating", { label: "(animating)" });
 
-  const filter = crtFilterState.filter;
-  crtFolder.addBinding(filter, "curvature", { min: 0, max: 10 });
-  crtFolder.addBinding(filter, "lineWidth", { min: 0, max: 5 });
-  crtFolder.addBinding(filter, "lineContrast", { min: 0, max: 1 });
-  crtFolder.addBinding(filter, "verticalLine");
-  crtFolder.addBinding(filter, "noise", { min: 0, max: 1 });
-  crtFolder.addBinding(filter, "noiseSize", { min: 1, max: 10 });
-  crtFolder.addBinding(filter, "vignetting", { min: 0, max: 1 });
-  crtFolder.addBinding(filter, "vignettingAlpha", { min: 0, max: 1 });
-  crtFolder.addBinding(filter, "vignettingBlur", { min: 0, max: 1 });
-  crtFolder.addBinding(filter, "seed", { min: 0, max: 1, readonly: true });
-  crtFolder.addBinding(filter, "time", { readonly: true });
+	const filter = crtFilterState.filter;
+	crtFolder.addBinding(filter, "curvature", { min: 0, max: 10 });
+	crtFolder.addBinding(filter, "lineWidth", { min: 0, max: 5 });
+	crtFolder.addBinding(filter, "lineContrast", { min: 0, max: 1 });
+	crtFolder.addBinding(filter, "verticalLine");
+	crtFolder.addBinding(filter, "noise", { min: 0, max: 1 });
+	crtFolder.addBinding(filter, "noiseSize", { min: 1, max: 10 });
+	crtFolder.addBinding(filter, "vignetting", { min: 0, max: 1 });
+	crtFolder.addBinding(filter, "vignettingAlpha", { min: 0, max: 1 });
+	crtFolder.addBinding(filter, "vignettingBlur", { min: 0, max: 1 });
+	crtFolder.addBinding(filter, "seed", { min: 0, max: 1, readonly: true });
+	crtFolder.addBinding(filter, "time", { readonly: true });
 }
 
 export function disposeDebugPanel(debugPanelState: DebugPanelState): void {
-  debugPanelState.pane.dispose();
+	debugPanelState.pane.dispose();
 }

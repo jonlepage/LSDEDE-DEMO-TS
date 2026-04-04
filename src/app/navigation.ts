@@ -7,50 +7,50 @@ import type { DemoManifestEntry } from "../shared/types";
 export type DemoSelectedCallback = (demoId: string) => void;
 
 export interface NavigationHandle {
-  readonly selectById: (demoId: string) => void;
+	readonly selectById: (demoId: string) => void;
 }
 
 export function renderDemoNavigation(
-  sidebarContainer: HTMLElement,
-  demoManifestEntries: DemoManifestEntry[],
-  onDemoSelected: DemoSelectedCallback,
+	sidebarContainer: HTMLElement,
+	demoManifestEntries: DemoManifestEntry[],
+	onDemoSelected: DemoSelectedCallback,
 ): NavigationHandle {
-  sidebarContainer.innerHTML = "";
+	sidebarContainer.innerHTML = "";
 
-  const navigationTitle = document.createElement("h2");
-  navigationTitle.textContent = "LSDE Demos";
-  sidebarContainer.appendChild(navigationTitle);
+	const navigationTitle = document.createElement("h2");
+	navigationTitle.textContent = "LSDE Demos";
+	sidebarContainer.appendChild(navigationTitle);
 
-  const navigationList = document.createElement("ul");
-  const buttonsByDemoId = new Map<string, HTMLButtonElement>();
+	const navigationList = document.createElement("ul");
+	const buttonsByDemoId = new Map<string, HTMLButtonElement>();
 
-  for (const entry of demoManifestEntries) {
-    const listItem = document.createElement("li");
-    const button = document.createElement("button");
-    button.textContent = entry.title;
-    button.dataset.demoId = entry.id;
-    button.addEventListener("click", () => {
-      setActiveButton(buttonsByDemoId, entry.id);
-      onDemoSelected(entry.id);
-    });
-    buttonsByDemoId.set(entry.id, button);
-    listItem.appendChild(button);
-    navigationList.appendChild(listItem);
-  }
+	for (const entry of demoManifestEntries) {
+		const listItem = document.createElement("li");
+		const button = document.createElement("button");
+		button.textContent = entry.title;
+		button.dataset.demoId = entry.id;
+		button.addEventListener("click", () => {
+			setActiveButton(buttonsByDemoId, entry.id);
+			onDemoSelected(entry.id);
+		});
+		buttonsByDemoId.set(entry.id, button);
+		listItem.appendChild(button);
+		navigationList.appendChild(listItem);
+	}
 
-  sidebarContainer.appendChild(navigationList);
+	sidebarContainer.appendChild(navigationList);
 
-  return {
-    selectById: (demoId: string) => setActiveButton(buttonsByDemoId, demoId),
-  };
+	return {
+		selectById: (demoId: string) => setActiveButton(buttonsByDemoId, demoId),
+	};
 }
 
 function setActiveButton(
-  buttonsByDemoId: Map<string, HTMLButtonElement>,
-  activeDemoId: string,
+	buttonsByDemoId: Map<string, HTMLButtonElement>,
+	activeDemoId: string,
 ): void {
-  for (const button of buttonsByDemoId.values()) {
-    button.classList.remove("active");
-  }
-  buttonsByDemoId.get(activeDemoId)?.classList.add("active");
+	for (const button of buttonsByDemoId.values()) {
+		button.classList.remove("active");
+	}
+	buttonsByDemoId.get(activeDemoId)?.classList.add("active");
 }

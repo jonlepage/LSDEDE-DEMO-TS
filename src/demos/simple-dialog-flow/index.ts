@@ -1,217 +1,132 @@
-/**
- * Demo: simple-dialog-flow
- * Four colored bunnies in a conversation scene.
- * Walk the player (white) to the red bunny and press Enter to trigger the dialogue.
- * LSDE engine plays the scene: bubbles appear on speaking characters, click to advance.
- */
-
-import type { Application, Container } from "pixi.js";
-import type { DialogueEngine, BlueprintExport } from "@lsde/dialog-engine";
-import { createSceneContext } from "../../shared/scene-context";
-import { setupCharacters } from "../shared/setup-characters";
-import { setupPlayerMovement } from "../shared/setup-player-movement";
-import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
-import {
-  createGameActionFacade,
-  type CharacterReference,
-} from "../../game/game-actions";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
-import {
-  createDebugPanel,
-  registerLiveMonitorTicker,
-  registerActionButtons,
-} from "../../debug/debug-panel";
-import { createGameStore, GAME_ACTORS } from "../../game/game-store";
-import type { CameraState } from "../../renderer/camera";
-import { currentLanguage, setCurrentLanguage } from "../../engine/i18n";
+import { GAME_ACTORS } from "../../game/game-store";
+import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import {
-  trackDialogueShown,
-  trackDialogueAdvanced,
-  trackSceneCompleted,
+	trackDialogueShown,
+	trackDialogueAdvanced,
+	trackSceneCompleted,
 } from "../../analytics/posthog";
 import { translate } from "../shared/translate";
+import type { DemoDependencies, SceneCleanup } from "../shared/types";
+import { setupScene } from "../shared/setup-scene";
 
-const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
 const SCENE_UUID = LSDE_SCENES.simpleDialogFlow;
 
-export interface SimpleDialogFlowDependencies {
-  readonly pixiApplication: Application;
-  readonly cameraState: CameraState;
-  readonly worldContainer: Container;
-  readonly dialogueEngine: DialogueEngine;
-  readonly blueprintData: BlueprintExport;
-}
+export async function runScene( dependencies: DemoDependencies )
+: Promise<SceneCleanup> {
+	const { pixiApplication, cameraState, worldContainer, dialogueEngine } = dependencies;
 
-export interface SceneCleanup {
-  readonly teardown: () => void;
-}
 
-export async function runScene(
-  dependencies: SimpleDialogFlowDependencies,
-): Promise<SceneCleanup> {
-  const { pixiApplication, cameraState, worldContainer, dialogueEngine } =
-    dependencies;
+	const SCREEN_CENTER_X = pixiApplication.screen.width / 2;
+	const SCREEN_CENTER_Y = pixiApplication.screen.height / 2;
+	const {
+		characters, 
+		gameActions,
+		cleanup,
+	} = await setupScene({
+		characterConfigurations: [
+			{
+				characterId: GAME_ACTORS.l1,
+				displayName: GAME_ACTORS.l1,
+				tintColor: 0xff6b6b,
+				startX: SCREEN_CENTER_X - 200,
+				startY: SCREEN_CENTER_Y - 60,
+			},
+			{
+				characterId: GAME_ACTORS.l2,
+				displayName: GAME_ACTORS.l2,
+				tintColor: 0x4ecdc4,
+				startX: SCREEN_CENTER_X - 50,
+				startY: SCREEN_CENTER_Y - 20,
+			},
+			{
+				characterId: GAME_ACTORS.l3,
+				displayName: GAME_ACTORS.l3,
+				tintColor: 0xffe66d,
+				startX: SCREEN_CENTER_X + 100,
+				startY: SCREEN_CENTER_Y + 20,
+			},
+			{
+				characterId: GAME_ACTORS.l4,
+				displayName: GAME_ACTORS.l4,
+				tintColor: 0x666666,
+				startX: SCREEN_CENTER_X,
+				startY: SCREEN_CENTER_Y + 80,
+			},
+		],
+		triggerId: TRIGGER_NPC_CHARACTER_ID,
+		cameraState,
+		worldContainer,
+		pixiApplication,
+		startDialogueScene,
+		onPointerDownForDialogue,
+	});
 
-  const sceneContext = createSceneContext(pixiApplication);
-  const screenCenterX = pixiApplication.screen.width / 2;
-  const screenCenterY = pixiApplication.screen.height / 2;
 
-  // --- Characters ---
-  const { characters, playerReference, npcObstacles } = await setupCharacters({
-    characterConfigurations: [
-      {
-        characterId: GAME_ACTORS.l1,
-        displayName: GAME_ACTORS.l1,
-        tintColor: 0xff6b6b,
-        startX: screenCenterX - 200,
-        startY: screenCenterY - 60,
-      },
-      {
-        characterId: GAME_ACTORS.l2,
-        displayName: GAME_ACTORS.l2,
-        tintColor: 0x4ecdc4,
-        startX: screenCenterX - 50,
-        startY: screenCenterY - 20,
-      },
-      {
-        characterId: GAME_ACTORS.l3,
-        displayName: GAME_ACTORS.l3,
-        tintColor: 0xffe66d,
-        startX: screenCenterX + 100,
-        startY: screenCenterY + 20,
-      },
-      {
-        characterId: GAME_ACTORS.l4,
-        displayName: GAME_ACTORS.l4,
-        tintColor: 0x666666,
-        startX: screenCenterX,
-        startY: screenCenterY + 80,
-      },
-    ],
-    playerCharacterId: PLAYER_CHARACTER_ID,
-    worldContainer,
-    sceneContext,
-  });
+	// --- Dialogue state ---
+	let isDialogueActive = false;
+	let currentBubbleHandle: BubbleTextHandle | null = null;
+	let currentAdvanceFunction: (() => void) | null = null;
 
-  // --- Player movement + collision + camera ---
-  setupPlayerMovement({
-    pixiApplication,
-    cameraState,
-    worldContainer,
-    playerReference,
-    npcObstacles,
-    sceneContext,
-  });
+	return cleanup;
 
-  // --- Facade + debug ---
-  const gameStore = createGameStore();
-  const gameActions = createGameActionFacade({
-    pixiApplication,
-    cameraState,
-    worldContainer,
-    gameStore,
-    characters,
-  });
+	function startDialogueScene(): void {
+		const sceneHandle = dialogueEngine.scene(SCENE_UUID);
 
-  const debugPanelState = createDebugPanel({
-    onLanguageChanged: setCurrentLanguage,
-  });
-  registerLiveMonitorTicker(debugPanelState, pixiApplication);
-  registerActionButtons(debugPanelState, gameActions, TRIGGER_NPC_CHARACTER_ID);
-  sceneContext.addDisposable(() => debugPanelState.pane.dispose());
+		sceneHandle.onDialog(({ block, context, next }) => {
+			const dialogueText = translate(block.dialogueText, currentLanguage);
+			const characterId = context.character?.id;
+			const characterName = context.character?.name ?? "???";
+	
 
-  // --- Dialogue state ---
-  let isDialogueActive = false;
-  let currentBubbleHandle: BubbleTextHandle | null = null;
-  let currentAdvanceFunction: (() => void) | null = null;
 
-  function startDialogueScene(): void {
-    console.log("[simple-dialog-flow] Scene triggered!");
 
-    const sceneHandle = dialogueEngine.scene(SCENE_UUID);
+			isDialogueActive = true;
+			currentAdvanceFunction = next;
 
-    sceneHandle.onDialog(({ block, context, next }) => {
-      const dialogueText = translate(block.dialogueText, currentLanguage);
-      const characterId = context.character?.id;
-      const characterName = context.character?.name ?? "???";
+			if (characterId && characters.has(characterId)) {
+				currentBubbleHandle = gameActions.showBubbleOnCharacter(
+					characterId,
+					characterName,
+					dialogueText,
+				);
+			}
 
-      if (!dialogueText.trim()) {
-        next();
-        return;
-      }
+			return () => {
+				if (currentBubbleHandle) {
+					gameActions.removeBubbleFromWorld(currentBubbleHandle);
+					currentBubbleHandle = null;
+				}
+				isDialogueActive = false;
+				currentAdvanceFunction = null;
+			};
+		});
 
-      trackDialogueShown("simple-dialog-flow", block.uuid, characterId);
+		sceneHandle.onExit(() => {
+			isDialogueActive = false;
+			currentAdvanceFunction = null;
+			currentBubbleHandle = null;
+			trackSceneCompleted("simple-dialog-flow");
+		});
 
-      isDialogueActive = true;
-      currentAdvanceFunction = next;
+		sceneHandle.start();
+	}
 
-      if (characterId && characters.has(characterId)) {
-        currentBubbleHandle = gameActions.showBubbleOnCharacter(
-          characterId,
-          characterName,
-          dialogueText,
-        );
-      }
 
-      return () => {
-        if (currentBubbleHandle) {
-          gameActions.removeBubbleFromWorld(currentBubbleHandle);
-          currentBubbleHandle = null;
-        }
-        isDialogueActive = false;
-        currentAdvanceFunction = null;
-      };
-    });
+	// --- Click: advance dialogue when active ---
+	function onPointerDownForDialogue() {
+		if (!isDialogueActive || !currentAdvanceFunction) return;
 
-    sceneHandle.onExit(() => {
-      isDialogueActive = false;
-      currentAdvanceFunction = null;
-      currentBubbleHandle = null;
-      trackSceneCompleted("simple-dialog-flow");
-      console.log("[simple-dialog-flow] Scene completed.");
-    });
+		if (currentBubbleHandle &&
+			!currentBubbleHandle.typewriterState.isComplete) {
+			currentBubbleHandle.skipTypewriter();
+		} else {
+			trackDialogueAdvanced("simple-dialog-flow", "broadcast");
+			currentAdvanceFunction();
+		}
+	}
 
-    sceneHandle.start();
-  }
 
-  // --- Dialogue trigger: proximity + Enter ---
-  const triggerNpcReference = characters.get(
-    TRIGGER_NPC_CHARACTER_ID,
-  ) as CharacterReference;
-
-  setupDialogueTrigger({
-    playerReference,
-    triggerNpcReference,
-    sceneContext,
-    onTrigger: startDialogueScene,
-  });
-
-  // --- Click: advance dialogue when active ---
-  const onPointerDownForDialogue = () => {
-    if (!isDialogueActive || !currentAdvanceFunction) return;
-
-    if (
-      currentBubbleHandle &&
-      !currentBubbleHandle.typewriterState.isComplete
-    ) {
-      currentBubbleHandle.skipTypewriter();
-    } else {
-      trackDialogueAdvanced("simple-dialog-flow", "broadcast");
-      currentAdvanceFunction();
-    }
-  };
-
-  sceneContext.addStageListener(
-    "pointerdown",
-    onPointerDownForDialogue as (...args: unknown[]) => void,
-  );
-
-  return {
-    teardown: () => {
-      sceneContext.dispose();
-      characters.clear();
-    },
-  };
 }
