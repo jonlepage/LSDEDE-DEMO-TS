@@ -92,7 +92,9 @@ body {
 }
 
 .sidebar-links a {
-	display: block;
+	display: flex;
+	align-items: center;
+	gap: 8px;
 	padding: 5px 8px;
 	border-radius: 4px;
 	font-size: 12px;
@@ -101,6 +103,13 @@ body {
 	transition:
 		background-color 0.15s,
 		color 0.15s;
+}
+
+.sidebar-link-icon {
+	width: 14px;
+	height: 14px;
+	flex-shrink: 0;
+	stroke: currentColor;
 }
 
 .sidebar-links a:hover {

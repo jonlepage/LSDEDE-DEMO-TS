@@ -49,10 +49,10 @@ export function createDebugPanel(
     view: "list",
     label: "Language",
     options: [
-      { text: "English", value: "en" },
-      { text: "Français", value: "fr" },
-      { text: "日本語", value: "ja" },
-      { text: "中文", value: "zh" },
+      { text: "English [en]", value: "en" },
+      { text: "Français [fr]", value: "fr" },
+      { text: "日本語 [ja]", value: "ja" },
+      { text: "中文 [zh]", value: "zh" },
     ],
     value: currentLanguage,
   }) as ListBladeApi<string>;
@@ -187,12 +187,48 @@ export function refreshGameStoreBindings(
       title: "Switches",
       expanded: true,
     });
-    const switchesSnapshot: Record<string, boolean> = {};
+    const switchesProxy: Record<string, boolean> = {};
     for (const [switchName, isEnabled] of gameStore.switches) {
-      switchesSnapshot[switchName] = isEnabled;
+      switchesProxy[switchName] = isEnabled;
     }
-    for (const switchName of Object.keys(switchesSnapshot)) {
-      switchesFolder.addBinding(switchesSnapshot, switchName, {
+    for (const switchName of Object.keys(switchesProxy)) {
+      switchesFolder
+        .addBinding(switchesProxy, switchName)
+        .on("change", ({ value }) => {
+          gameStore.switches.set(switchName, value);
+        });
+    }
+  }
+
+  if (gameStore.party.size > 0) {
+    const partyFolder = folder.addFolder({
+      title: "Party",
+      expanded: true,
+    });
+    const partyProxy: Record<string, boolean> = {};
+    for (const [characterId, isMember] of gameStore.party) {
+      partyProxy[characterId] = isMember;
+    }
+    for (const characterId of Object.keys(partyProxy)) {
+      partyFolder
+        .addBinding(partyProxy, characterId)
+        .on("change", ({ value }) => {
+          gameStore.party.set(characterId, value);
+        });
+    }
+  }
+
+  if (gameStore.inventory.size > 0) {
+    const inventoryFolder = folder.addFolder({
+      title: "Inventory",
+      expanded: true,
+    });
+    const inventorySnapshot: Record<string, string> = {};
+    for (const [itemId, item] of gameStore.inventory) {
+      inventorySnapshot[itemId] = `${item.displayName} x${item.quantity}`;
+    }
+    for (const itemId of Object.keys(inventorySnapshot)) {
+      inventoryFolder.addBinding(inventorySnapshot, itemId, {
         readonly: true,
       });
     }

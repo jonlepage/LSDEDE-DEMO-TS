@@ -12,6 +12,7 @@
   "dependencies": {
     "@lsde/dialog-engine": "^0.3.0",
     "@tweakpane/core": "^2.0.5",
+    "lucide": "^1.7.0",
     "pixi-filters": "^6.1.5",
     "pixi.js": "^8.17.1",
     "posthog-js": "^1.364.7",

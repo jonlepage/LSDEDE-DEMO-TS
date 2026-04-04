@@ -2,6 +2,9 @@
  * Application shell layout: collapsible left sidebar + right panel (PixiJS canvas).
  */
 
+import { BookOpen, Code, Gamepad2, Globe, type IconNode } from "lucide";
+import { createElement as createSvgIcon } from "lucide";
+
 export function createApplicationLayout(): {
   sidebarContainer: HTMLElement;
   canvasContainer: HTMLElement;
@@ -43,21 +46,25 @@ export function createApplicationLayout(): {
   const linksContainer = document.createElement("div");
   linksContainer.className = "sidebar-links";
 
-  const externalLinks = [
+  const externalLinks: { label: string; href: string; icon: IconNode }[] = [
     {
-      label: "📘 LSDE Documentation",
+      label: "LSDE Documentation",
+      icon: BookOpen,
       href: "https://jonlepage.github.io/LS-Dialog-Editor-Engine/",
     },
     {
-      label: "⚙️ Runtime Repository",
+      label: "Runtime Repository",
+      icon: Code,
       href: "https://github.com/jonlepage/LS-Dialog-Editor-Engine",
     },
     {
-      label: "🎮 Playground Repository",
+      label: "Playground Repository",
+      icon: Gamepad2,
       href: "https://github.com/jonlepage/LSDEDE-DEMO-TS",
     },
     {
-      label: "🌐 LSDE Official Website",
+      label: "LSDE Official Website",
+      icon: Globe,
       href: "https://lepasoft.com/en/software/ls-dialog-editor",
     },
   ];
@@ -67,7 +74,10 @@ export function createApplicationLayout(): {
     anchor.href = link.href;
     anchor.target = "_blank";
     anchor.rel = "noopener noreferrer";
-    anchor.textContent = link.label;
+    const iconElement = createSvgIcon(link.icon);
+    iconElement.classList.add("sidebar-link-icon");
+    anchor.appendChild(iconElement);
+    anchor.appendChild(document.createTextNode(link.label));
     linksContainer.appendChild(anchor);
   }
 

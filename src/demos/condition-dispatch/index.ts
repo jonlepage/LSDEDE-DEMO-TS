@@ -72,6 +72,7 @@ import {
   createDebugPanel,
   registerLiveMonitorTicker,
   registerActionButtons,
+  refreshGameStoreBindings,
 } from "../../debug/debug-panel";
 import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
@@ -360,6 +361,10 @@ export async function runScene(
 
   // --- Game store + facade ---
   const gameStore = createGameStore();
+  // Pre-populate party entries so the debug panel shows them from the start.
+  for (const characterId of PARTY_NPC_IDS) {
+    gameStore.party.set(characterId, false);
+  }
   const gameActions = createGameActionFacade({
     pixiApplication,
     cameraState,
@@ -374,22 +379,10 @@ export async function runScene(
   });
   registerLiveMonitorTicker(debugPanelState, pixiApplication);
   registerActionButtons(debugPanelState, gameActions, GAME_ACTORS.l1);
-
-  const partyMonitor: Record<string, boolean> = {
-    l1: false,
-    l2: false,
-    l3: false,
-  };
-  const partyFolder = debugPanelState.pane.addFolder({
-    title: "Party",
-    expanded: true,
-  });
-  partyFolder.addBinding(partyMonitor, "l1", { readonly: true });
-  partyFolder.addBinding(partyMonitor, "l2", { readonly: true });
-  partyFolder.addBinding(partyMonitor, "l3", { readonly: true });
+  refreshGameStoreBindings(debugPanelState, gameStore);
 
   const followToggle = { paused: false };
-  partyFolder
+  debugPanelState.pane
     .addBinding(followToggle, "paused", { label: "pause follow" })
     .on("change", ({ value }) => {
       if (value) {
@@ -462,7 +455,7 @@ export async function runScene(
     sceneContext,
     gameActions,
     onMemberRecruited: (characterId) => {
-      partyMonitor[characterId] = true;
+      refreshGameStoreBindings(debugPanelState, gameStore);
       trackPartyMemberRecruited("condition-dispatch", characterId);
       trackNpcInteraction("condition-dispatch", characterId, "recruitment");
       console.log(`[condition-dispatch] ${characterId} joined the party!`);
