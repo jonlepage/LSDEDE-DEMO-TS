@@ -6,9 +6,14 @@
 
 const BLUEPRINT_IMAGES_BASE_PATH = import.meta.env.BASE_URL;
 
+export interface BlueprintImagePaths {
+  thumbnail: string;
+  full: string;
+}
+
 export interface BlueprintPreviewHandle {
   /** Update the preview for a different scene. Pass null to hide. */
-  update(imageFileName: string | null): void;
+  update(imagePaths: BlueprintImagePaths | null): void;
   /** Remove from DOM entirely. */
   destroy(): void;
 }
@@ -16,7 +21,7 @@ export interface BlueprintPreviewHandle {
 export function createBlueprintPreview(
   canvasContainer: HTMLElement,
 ): BlueprintPreviewHandle {
-  let currentImagePath: string | null = null;
+  let currentFullImagePath: string | null = null;
 
   // --- Button ---
   const button = document.createElement("button");
@@ -40,7 +45,7 @@ export function createBlueprintPreview(
 
   // --- Hover: show/hide thumbnail ---
   button.addEventListener("mouseenter", () => {
-    if (currentImagePath) {
+    if (currentFullImagePath) {
       thumbnail.classList.add("visible");
     }
   });
@@ -50,19 +55,19 @@ export function createBlueprintPreview(
 
   // --- Click: open full image in new tab ---
   button.addEventListener("click", () => {
-    if (currentImagePath) {
-      window.open(currentImagePath, "_blank", "noopener,noreferrer");
+    if (currentFullImagePath) {
+      window.open(currentFullImagePath, "_blank", "noopener,noreferrer");
     }
   });
 
-  function update(imageFileName: string | null): void {
-    if (imageFileName) {
-      currentImagePath = BLUEPRINT_IMAGES_BASE_PATH + imageFileName;
-      thumbnailImage.src = currentImagePath;
-      thumbnailLabel.textContent = imageFileName;
+  function update(imagePaths: BlueprintImagePaths | null): void {
+    if (imagePaths) {
+      currentFullImagePath = BLUEPRINT_IMAGES_BASE_PATH + imagePaths.full;
+      thumbnailImage.src = BLUEPRINT_IMAGES_BASE_PATH + imagePaths.thumbnail;
+      thumbnailLabel.textContent = imagePaths.full;
       button.style.display = "";
     } else {
-      currentImagePath = null;
+      currentFullImagePath = null;
       button.style.display = "none";
     }
     thumbnail.classList.remove("visible");

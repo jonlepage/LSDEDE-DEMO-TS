@@ -171,14 +171,16 @@ export function refreshGameStoreBindings(
       title: "Variables",
       expanded: true,
     });
-    const variablesSnapshot: Record<string, number> = {};
+    const variablesProxy: Record<string, number> = {};
     for (const [variableName, value] of gameStore.variables) {
-      variablesSnapshot[variableName] = value;
+      variablesProxy[variableName] = value;
     }
-    for (const variableName of Object.keys(variablesSnapshot)) {
-      variablesFolder.addBinding(variablesSnapshot, variableName, {
-        readonly: true,
-      });
+    for (const variableName of Object.keys(variablesProxy)) {
+      variablesFolder
+        .addBinding(variablesProxy, variableName, { step: 1 })
+        .on("change", ({ value }) => {
+          gameStore.variables.set(variableName, value);
+        });
     }
   }
 
@@ -223,14 +225,19 @@ export function refreshGameStoreBindings(
       title: "Inventory",
       expanded: true,
     });
-    const inventorySnapshot: Record<string, string> = {};
+    const inventoryProxy: Record<string, number> = {};
     for (const [itemId, item] of gameStore.inventory) {
-      inventorySnapshot[itemId] = `${item.displayName} x${item.quantity}`;
+      inventoryProxy[itemId] = item.quantity;
     }
-    for (const itemId of Object.keys(inventorySnapshot)) {
-      inventoryFolder.addBinding(inventorySnapshot, itemId, {
-        readonly: true,
-      });
+    for (const itemId of Object.keys(inventoryProxy)) {
+      inventoryFolder
+        .addBinding(inventoryProxy, itemId, { step: 1, min: 0 })
+        .on("change", ({ value }) => {
+          const existing = gameStore.inventory.get(itemId);
+          if (existing) {
+            gameStore.inventory.set(itemId, { ...existing, quantity: value });
+          }
+        });
     }
   }
 }

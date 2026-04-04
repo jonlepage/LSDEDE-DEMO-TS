@@ -27,7 +27,7 @@
  */
 
 import { Graphics, Sprite, Text } from "pixi.js";
-import type { Application, Container, FederatedPointerEvent } from "pixi.js";
+import type { Application, Container } from "pixi.js";
 import type {
   DialogueEngine,
   BlueprintExport,
@@ -49,6 +49,7 @@ import {
   createDebugPanel,
   registerLiveMonitorTicker,
   registerActionButtons,
+  refreshGameStoreBindings,
 } from "../../debug/debug-panel";
 import { createGameStore, GAME_ACTORS } from "../../game/game-store";
 import type { CameraState } from "../../renderer/camera";
@@ -195,21 +196,20 @@ export async function runScene(
   });
   registerLiveMonitorTicker(debugPanelState, pixiApplication);
   registerActionButtons(debugPanelState, gameActions, TRIGGER_NPC_CHARACTER_ID);
+  refreshGameStoreBindings(debugPanelState, gameStore);
 
   // --- Inventory debug buttons ---
   const inventoryFolder = debugPanelState.pane.addFolder({
     title: "Inventory",
     expanded: true,
   });
-  const inventoryMonitor = { carrot: 0 };
-  inventoryFolder.addBinding(inventoryMonitor, "carrot", { readonly: true });
   inventoryFolder.addButton({ title: "Add Carrot" }).on("click", () => {
     gameActions.addItem(CARROT_ID, "Carrot");
-    inventoryMonitor.carrot = gameActions.getItemQuantity(CARROT_ID);
+    refreshGameStoreBindings(debugPanelState, gameStore);
   });
   inventoryFolder.addButton({ title: "Remove Carrot" }).on("click", () => {
     gameActions.removeItem(CARROT_ID);
-    inventoryMonitor.carrot = gameActions.getItemQuantity(CARROT_ID);
+    refreshGameStoreBindings(debugPanelState, gameStore);
   });
 
   sceneContext.addDisposable(() => debugPanelState.pane.dispose());
@@ -267,18 +267,17 @@ export async function runScene(
   // Click on carrot while in range to pick it up.
   carrotSprite.eventMode = "static";
   carrotSprite.cursor = "pointer";
-  carrotSprite.on("pointerdown", (event: FederatedPointerEvent) => {
-    event.stopPropagation();
+  carrotSprite.on("pointerdown", () => {
     if (carrotPickedUp || !isPlayerNearCarrot()) return;
     carrotPickedUp = true;
     gameActions.addItem(CARROT_ID, "Carrot");
-    inventoryMonitor.carrot = gameActions.getItemQuantity(CARROT_ID);
+    refreshGameStoreBindings(debugPanelState, gameStore);
     trackItemPickedUp("simple-condition", CARROT_ID);
     characters.delete(CARROT_ID);
     carrotSprite.destroy({ children: true });
     console.log(
       "[simple-condition] Carrot picked up! inventory.carrot =",
-      inventoryMonitor.carrot,
+      gameActions.getItemQuantity(CARROT_ID),
     );
   });
 

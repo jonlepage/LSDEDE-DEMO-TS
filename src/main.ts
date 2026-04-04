@@ -21,14 +21,35 @@ import {
 
 const BLUEPRINT_FILE_PATH = `${import.meta.env.BASE_URL}blueprints/blueprint.json`;
 
-/** Maps scene label → blueprint screenshot filename in public/blueprints/_images/ */
-const SCENE_BLUEPRINT_IMAGES: Record<string, string> = {
-  "simple-dialog-flow": "1.jpg",
-  "multi-tracks": "2.jpg",
-  "simple-choices": "choice.webp",
-  "simple-action": "action.webp",
-  "simple-condition": "cond.webp",
-  "condition-dispatch": "cond.webp",
+/** Maps scene label → blueprint screenshot filenames (thumbnail + full). */
+const SCENE_BLUEPRINT_IMAGES: Record<
+  string,
+  { thumbnail: string; full: string }
+> = {
+  "simple-dialog-flow": {
+    thumbnail: "lsde-blueprint-sm-1.webp",
+    full: "lsde-blueprint-1.webp",
+  },
+  "multi-tracks": {
+    thumbnail: "lsde-blueprint-sm-2.webp",
+    full: "lsde-blueprint-2.webp",
+  },
+  "simple-choices": {
+    thumbnail: "lsde-blueprint-sm-3.webp",
+    full: "lsde-blueprint-3.webp",
+  },
+  "simple-action": {
+    thumbnail: "lsde-blueprint-sm-4.webp",
+    full: "lsde-blueprint-4.webp",
+  },
+  "simple-condition": {
+    thumbnail: "lsde-blueprint-sm-5.webp",
+    full: "lsde-blueprint-5.webp",
+  },
+  "condition-dispatch": {
+    thumbnail: "lsde-blueprint-sm-6.webp",
+    full: "lsde-blueprint-6.webp",
+  },
 };
 const DEFAULT_SCENE_UUID = LSDE_SCENES.simpleDialogFlow;
 
