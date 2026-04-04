@@ -30,6 +30,7 @@ import {
   trackDialogueAdvanced,
   trackSceneCompleted,
 } from "../../analytics/posthog";
+import { translate } from "../shared/translate";
 
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
@@ -158,7 +159,7 @@ export async function runScene(
     const sceneHandle = dialogueEngine.scene(SCENE_UUID);
 
     sceneHandle.onDialog(({ block, context, next }) => {
-      const dialogueText = block.dialogueText?.[currentLanguage] ?? "";
+      const dialogueText = translate(block.dialogueText, currentLanguage);
       const characterId = context.character?.id;
       const characterName = context.character?.name ?? "???";
 

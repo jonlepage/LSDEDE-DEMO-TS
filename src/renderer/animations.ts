@@ -10,7 +10,11 @@ export type AnimationPresetName = "jump" | "spin" | "bounce";
 interface ActiveAnimation {
   elapsedTime: number;
   totalDuration: number;
-  updateFunction: (sprite: Sprite, progress: number) => void;
+  updateFunction: (
+    sprite: Sprite,
+    progress: number,
+    animation: ActiveAnimation,
+  ) => void;
   originalPivotY: number;
   originalRotation: number;
   originalScaleX: number;
@@ -28,11 +32,17 @@ function spinUpdate(sprite: Sprite, progress: number): void {
   sprite.rotation = progress * Math.PI * 2;
 }
 
-function bounceUpdate(sprite: Sprite, progress: number): void {
+function bounceUpdate(
+  sprite: Sprite,
+  progress: number,
+  animation: ActiveAnimation,
+): void {
   const squash = 1 + Math.sin(progress * Math.PI * 3) * 0.2 * (1 - progress);
+  const absOriginalScaleX = Math.abs(animation.originalScaleX);
+  const signX = animation.originalScaleX > 0 ? 1 : -1;
   sprite.scale.set(
-    sprite.scale.x > 0 ? Math.abs(1 / squash) * 2 : -Math.abs(1 / squash) * 2,
-    squash * 2,
+    (signX * absOriginalScaleX) / squash,
+    squash * Math.abs(animation.originalScaleY),
   );
 }
 
@@ -40,7 +50,11 @@ const PRESET_CONFIG: Record<
   AnimationPresetName,
   {
     duration: number;
-    updateFunction: (sprite: Sprite, progress: number) => void;
+    updateFunction: (
+      sprite: Sprite,
+      progress: number,
+      animation: ActiveAnimation,
+    ) => void;
   }
 > = {
   jump: { duration: 0.4, updateFunction: jumpUpdate },
@@ -76,7 +90,7 @@ export function playCharacterAnimation(
       1,
     );
 
-    animation.updateFunction(characterSprite, progress);
+    animation.updateFunction(characterSprite, progress, animation);
 
     if (progress >= 1) {
       characterSprite.pivot.y = animation.originalPivotY;

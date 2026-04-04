@@ -22,6 +22,20 @@ Each demo loads an LSDE blueprint and renders it in real-time — walk your char
 - **[LSDE Dialog Engine Runtime](https://lepasoft.com/fr/software/ls-dialog-editor)** — runtime engine to execute LSDE blueprints data.
 - **[PixiJS](https://pixijs.com)** — 2D rendering (simulate custom game engine and rendering)
 
+## demo code
+
+Your can find all demo in [`src/demos/`](src/demos/) folder:
+
+- [simple-dialog-flow](src/demos/simple-dialog-flow)
+- [simple-choices](src/demos/simple-choices)
+- [simple-condition](src/demos/simple-condition)
+- [simple-action](src/demos/simple-action)
+- [multi-tracks](src/demos/multi-tracks)
+- [condition-dispatch](src/demos/condition-dispatch)
+
+They are only for demonstration purposes and not meant to be production-quality code or best practices for your game engine.
+All engine need specific optimizations and architecture decisions, so treat them as educational reference material to understand how to integrate LSDEDE with your custom rendering/game engine
+
 ## Getting Started
 
 ```bash

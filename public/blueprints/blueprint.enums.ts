@@ -458,7 +458,7 @@ export enum LSDE_BLOCKS {
 	simpleActionBossRoarAi = 'dc58f326-8e8c-4837-beb1-e8ba04410b84',
 	/**
 	 * ### 🟦[DIALOG] climax_moment-AI
-	 * _"whaaaaaaa"_
+	 * _"whaaaaaaaaaaa"_
 	 * - Characters: `l1`
 	 * - Scene: `simple-action`
 	 * - In: `l1_brave-AI`
@@ -479,7 +479,7 @@ export enum LSDE_BLOCKS {
 	simpleActionDialog007 = 'f12afa3e-7d89-497c-8f2e-585187f3b55a',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-008
-	 * _"Non dune carotte !! Sauve qui peut Haaaaa !!!!"_
+	 * _"Nom d'une carotte !! Sauve qui peut ! Haaaaa !!!!"_
 	 * - Characters: `l1`
 	 * - Scene: `simple-action`
 	 * - In: `final_decision-AI`
@@ -489,7 +489,7 @@ export enum LSDE_BLOCKS {
 	simpleActionDialog008 = '42c00a7a-3954-4e07-9e9e-9254d3a8df64',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-009
-	 * _"J'aime les carotte mais pas a ce points !"_
+	 * _"J'aime les carottes, mais pas à ce point !"_
 	 * - Characters: `l1`
 	 * - Scene: `simple-action`
 	 * - In: `ACTION-007`
@@ -499,7 +499,7 @@ export enum LSDE_BLOCKS {
 	simpleActionDialog009 = '3c3eb409-7bae-4c79-a1de-637384e51494',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-010
-	 * _"Tes un gros lapin mouillé l1 ..... traitre !"_
+	 * _"T'es un gros lapin mouillé, l1... traître !"_
 	 * - Characters: `l4`
 	 * - Scene: `simple-action`
 	 * - In: `ACTION-007`
@@ -540,7 +540,7 @@ export enum LSDE_BLOCKS {
 	simpleActionL1BraveAi = '3af36f94-0b76-40dc-9681-1bb360a03897',
 	/**
 	 * ### 🟦[DIALOG] l4_flee-AI
-	 * _"Non mais tu me laisses seul !!!"_
+	 * _"Mais tu ne peux pas me laisser seul !"_
 	 * - Characters: `l4`
 	 * - Scene: `simple-action`
 	 * - In: `final_decision-AI`
@@ -572,7 +572,7 @@ export enum LSDE_BLOCKS {
 	simpleConditionCheckCarrotInventoryAi = '6e270a8d-688c-4101-9d2b-97876b09e301',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-006
-	 * _"J'ai trouvez ta carotte !"_
+	 * _"J'ai retrouvé ta carotte !"_
 	 * - Characters: `l4`
 	 * - Scene: `simple-condition`
 	 * - In: `check_carrot_inventory-AI`
@@ -583,7 +583,7 @@ export enum LSDE_BLOCKS {
 	simpleConditionDialog006 = 'd1670c06-ef2f-48db-8fef-df3bb4b63b05',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-007
-	 * _".... ok"_
+	 * _".... dac"_
 	 * - Characters: `l4`
 	 * - Scene: `simple-condition`
 	 * - In: `l1_carrot_found-AI`
@@ -615,7 +615,7 @@ export enum LSDE_BLOCKS {
 	simpleConditionL1CarrotMissingDemandAi = 'bde6483a-c9e6-4ca1-94b5-14a8a8e0f36c',
 	/**
 	 * ### 🟦[DIALOG] l1_lost_carrot_distress-AI ⭐
-	 * _"Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !"_
+	 * _"Oh non, ma carotte porte-bonheur a disparu ! Sans elle, c'est sûr, le ciel va nous tomber sur la tête !"_
 	 * - Characters: `l1`
 	 * - Scene: `simple-condition`
 	 * - Out: `check_carrot_inventory-AI`
@@ -740,7 +740,7 @@ export enum LSDE_BLOCKS {
 	conditionDispatchCondition004 = 'a77ac2c9-ade2-4a5b-b187-4ec81140b885',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-001 ⭐
-	 * _"ho... grand esprit des carotte ..."_
+	 * _"« Ô grand esprit des carottes... »"_
 	 * - Characters: `l4`
 	 * - Scene: `condition-dispatch`
 	 * - Out: `CONDITION-002`
@@ -750,7 +750,7 @@ export enum LSDE_BLOCKS {
 	conditionDispatchDialog001 = '90a8c0a2-cb0e-4900-b974-c59d470f296e',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-002
-	 * _"Hey vien nous choisir avant dinvoquez les esprit de la carotte"_
+	 * _"Hey, choisissez-nous avant que nous n'invoquions les esprits de la carotte !"_
 	 * - Characters: `l1`
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-002`
@@ -760,7 +760,7 @@ export enum LSDE_BLOCKS {
 	conditionDispatchDialog002 = 'a4610101-f256-4ce8-a622-566493a7ea36',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-003
-	 * _"Ho grande carotte rouge"_
+	 * _"Ho, immense carotte rouge éclatante de vie !"_
 	 * - Characters: `l1`
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-001`
@@ -770,7 +770,7 @@ export enum LSDE_BLOCKS {
 	conditionDispatchDialog003 = 'f0d04478-f078-4284-bb29-84dde7f6745e',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-004
-	 * _"ho grande carotte jaune"_
+	 * _"Ho, vibrante carotte d'un jaune soleil !"_
 	 * - Characters: `l2`
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-001`
@@ -780,7 +780,7 @@ export enum LSDE_BLOCKS {
 	conditionDispatchDialog004 = 'fd4a39f9-6aa7-4222-90b1-7e79f8eab245',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-005
-	 * _"ho grande carrote bleue"_
+	 * _"« Ô grande carotte bleue, nous t'implorons ! »"_
 	 * - Characters: `l3`
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-001`
@@ -790,7 +790,7 @@ export enum LSDE_BLOCKS {
 	conditionDispatchDialog005 = '802b6469-bf1d-4e17-8bb3-1443b0f32b38',
 	/**
 	 * ### 🟦[DIALOG] DIALOG-006
-	 * _"ho grande carotte, merci de nous nourrire"_
+	 * _"Oh grande carotte, merci de nous nourrir !"_
 	 * - Characters: `l4`
 	 * - Scene: `condition-dispatch`
 	 * - In: `CONDITION-001`

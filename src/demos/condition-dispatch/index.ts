@@ -87,6 +87,7 @@ import {
   trackPartyMemberRecruited,
   trackSceneCompleted,
 } from "../../analytics/posthog";
+import { translate } from "../shared/translate";
 
 // ---------------------------------------------------------------------------
 // Lightweight action type — mirrors the shape LSDE puts in block.actions[].
@@ -493,7 +494,7 @@ export async function runScene(
     // Pattern matches multi-tracks demo: distinguish isAsync vs main track,
     // and handle delay + timeout + waitInput correctly per block.
     sceneHandle.onDialog(({ block, context, next }) => {
-      const dialogueText = block.dialogueText?.[currentLanguage] ?? "";
+      const dialogueText = translate(block.dialogueText, currentLanguage);
       // DIALOG-004 has no character in blueprint metadata; fall back to player.
       const characterId = context.character?.id ?? PLAYER_CHARACTER_ID;
       const characterName = context.character?.name ?? characterId;

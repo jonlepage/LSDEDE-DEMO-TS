@@ -1,11 +1,11 @@
 {
   "version": "1.0.0",
-  "exportDate": "2026-04-04T01:16:37.901Z",
+  "exportDate": "2026-04-04T07:03:33.510Z",
   "projectName": "LSDEDE-DEMO-TS",
   "primaryLanguage": "fr",
   "locales": [
-    "en",
     "fr",
+    "en",
     "ja",
     "zh"
   ],
@@ -105,7 +105,7 @@
     {
       "uuid": "268a4c3e-7693-4ce7-8d36-4b0fd2e4a052",
       "label": "simple-dialog-flow",
-      "date": "03/04/2026",
+      "date": "04/04/2026",
       "entryBlockId": "c39d69d1-f508-45a8-8084-09a68f6916e1",
       "blocks": [
         {
@@ -380,7 +380,7 @@
     {
       "uuid": "511c0cba-f9c8-4b9b-a0d1-91a36241a920",
       "label": "multi-tracks",
-      "date": "03/04/2026",
+      "date": "04/04/2026",
       "entryBlockId": "4604c8d0-c4cb-411a-a878-0d498bae868f",
       "blocks": [
         {
@@ -395,10 +395,10 @@
             "timeout": 2000
           },
           "dialogueText": {
-            "en": "",
+            "en": "Hey!",
             "fr": "hey!",
-            "ja": "",
-            "zh": ""
+            "ja": "ねえ！",
+            "zh": "嘿"
           },
           "parentLabels": [
             "__blueprints__"
@@ -427,10 +427,10 @@
             ]
           },
           "dialogueText": {
-            "en": "",
+            "en": "Ugh, I'm stinky!!!",
             "fr": "oufff, je pu !!!",
-            "ja": "",
-            "zh": ""
+            "ja": "うげぇ、俺、臭っ！",
+            "zh": "哎哟，我臭死了！！！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -458,10 +458,10 @@
             "timeout": 1000
           },
           "dialogueText": {
-            "en": "",
+            "en": "Pffft...",
             "fr": "pfff...",
-            "ja": "",
-            "zh": ""
+            "ja": "はぁ…",
+            "zh": "唉..."
           },
           "parentLabels": [
             "__blueprints__"
@@ -484,10 +484,10 @@
           "structureKey": "__blueprints__.multi-tracks.final_decision-AI",
           "content": "Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus.",
           "dialogueText": {
-            "en": "",
+            "en": "Alright, I'm in for the north burrow. But if we see anything that barks, I'm outta here and you're on your own.",
             "fr": "Bref, d'accord pour le terrier nord. Mais si on voit un truc qui aboie, je détale et je ne vous connais plus.",
-            "ja": "",
-            "zh": ""
+            "ja": "まあ、北の抜け道でいいよ。でも、もし吠える奴を見たら、俺はすぐさま逃げ出すし、あんたらのことなんか知らないからね。",
+            "zh": "总之，北边的洞穴我同意。但要是我们看到会叫的东西，我就开溜，到时候可就不认识你们了。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -510,10 +510,10 @@
           "structureKey": "__blueprints__.multi-tracks.l1_irritation-AI",
           "content": "L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro.",
           "dialogueText": {
-            "en": "",
+            "en": "L3, for crying out loud, stop those silly noises! We're trying to organize a serious heist here, be a bit professional.",
             "fr": "L3, par pitié, arrête tes bruits débiles ! On essaie d'organiser un casse sérieux là, sois un peu pro.",
-            "ja": "",
-            "zh": ""
+            "ja": "L3、頼むからそのくだらない音を出すのをやめろ！こっちは真剣な強盗を計画してるんだぞ、少しはプロらしくしろよ。",
+            "zh": "L3，拜托，别再发出你那些蠢声音了！我们正在策划一次认真的劫案呢，专业一点好吗？"
           },
           "parentLabels": [
             "__blueprints__"
@@ -536,10 +536,10 @@
           "structureKey": "__blueprints__.multi-tracks.l2_response-AI",
           "content": "Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner.",
           "dialogueText": {
-            "en": "",
+            "en": "The north burrow? Isn't that where we ran into that weird dog the other day? I'm not too keen on going back there.",
             "fr": "Le terrier nord ? C'est pas là où l'on a croisé ce chien bizarre l'autre jour ? J'ai pas trop envie d'y retourner.",
-            "ja": "",
-            "zh": ""
+            "ja": "北の巣穴？って、この前あの変な犬に会ったところじゃない？あんまりそこには戻りたくないんだけど。",
+            "zh": "北洞？那不就是我们前几天遇到那条奇怪的狗的地方吗？我不太想再回去了。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -562,10 +562,10 @@
           "structureKey": "__blueprints__.multi-tracks.l4_comment-AI",
           "content": "Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer.",
           "dialogueText": {
-            "en": "",
+            "en": "He's a write-off today, he's eaten some weird berries near the stream again. We'd better just ignore him.",
             "fr": "Il est irrécupérable aujourd'hui, il a encore mangé des baies bizarres près du ruisseau. On ferait mieux de l'ignorer.",
-            "ja": "",
-            "zh": ""
+            "ja": "今日はもうどうしようもないな。また小川の近くで変なベリーを食べたんだ。放っておこう。",
+            "zh": "他今天没救了，他又在小溪边吃了奇怪的浆果。我们最好别理他了。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -588,10 +588,10 @@
           "structureKey": "__blueprints__.multi-tracks.noise_1-AI",
           "content": "*Scratch scratch scratch* ! ",
           "dialogueText": {
-            "en": "",
+            "en": "*Scratch scratch scratch* !",
             "fr": "*Scratch scratch scratch* ! ",
-            "ja": "",
-            "zh": ""
+            "ja": "ガリガリガリ！",
+            "zh": "*嚓嚓嚓*！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -618,10 +618,10 @@
             "waitInput": true
           },
           "dialogueText": {
-            "en": "",
+            "en": "*Toot!* Oops, that wasn't me, it was the wind! Or maybe my ears applauded!",
             "fr": "*Prout !* Oups, c'était pas moi, c'était le vent ! Ou peut-être mes oreilles qui ont applaudi !",
-            "ja": "",
-            "zh": ""
+            "ja": "ぷーっ！おっと、僕じゃないよ、風だよ！もしかして、僕の耳が拍手しちゃったのかな！",
+            "zh": "噗！哎呀，不是我，是风！也可能是我耳朵在鼓掌呢！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -645,10 +645,10 @@
           "structureKey": "__blueprints__.multi-tracks.start_discussion-AI",
           "content": "Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret.",
           "dialogueText": {
-            "en": "",
+            "en": "Alright, listen up guys, for the giant carrot, we need to go through the north burrow, it's more discreet.",
             "fr": "Bon, écoutez les gars, pour la carotte géante, il faut qu'on passe par le terrier nord, c'est plus discret.",
-            "ja": "",
-            "zh": ""
+            "ja": "よし、みんな聞いてくれ。あの巨大な人参のためには、北の巣穴を通らないとダメだ。その方がばれにくいからな。",
+            "zh": "听着，伙计们，为了那根大胡萝卜，我们得走北边的洞穴，那样更隐蔽。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -742,7 +742,7 @@
     {
       "uuid": "169f7c4c-c3b1-4444-879c-060801cdcb1d",
       "label": "simple-choices",
-      "date": "03/04/2026",
+      "date": "04/04/2026",
       "entryBlockId": "1db618cd-3883-4caf-bcd2-591562aade49",
       "blocks": [
         {
@@ -753,21 +753,39 @@
           "choices": [
             {
               "uuid": "1db50a61-e40d-49a2-bf02-d8f5eee4ea84",
-              "structureKey": "",
+              "structureKey": "__blueprints__.simple-choices.player_moral_choice-AI.nous_nous_battrons",
               "content": "Nous nous battrons !",
-              "visibilityConditions": []
+              "visibilityConditions": [],
+              "dialogueText": {
+                "en": "We will fight!",
+                "fr": "Nous nous battrons !",
+                "ja": "戦うぞ！",
+                "zh": "我们要战斗！"
+              }
             },
             {
               "uuid": "189ecf6a-3f10-41d5-b4b0-78e35298ee4d",
-              "structureKey": "",
+              "structureKey": "__blueprints__.simple-choices.player_moral_choice-AI.cest_un_suicide",
               "content": "C'est un suicide.",
-              "visibilityConditions": []
+              "visibilityConditions": [],
+              "dialogueText": {
+                "en": "It's a suicide.",
+                "fr": "C'est un suicide.",
+                "ja": "それは自殺だ。",
+                "zh": "这是自杀。"
+              }
             },
             {
               "uuid": "3716cb04-2e54-4bf4-864d-28b6ce000786",
-              "structureKey": "",
+              "structureKey": "__blueprints__.simple-choices.player_moral_choice-AI.estce_vraiment_reel",
               "content": "Est-ce vraiment réel ?",
-              "visibilityConditions": []
+              "visibilityConditions": [],
+              "dialogueText": {
+                "en": "Is this really real?",
+                "fr": "Est-ce vraiment réel ?",
+                "ja": "本当に起きてるの？",
+                "zh": "这真的是真的吗？"
+              }
             }
           ],
           "note": "Nous nous battrons ! | C'est un suicide. | Est-ce vraiment réel ?",
@@ -792,10 +810,10 @@
           "structureKey": "__blueprints__.simple-choices.l1_brave_reaction-AI",
           "content": "Ton feu intérieur nous guidera peut-être à travers les ombres qui rampent vers nous.",
           "dialogueText": {
-            "en": "",
+            "en": "Your inner fire may guide us through the shadows creeping towards us.",
             "fr": "Ton feu intérieur nous guidera peut-être à travers les ombres qui rampent vers nous.",
-            "ja": "",
-            "zh": ""
+            "ja": "あなたの内なる炎が、私たちに忍び寄る闇の中を導いてくれるかもしれません。",
+            "zh": "你内心的火焰或许能指引我们穿越那些向我们蔓延而来的阴影。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -818,10 +836,10 @@
           "structureKey": "__blueprints__.simple-choices.l1_doubt_reaction-AI",
           "content": "Le déni ne changera pas le poids du silence qui s'abat désormais sur la prairie.",
           "dialogueText": {
-            "en": "",
+            "en": "Denial will not change the weight of the silence that now falls upon the prairie.",
             "fr": "Le déni ne changera pas le poids du silence qui s'abat désormais sur la prairie.",
-            "ja": "",
-            "zh": ""
+            "ja": "否定は、今や牧草地に重くのしかかる沈黙の重みを変えることはないだろう。",
+            "zh": "否认改变不了如今笼罩在草原上的沉默重压。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -845,10 +863,10 @@
           "structureKey": "__blueprints__.simple-choices.l1_dramatic_intro-AI",
           "content": "Le ciel s'assombrit, l4. La légende de la Carotte Éternelle n'était qu'un prélude à notre chute imminente.",
           "dialogueText": {
-            "en": "",
+            "en": "The sky is darkening, l4. The legend of the Carotte Éternelle was merely a prelude to our imminent downfall.",
             "fr": "Le ciel s'assombrit, l4. La légende de la Carotte Éternelle n'était qu'un prélude à notre chute imminente.",
-            "ja": "",
-            "zh": ""
+            "ja": "空が暗くなる、l4。永遠のニンジンの伝説は、私たちの差し迫った破滅への序章に過ぎなかった。",
+            "zh": "天色渐暗，l4。永恒胡萝卜的传说，只不过是我们迫在眉睫的厄运的前奏。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -871,10 +889,10 @@
           "structureKey": "__blueprints__.simple-choices.l1_fear_reaction-AI",
           "content": "La peur est un poison, mais elle est aussi le seul miroir de notre fragile vérité.",
           "dialogueText": {
-            "en": "",
+            "en": "Fear is a poison, but it is also the only mirror of our fragile truth.",
             "fr": "La peur est un poison, mais elle est aussi le seul miroir de notre fragile vérité.",
-            "ja": "",
-            "zh": ""
+            "ja": "恐怖は毒だが、それは同時に私たちの脆い真実を映し出す唯一の鏡でもある。",
+            "zh": "恐惧是毒药，但它也是我们脆弱真相的唯一镜子。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -897,10 +915,10 @@
           "structureKey": "__blueprints__.simple-choices.l1_final_warning-AI",
           "content": "Écoute... le vent hurle déjà le nom de notre perte. Nous n'avons plus d'autre choix que d'avancer.",
           "dialogueText": {
-            "en": "",
+            "en": "Listen... the wind is already howling the name of our doom. We have no other choice but to move forward.",
             "fr": "Écoute... le vent hurle déjà le nom de notre perte. Nous n'avons plus d'autre choix que d'avancer.",
-            "ja": "",
-            "zh": ""
+            "ja": "聞け…風は既に我々の破滅の名を叫んでいる。我々には、もはや進むしかないのだ。",
+            "zh": "听着……风已在呼啸，宣告着我们的末日。我们别无选择，唯有向前。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -923,10 +941,10 @@
           "structureKey": "__blueprints__.simple-choices.l4_brave_response-AI",
           "content": "Je ne laisserai personne détruire notre foyer. Je me battrai jusqu'à mon dernier souffle s'il le faut.",
           "dialogueText": {
-            "en": "",
+            "en": "I will not let anyone destroy our home. I will fight until my last breath if necessary.",
             "fr": "Je ne laisserai personne détruire notre foyer. Je me battrai jusqu'à mon dernier souffle s'il le faut.",
-            "ja": "",
-            "zh": ""
+            "ja": "誰にも私たちの家を壊させはしない。必要ならば、最後の息が尽きるまで戦い抜いてみせる。",
+            "zh": "我绝不会让任何人摧毁我们的家园。即便要战至最后一息，我也在所不惜。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -949,10 +967,10 @@
           "structureKey": "__blueprints__.simple-choices.l4_doubt_response-AI",
           "content": "Tu parles comme un vieux prophète fatigué, l1. Et si ce n'était qu'un simple piège des renards ?",
           "dialogueText": {
-            "en": "",
+            "en": "You speak like a tired old prophet, l1. What if it was just a simple fox trap?",
             "fr": "Tu parles comme un vieux prophète fatigué, l1. Et si ce n'était qu'un simple piège des renards ?",
-            "ja": "",
-            "zh": ""
+            "ja": "l1、まるで疲れた老預言者のように話しているな。もしそれが単なるキツネの罠だったとしたら、どうするんだ？",
+            "zh": "你说话像个疲惫的老先知，l1。万一这只是狐狸的一个简单陷阱呢？"
           },
           "parentLabels": [
             "__blueprints__"
@@ -975,10 +993,10 @@
           "structureKey": "__blueprints__.simple-choices.l4_fear_response-AI",
           "content": "Regarde-nous ! Nous ne sommes que des proies. Espérer vaincre ce destin est une folie pure.",
           "dialogueText": {
-            "en": "",
+            "en": "Look at us! We are nothing but prey. To hope to overcome this fate is sheer folly.",
             "fr": "Regarde-nous ! Nous ne sommes que des proies. Espérer vaincre ce destin est une folie pure.",
-            "ja": "",
-            "zh": ""
+            "ja": "私たちを見てみろ！私たちは獲物に過ぎない。この運命に打ち勝とうと望むなど、まったくの狂気だ。",
+            "zh": "看看我们！我们不过是猎物罢了。希望战胜这种命运，纯粹是痴心妄想。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1001,10 +1019,10 @@
           "structureKey": "__blueprints__.simple-choices.l4_final_resolution-AI",
           "content": "Alors qu'il en soit ainsi. Que le destin nous juge sur le champ de bataille, vers le terrier nord.",
           "dialogueText": {
-            "en": "",
+            "en": "So be it. May destiny judge us on the battlefield, towards the north burrow.",
             "fr": "Alors qu'il en soit ainsi. Que le destin nous juge sur le champ de bataille, vers le terrier nord.",
-            "ja": "",
-            "zh": ""
+            "ja": "ならば、それでいい。戦場で運命が我々を裁くがいい、北の巣穴へ。",
+            "zh": "就让它如此吧。让命运在战场上审判我们，向着北方的洞穴进发。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1114,7 +1132,7 @@
     {
       "uuid": "7e6e24b7-c08c-452c-9e11-0689d8c17b80",
       "label": "simple-action",
-      "date": "03/04/2026",
+      "date": "04/04/2026",
       "entryBlockId": "c3b0ffcf-fe57-45f9-8c20-8db99da21ae3",
       "blocks": [
         {
@@ -1322,15 +1340,27 @@
           "choices": [
             {
               "uuid": "09ccf6a7-35a8-4bec-9468-51728d5b8785",
-              "structureKey": "",
+              "structureKey": "__blueprints__.simple-action.final_decision-AI.charger_la_creature",
               "content": "Charger la créature !",
-              "visibilityConditions": []
+              "visibilityConditions": [],
+              "dialogueText": {
+                "en": "Charge the creature!",
+                "fr": "Charger la créature !",
+                "ja": "クリーチャーを突撃せよ！",
+                "zh": "冲锋生物！"
+              }
             },
             {
               "uuid": "cd1ae040-2421-41dd-8962-116a8a13ff78",
-              "structureKey": "",
+              "structureKey": "__blueprints__.simple-action.final_decision-AI.battre_en_retraite",
               "content": "Battre en retraite !",
-              "visibilityConditions": []
+              "visibilityConditions": [],
+              "dialogueText": {
+                "en": "Retreat!",
+                "fr": "Battre en retraite !",
+                "ja": "退却！",
+                "zh": "撤退！"
+              }
             }
           ],
           "note": "Charger la créature ! | Battre en retraite !",
@@ -1370,15 +1400,16 @@
           "properties": [],
           "label": "climax_moment-AI",
           "structureKey": "__blueprints__.simple-action.climax_moment-AI",
-          "content": "whaaaaaaa",
+          "content": "whaaaaaaaaaaa",
           "nativeProperties": {
             "isAsync": true,
             "delay": 209,
-            "timeout": 2000
+            "timeout": 2000,
+            "portPerCharacter": true
           },
           "dialogueText": {
             "en": "",
-            "fr": "whaaaaaaa",
+            "fr": "whaaaaaaaaaaa",
             "ja": "",
             "zh": ""
           },
@@ -1427,16 +1458,16 @@
           "properties": [],
           "label": "DIALOG-008",
           "structureKey": "__blueprints__.simple-action.DIALOG-008",
-          "content": "Non dune carotte !! Sauve qui peut Haaaaa !!!!",
+          "content": "Nom d'une carotte !! Sauve qui peut ! Haaaaa !!!!",
           "nativeProperties": {
             "isAsync": true,
             "timeout": 2500
           },
           "dialogueText": {
-            "en": "",
-            "fr": "Non dune carotte !! Sauve qui peut Haaaaa !!!!",
-            "ja": "",
-            "zh": ""
+            "en": "By the whiskers!! Run for your lives! Aaaaaaaah!!!!",
+            "fr": "Nom d'une carotte !! Sauve qui peut ! Haaaaa !!!!",
+            "ja": "にんじん、なんてこった！皆、逃げろ！うわああああ！",
+            "zh": "我的胡萝卜啊！！ 各自逃命吧！ 啊啊啊啊啊！！！！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1457,17 +1488,17 @@
           "properties": [],
           "label": "DIALOG-009",
           "structureKey": "__blueprints__.simple-action.DIALOG-009",
-          "content": "J'aime les carotte mais pas a ce points !",
+          "content": "J'aime les carottes, mais pas à ce point !",
           "nativeProperties": {
             "isAsync": true,
             "delay": 200,
             "timeout": 3000
           },
           "dialogueText": {
-            "en": "",
-            "fr": "J'aime les carotte mais pas a ce points !",
-            "ja": "",
-            "zh": ""
+            "en": "I love carrots, but not *this* much!",
+            "fr": "J'aime les carottes, mais pas à ce point !",
+            "ja": "人参は好きだけど、さすがにそこまでは！",
+            "zh": "我喜欢胡萝卜，但也不至于这样！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1488,17 +1519,17 @@
           "properties": [],
           "label": "DIALOG-010",
           "structureKey": "__blueprints__.simple-action.DIALOG-010",
-          "content": "Tes un gros lapin mouillé l1 ..... traitre !",
+          "content": "T'es un gros lapin mouillé, l1... traître !",
           "nativeProperties": {
             "isAsync": false,
             "delay": 2500,
             "timeout": 3500
           },
           "dialogueText": {
-            "en": "",
-            "fr": "Tes un gros lapin mouillé l1 ..... traitre !",
-            "ja": "",
-            "zh": ""
+            "en": "You're a big chicken, l1... traitor!",
+            "fr": "T'es un gros lapin mouillé, l1... traître !",
+            "ja": "このとんでもない臆病者め、l1…裏切り者！",
+            "zh": "你这个大怂包，l1...叛徒！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1553,10 +1584,10 @@
           "structureKey": "__blueprints__.simple-action.l1_alert-AI",
           "content": "Est-ce que tu sens ça ? La terre se déchire sous ses pas...",
           "dialogueText": {
-            "en": "",
+            "en": "Do you feel that? The ground is tearing apart beneath its feet...",
             "fr": "Est-ce que tu sens ça ? La terre se déchire sous ses pas...",
-            "ja": "",
-            "zh": ""
+            "ja": "これ、感じるか？奴の足元で地面が裂けている…",
+            "zh": "你感觉到了吗？大地正在它的脚下崩裂……"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1579,10 +1610,10 @@
           "structureKey": "__blueprints__.simple-action.l1_brave-AI",
           "content": "Pour l'honneur du clan et la carotte éternelle, à l'attaque !",
           "dialogueText": {
-            "en": "",
+            "en": "For the honor of the clan and the eternal carrot, attack!",
             "fr": "Pour l'honneur du clan et la carotte éternelle, à l'attaque !",
-            "ja": "",
-            "zh": ""
+            "ja": "クランの栄誉と、永遠のニンジンのために、突撃だ！",
+            "zh": "为了氏族的荣耀，为了永恒的胡萝卜，冲啊！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1603,12 +1634,12 @@
           "properties": [],
           "label": "l4_flee-AI",
           "structureKey": "__blueprints__.simple-action.l4_flee-AI",
-          "content": "Non mais tu me laisses seul !!!",
+          "content": "Mais tu ne peux pas me laisser seul !",
           "dialogueText": {
-            "en": "",
-            "fr": "Non mais tu me laisses seul !!!",
-            "ja": "",
-            "zh": ""
+            "en": "But you can't leave me alone!",
+            "fr": "Mais tu ne peux pas me laisser seul !",
+            "ja": "でも、一人にしないでよ！",
+            "zh": "但是你不能丢下我一个人！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1634,10 +1665,10 @@
             "delay": 500
           },
           "dialogueText": {
-            "en": "",
+            "en": "It's way too big to be just a rabbit, l1!",
             "fr": "C'est beaucoup trop gros pour être un simple lapin, l1 !",
-            "ja": "",
-            "zh": ""
+            "ja": "ただのウサギにしては、あまりにも大きすぎる、l1！",
+            "zh": "这实在是太大了，不可能是只普通的兔子，l1！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1811,7 +1842,7 @@
     {
       "uuid": "a037a98b-ffec-40d3-8092-4eedb9857501",
       "label": "simple-condition",
-      "date": "03/04/2026",
+      "date": "04/04/2026",
       "entryBlockId": "cb342290-3616-42d2-ba58-620290dfa45a",
       "blocks": [
         {
@@ -1840,12 +1871,12 @@
           "properties": [],
           "label": "DIALOG-006",
           "structureKey": "__blueprints__.simple-condition.DIALOG-006",
-          "content": "J'ai trouvez ta carotte !",
+          "content": "J'ai retrouvé ta carotte !",
           "dialogueText": {
-            "en": "",
-            "fr": "J'ai trouvez ta carotte !",
-            "ja": "",
-            "zh": ""
+            "en": "I've found your carrot!",
+            "fr": "J'ai retrouvé ta carotte !",
+            "ja": "君のニンジンを見つけたよ！",
+            "zh": "我把你的胡萝卜找回来了！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1866,12 +1897,12 @@
           "properties": [],
           "label": "DIALOG-007",
           "structureKey": "__blueprints__.simple-condition.DIALOG-007",
-          "content": ".... ok",
+          "content": ".... dac",
           "dialogueText": {
-            "en": "",
-            "fr": ".... ok",
-            "ja": "",
-            "zh": ""
+            "en": ".... ok",
+            "fr": ".... dac",
+            "ja": "…分かった",
+            "zh": "....好吧"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1894,10 +1925,10 @@
           "structureKey": "__blueprints__.simple-condition.l1_carrot_found-AI",
           "content": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !\nGarde la, j'ai trop peur de la perde a nouveau finalement ! ",
           "dialogueText": {
-            "en": "",
+            "en": "You've got it! I can already feel luck returning, I can feel it in my ears. You're my hero! Keep it, I'm too afraid of losing it again after all!",
             "fr": "Tu l'as ! Je sens déjà la chance revenir dans mes oreilles. Tu es mon héros !\nGarde la, j'ai trop peur de la perde a nouveau finalement ! ",
-            "ja": "",
-            "zh": ""
+            "ja": "やった、それだ！もう耳の奥から、幸運が湧き上がってくるのを感じるよ！君は僕のヒーローだよ！\nそれ、君が持っていてくれ。だって、やっぱりまたなくしてしまうのが怖すぎるんだ！",
+            "zh": "你找到了！我仿佛能听到好运又回来了。你真是我的英雄！\n你拿着它吧，我真的太害怕再把它弄丢了！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1920,10 +1951,10 @@
           "structureKey": "__blueprints__.simple-condition.l1_carrot_missing_demand-AI",
           "content": "Pourquoi restes-tu là à brouter ? Cherche-la sur le champ, avant que le malheur ne nous frappe !",
           "dialogueText": {
-            "en": "",
+            "en": "Why are you just standing there grazing? Go find it right now, before disaster strikes us!",
             "fr": "Pourquoi restes-tu là à brouter ? Cherche-la sur le champ, avant que le malheur ne nous frappe !",
-            "ja": "",
-            "zh": ""
+            "ja": "なんでそこでぼーっとしてるんだ？ 今すぐそれを探しに行け、災難が私たちを襲う前に！",
+            "zh": "你还杵在那里啃草干什么？赶紧去找它，免得我们倒大霉！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1945,12 +1976,12 @@
           "label": "l1_lost_carrot_distress-AI",
           "isStartBlock": true,
           "structureKey": "__blueprints__.simple-condition.l1_lost_carrot_distress-AI",
-          "content": "Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !",
+          "content": "Oh non, ma carotte porte-bonheur a disparu ! Sans elle, c'est sûr, le ciel va nous tomber sur la tête !",
           "dialogueText": {
-            "en": "",
-            "fr": "Oh non ! Ma carotte porte-bonheur a disparu ! Sans elle, le ciel va nous tomber sur la tête !",
-            "ja": "",
-            "zh": ""
+            "en": "Oh no, my lucky carrot is gone! Without it, surely the sky will fall on our heads!",
+            "fr": "Oh non, ma carotte porte-bonheur a disparu ! Sans elle, c'est sûr, le ciel va nous tomber sur la tête !",
+            "ja": "ああ、大変だ！私の幸運のニンジンがなくなっちゃった！あれがないと、間違いなく、とんでもない災難が私たちに降りかかってくる！",
+            "zh": "哦不，我的幸运胡萝卜不见了！没有它，天就要塌下来了！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1973,10 +2004,10 @@
           "structureKey": "__blueprints__.simple-condition.l4_comfort_response-AI",
           "content": "Calme-toi, l1. Ce n'est qu'une racine séchée. On finira par la retrouver dans ce champ.",
           "dialogueText": {
-            "en": "",
+            "en": "Calm down, l1. It's just a dried root. We'll eventually find it in this field.",
             "fr": "Calme-toi, l1. Ce n'est qu'une racine séchée. On finira par la retrouver dans ce champ.",
-            "ja": "",
-            "zh": ""
+            "ja": "落ち着いて、l1。ただの干からびた根っこじゃないか。そのうち、この畑で見つかるよ。",
+            "zh": "冷静点，l1。它不过是一根干根而已。我们最终会在这片田地里找到它的。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -1999,10 +2030,10 @@
           "structureKey": "__blueprints__.simple-condition.l4_final_thought-AI",
           "content": "D'accord, d'accord. Ne faisons pas un drame pour un légume, même s'il est porte-bonheur.",
           "dialogueText": {
-            "en": "",
+            "en": "Alright, alright. Let's not make a big deal out of a vegetable, even if it's a good luck charm.",
             "fr": "D'accord, d'accord. Ne faisons pas un drame pour un légume, même s'il est porte-bonheur.",
-            "ja": "",
-            "zh": ""
+            "ja": "まあまあ。それが縁起物だとしても、野菜一本でそこまで大騒ぎするのはやめよう。",
+            "zh": "好的，好的。别为一个蔬菜小题大做了，即使它是个幸运物。"
           },
           "parentLabels": [
             "__blueprints__"
@@ -2080,7 +2111,7 @@
     {
       "uuid": "c2e75db2-85c7-421b-91ab-f7ea1ea45284",
       "label": "condition-dispatch",
-      "date": "03/04/2026",
+      "date": "04/04/2026",
       "entryBlockId": "90a8c0a2-cb0e-4900-b974-c59d470f296e",
       "blocks": [
         {
@@ -2354,12 +2385,12 @@
           "label": "DIALOG-001",
           "isStartBlock": true,
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-001",
-          "content": "ho... grand esprit des carotte ...",
+          "content": "« Ô grand esprit des carottes... »",
           "dialogueText": {
-            "en": "",
-            "fr": "ho... grand esprit des carotte ...",
-            "ja": "",
-            "zh": ""
+            "en": "\"O great spirit of carrots...\"",
+            "fr": "« Ô grand esprit des carottes... »",
+            "ja": "おお、偉大なる人参の精霊よ...",
+            "zh": "「哦，伟大的胡萝卜之灵...」"
           },
           "parentLabels": [
             "__blueprints__"
@@ -2380,12 +2411,12 @@
           "properties": [],
           "label": "DIALOG-002",
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-002",
-          "content": "Hey vien nous choisir avant dinvoquez les esprit de la carotte",
+          "content": "Hey, choisissez-nous avant que nous n'invoquions les esprits de la carotte ! ",
           "dialogueText": {
-            "en": "",
-            "fr": "Hey vien nous choisir avant dinvoquez les esprit de la carotte",
-            "ja": "",
-            "zh": ""
+            "en": "Hey, choose us before we invoke the carrot spirits!",
+            "fr": "Hey, choisissez-nous avant que nous n'invoquions les esprits de la carotte ! ",
+            "ja": "ねえ、ニンジンの精霊を召喚する前に、俺たちを選んでくれよ！",
+            "zh": "嘿，选我们吧，不然我们就要召唤胡萝卜精灵了！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -2406,17 +2437,17 @@
           "properties": [],
           "label": "DIALOG-003",
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-003",
-          "content": "Ho grande carotte rouge",
+          "content": "Ho, immense carotte rouge éclatante de vie !",
           "nativeProperties": {
             "isAsync": true,
             "delay": 1000,
             "timeout": 1000
           },
           "dialogueText": {
-            "en": "",
-            "fr": "Ho grande carotte rouge",
-            "ja": "",
-            "zh": ""
+            "en": "Ho, immense red carrot, radiant with life!",
+            "fr": "Ho, immense carotte rouge éclatante de vie !",
+            "ja": "おお、生命輝く巨大な赤いニンジンよ！",
+            "zh": "噢，巨大的红色胡萝卜，生机盎然！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -2437,17 +2468,17 @@
           "properties": [],
           "label": "DIALOG-004",
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-004",
-          "content": "ho grande carotte jaune ",
+          "content": "Ho, vibrante carotte d'un jaune soleil !",
           "nativeProperties": {
             "isAsync": true,
             "delay": 2000,
             "timeout": 1000
           },
           "dialogueText": {
-            "en": "",
-            "fr": "ho grande carotte jaune ",
-            "ja": "",
-            "zh": ""
+            "en": "Oh, vibrant sun-yellow carrot!",
+            "fr": "Ho, vibrante carotte d'un jaune soleil !",
+            "ja": "おお、太陽の黄色に輝く活気あるニンジンよ！",
+            "zh": "嗬，生机勃勃的阳光黄胡萝卜！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -2469,17 +2500,17 @@
           "properties": [],
           "label": "DIALOG-005",
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-005",
-          "content": "ho grande carrote bleue",
+          "content": "« Ô grande carotte bleue, nous t'implorons ! »",
           "nativeProperties": {
             "isAsync": true,
             "delay": 3000,
             "timeout": 1000
           },
           "dialogueText": {
-            "en": "",
-            "fr": "ho grande carrote bleue",
-            "ja": "",
-            "zh": ""
+            "en": "\"O great blue carrot, we implore you!\"",
+            "fr": "« Ô grande carotte bleue, nous t'implorons ! »",
+            "ja": "「おお、大いなる青きニンジンよ、我々はあなたに懇願いたします！」",
+            "zh": "哦，伟大的蓝色胡萝卜，我们祈求你！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -2500,15 +2531,15 @@
           "properties": [],
           "label": "DIALOG-006",
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-006",
-          "content": "ho grande carotte, merci de nous nourrire",
+          "content": "Oh grande carotte, merci de nous nourrir !",
           "nativeProperties": {
             "delay": 7700
           },
           "dialogueText": {
-            "en": "",
-            "fr": "ho grande carotte, merci de nous nourrire",
-            "ja": "",
-            "zh": ""
+            "en": "Oh great carrot, thank you for nourishing us!",
+            "fr": "Oh grande carotte, merci de nous nourrir !",
+            "ja": "おお、偉大なる人参よ、私たちを養ってくださりありがとうございます！",
+            "zh": "噢，伟大的胡萝卜啊，感谢你滋养我们！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -2531,10 +2562,10 @@
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-007",
           "content": "ca marcher !",
           "dialogueText": {
-            "en": "",
+            "en": "It's working!",
             "fr": "ca marcher !",
-            "ja": "",
-            "zh": ""
+            "ja": "うまくいった！",
+            "zh": "成了！"
           },
           "parentLabels": [
             "__blueprints__"
@@ -2557,10 +2588,10 @@
           "structureKey": "__blueprints__.condition-dispatch.DIALOG-008",
           "content": "il ce passe rien ! il manque une incantation !? ....",
           "dialogueText": {
-            "en": "",
+            "en": "Nothing's happening! Is an incantation missing!? ....",
             "fr": "il ce passe rien ! il manque une incantation !? ....",
-            "ja": "",
-            "zh": ""
+            "ja": "何も起こらない！詠唱が足りないのか！？…",
+            "zh": "没反应！是不是少了一段咒语？！……"
           },
           "parentLabels": [
             "__blueprints__"
@@ -2586,10 +2617,10 @@
             "isAsync": true
           },
           "dialogueText": {
-            "en": "",
+            "en": "Yes, me.",
             "fr": "Oui moi",
-            "ja": "",
-            "zh": ""
+            "ja": "はい、私です",
+            "zh": "是的，我"
           },
           "parentLabels": [
             "__blueprints__"
@@ -2625,10 +2656,10 @@
             "delay": 1000
           },
           "dialogueText": {
-            "en": "",
+            "en": "Ho !",
             "fr": "Ho !",
-            "ja": "",
-            "zh": ""
+            "ja": "ほう！",
+            "zh": "嚯！"
           },
           "parentLabels": [
             "__blueprints__"

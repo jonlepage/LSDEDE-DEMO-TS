@@ -57,6 +57,7 @@ import {
   trackActionExecuted,
   trackSceneCompleted,
 } from "../../analytics/posthog";
+import { translate } from "../shared/translate";
 
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
@@ -231,13 +232,10 @@ export async function runScene(
   let currentChoiceBoxContainer: Container | null = null;
 
   function startDialogueScene(): void {
-    console.log("[simple-action] Scene triggered!");
-
     const sceneHandle = dialogueEngine.scene(SCENE_UUID);
 
-    // --- DIALOG handler (multi-track aware) ---
     sceneHandle.onDialog(({ block, context, next }) => {
-      const dialogueText = block.dialogueText?.[currentLanguage] ?? "";
+      const dialogueText = translate(block.dialogueText, currentLanguage);
       const characterId = context.character?.id;
       const characterName = context.character?.name ?? "???";
 
