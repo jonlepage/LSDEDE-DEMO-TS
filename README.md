@@ -4,8 +4,8 @@ Interactive demos showcasing **[LSDEDE](https://jonlepage.github.io/LS-Dialog-Ed
 
 Each demo loads an [LSDE](https://lepasoft.com/en/software/ls-dialog-editor) blueprint and renders it in real-time — walk your character, trigger dialogues, make choices, and watch the engine in action.
 
-The demo demonstrates a basic use of the [LSDEDE](https://jonlepage.github.io/LS-Dialog-Editor-Engine) runtime and a way to connect it to your game architecture.
-The scenes come from data produced by [LSDE](https://lepasoft.com/en/software/ls-dialog-editor), and the runtime called [LSDEDE](https://jonlepage.github.io/LS-Dialog-Editor-Engine) interprets them in order to map them to your game engine or API.
+The demo demonstrates a basic use of the **LSDEDE runtime** and a way to connect it to your game architecture.
+The scenes come from **data produced by LSDE**, and the runtime called LSDEDE interprets them in order to map them to your game engine or API.
 
 **[▶ Live Demo](https://jonlepage.github.io/LSDEDE-DEMO-TS/)**
 
