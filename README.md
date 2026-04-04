@@ -73,6 +73,21 @@ Strict layer separation: `engine/`, `renderer/`, and `game/` never import from e
 - **LEPA Dialog** — [lepa-dialog.com](https://lepa-dialog.com)
 - **npm package** — [@lsde/dialog-engine](https://www.npmjs.com/package/@lsde/dialog-engine)
 
+## Demo Blueprint Screenshots
+
+<table>
+  <tr>
+    <td align="center"><a href="https://jonlepage.github.io/LSDEDE-DEMO-TS/lsde-blueprint-1.webp" target="_blank"><img src="public/lsde-blueprint-sm-1.webp" alt="simple-dialog-flow" width="250"><br><b>simple-dialog-flow</b></a></td>
+    <td align="center"><a href="https://jonlepage.github.io/LSDEDE-DEMO-TS/lsde-blueprint-2.webp" target="_blank"><img src="public/lsde-blueprint-sm-2.webp" alt="multi-tracks" width="250"><br><b>multi-tracks</b></a></td>
+    <td align="center"><a href="https://jonlepage.github.io/LSDEDE-DEMO-TS/lsde-blueprint-3.webp" target="_blank"><img src="public/lsde-blueprint-sm-3.webp" alt="simple-choices" width="250"><br><b>simple-choices</b></a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://jonlepage.github.io/LSDEDE-DEMO-TS/lsde-blueprint-4.webp" target="_blank"><img src="public/lsde-blueprint-sm-4.webp" alt="simple-action" width="250"><br><b>simple-action</b></a></td>
+    <td align="center"><a href="https://jonlepage.github.io/LSDEDE-DEMO-TS/lsde-blueprint-5.webp" target="_blank"><img src="public/lsde-blueprint-sm-5.webp" alt="simple-condition" width="250"><br><b>simple-condition</b></a></td>
+    <td align="center"><a href="https://jonlepage.github.io/LSDEDE-DEMO-TS/lsde-blueprint-6.webp" target="_blank"><img src="public/lsde-blueprint-sm-6.webp" alt="condition-dispatch" width="250"><br><b>condition-dispatch</b></a></td>
+  </tr>
+</table>
+
 ## License
 
 **Proprietary** — All rights reserved. This code is provided as educational reference material for LSDE Dialog Engine integration patterns. No permission is granted to use, copy, modify, or distribute this software without explicit written consent from the author.
