@@ -13,11 +13,7 @@ import { Pane } from "tweakpane";
 import { registerCrtFilterControls } from "./debug/debug-panel";
 import { createBlueprintPreview } from "./app/blueprint-preview";
 import { createMagicTrail } from "./renderer/magic-trail";
-import {
-  currentLanguage,
-  setCurrentLanguage,
-  type SupportedLanguage,
-} from "./engine/i18n";
+import { currentLanguage, setCurrentLanguage } from "./engine/i18n";
 
 const BLUEPRINT_FILE_PATH = `${import.meta.env.BASE_URL}blueprints/blueprint.json`;
 
@@ -80,9 +76,7 @@ const POSTHOG_API_HOST =
   registerCharacterResolver(dialogueEngine);
 
   // Set initial language from blueprint and register handlers with a live getter.
-  setCurrentLanguage(
-    (blueprintData.primaryLanguage as SupportedLanguage) ?? "fr",
-  );
+  setCurrentLanguage(currentLanguage);
   registerGlobalHandlers(
     dialogueEngine,
     {

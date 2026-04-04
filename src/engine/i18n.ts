@@ -10,6 +10,11 @@ export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 export let currentLanguage: SupportedLanguage = "en";
 
+const navigatorLanguage = navigator.language.slice(0, 2) as SupportedLanguage;
+if (SUPPORTED_LANGUAGES.includes(navigatorLanguage)) {
+  currentLanguage = navigatorLanguage;
+}
+
 export function setCurrentLanguage(language: SupportedLanguage): void {
   currentLanguage = language;
 }
