@@ -122,16 +122,6 @@ export function registerActionButtons(
 			"#cc3333",
 		),
 	);
-	addButton(dialogueFolder, "Show Choices on NPC", () =>
-		gameActions.showChoicesOnCharacter(
-			firstNpcCharacterId,
-			[
-				{ choiceUuid: "a", text: "Option A" },
-				{ choiceUuid: "b", text: "Option B" },
-			],
-			(uuid) => console.log("Debug choice:", uuid),
-		),
-	);
 
 	const stateFolder = actionsFolder.addFolder({
 		title: "Game State",

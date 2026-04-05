@@ -14,7 +14,6 @@ import type {
 	RuntimeChoiceItem,
 	CleanupFn,
 } from "@lsde/dialog-engine";
-import { trackDialogueShown, trackSceneCompleted } from "../analytics/posthog";
 
 export interface DialogueDisplayRequest {
 	readonly characterId: string | undefined;
