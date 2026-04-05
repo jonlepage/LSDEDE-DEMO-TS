@@ -47,14 +47,7 @@
 import { Graphics, Sprite, Text } from "pixi.js";
 import type { ConditionBlock } from "@lsde/dialog-engine";
 import { LsdeUtils } from "@lsde/dialog-engine";
-import { createSceneContext } from "../../shared/scene-context";
-import { setupCharacters } from "../shared/setup-characters";
-import { setupPlayerMovement } from "../shared/setup-player-movement";
-import {
-	createGameActionFacade,
-	type CharacterReference,
-	type GameActionFacade,
-} from "../../game/game-actions";
+import type { CharacterReference, GameActionFacade } from "../../game/game-actions";
 import {
 	registerMovementTicker,
 	createMovementState,
@@ -63,27 +56,21 @@ import { createCollidable, resolveCollisions } from "../../renderer/collision";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
 import { setupPartyRecruitment } from "../shared/setup-party-recruitment";
 import { setupPartyFollow } from "../shared/setup-party-follow";
-import {
-	createDebugPanel,
-	registerLiveMonitorTicker,
-	registerActionButtons,
-	refreshGameStoreBindings,
-} from "../../debug/debug-panel";
-import { createGameStore, GAME_ACTORS } from "../../game/game-store";
-import { currentLanguage, setCurrentLanguage } from "../../engine/i18n";
+import { refreshGameStoreBindings } from "../../debug/debug-panel";
+import { GAME_ACTORS } from "../../game/game-store";
+import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import type { ExportCondition } from "../../../public/blueprints/blueprint.types";
 import {
-	trackDialogueShown,
 	trackDialogueAdvanced,
 	trackConditionEvaluated,
 	trackActionExecuted,
 	trackNpcInteraction,
 	trackPartyMemberRecruited,
-	trackSceneCompleted,
 } from "../../analytics/posthog";
 import { translate } from "../shared/translate";
 import type { DemoDependencies, SceneCleanup } from "../shared/types";
+import { setupScene } from "../shared/setup-scene";
 
 // ---------------------------------------------------------------------------
 // Lightweight action type — mirrors the shape LSDE puts in block.actions[].
@@ -239,16 +226,16 @@ function evaluateGameCondition(
 export async function runScene(
 	dependencies: DemoDependencies,
 ): Promise<SceneCleanup> {
-	const { pixiApplication, cameraState, worldContainer, dialogueEngine } =
-		dependencies;
+	const { pixiApplication, dialogueEngine } = dependencies;
 
-	const sceneContext = createSceneContext(pixiApplication);
 	const screenCenterX = pixiApplication.screen.width / 2;
 	const screenCenterY = pixiApplication.screen.height / 2;
 
-	// --- Characters ---
-	// l4 starts left; l1/l2/l3 scattered around the ritual carrot in the center.
-	const { characters, playerReference, npcObstacles } = await setupCharacters({
+	// --- Scene setup (characters, movement, debug panel) ---
+	const {
+		characters, playerReference, npcObstacles,
+		gameStore, gameActions, debugPanelState, sceneContext, cleanup,
+	} = await setupScene({
 		characterConfigurations: [
 			{
 				characterId: GAME_ACTORS.l1,
@@ -279,10 +266,15 @@ export async function runScene(
 				startY: screenCenterY + 20,
 			},
 		],
-		playerCharacterId: PLAYER_CHARACTER_ID,
-		worldContainer,
-		sceneContext,
+		triggerId: GAME_ACTORS.l1,
+		pixiApplication,
+		cameraState: dependencies.cameraState,
+		worldContainer: dependencies.worldContainer,
 	});
+
+	// ===========================================================================
+	// Demo-specific setup (party mechanics, NPC movement, ritual carrot)
+	// ===========================================================================
 
 	// --- NPC movement tickers (with per-character hop variation + collision) ---
 	// Build per-NPC collidable list: each NPC collides with the player + other NPCs.
@@ -334,38 +326,14 @@ export async function runScene(
 		sceneContext.addDisposable(unregisterNpcMovement);
 	}
 
-	// --- Player movement + collision + camera ---
-	setupPlayerMovement({
-		pixiApplication,
-		cameraState,
-		worldContainer,
-		playerReference,
-		npcObstacles,
-		sceneContext,
-	});
-
-	// --- Game store + facade ---
-	const gameStore = createGameStore();
+	// --- Game store pre-population ---
 	// Pre-populate party entries so the debug panel shows them from the start.
 	for (const characterId of PARTY_NPC_IDS) {
 		gameStore.party.set(characterId, false);
 	}
-	const gameActions = createGameActionFacade({
-		pixiApplication,
-		cameraState,
-		worldContainer,
-		gameStore,
-		characters,
-	});
-
-	// --- Debug panel ---
-	const debugPanelState = createDebugPanel({
-		onLanguageChanged: setCurrentLanguage,
-	});
-	registerLiveMonitorTicker(debugPanelState, pixiApplication);
-	registerActionButtons(debugPanelState, gameActions, GAME_ACTORS.l1);
 	refreshGameStoreBindings(debugPanelState, gameStore);
 
+	// --- Debug: follow toggle ---
 	const followToggle = { paused: false };
 	debugPanelState.pane
 		.addBinding(followToggle, "paused", { label: "pause follow" })
@@ -376,8 +344,6 @@ export async function runScene(
 				partyFollowHandle.resume();
 			}
 		});
-
-	sceneContext.addDisposable(() => debugPanelState.pane.dispose());
 
 	// --- Party follow — single-file chain (breadcrumb trail) ---
 	const partyFollowHandle = setupPartyFollow({
@@ -401,7 +367,7 @@ export async function runScene(
 	bigCarrotSprite.anchor.set(0.5, 1);
 	bigCarrotSprite.position.set(screenCenterX, screenCenterY - 10);
 	bigCarrotSprite.scale.set(3);
-	sceneContext.addSprite(bigCarrotSprite, worldContainer);
+	sceneContext.addSprite(bigCarrotSprite, dependencies.worldContainer);
 
 	const carrotHint = new Text({
 		text: "🥕 invoke!",
@@ -446,10 +412,27 @@ export async function runScene(
 		},
 	});
 
-	// --- Dialogue state ---
+	// ===========================================================================
+	// Dialogue state
+	// ===========================================================================
 	let isDialogueActive = false;
 	const activeBubbles = new Map<string, BubbleTextHandle>();
 	const blocksWaitingForInput = new Map<string, () => void>();
+
+	// ---------------------------------------------------------------------------
+	// Cleanup helpers
+	// ---------------------------------------------------------------------------
+
+	function cleanupAllActiveBubbles(): void {
+		for (const handle of activeBubbles.values()) {
+			gameActions.removeBubbleFromWorld(handle);
+		}
+		activeBubbles.clear();
+	}
+
+	// ---------------------------------------------------------------------------
+	// Dialogue handlers
+	// ---------------------------------------------------------------------------
 
 	function startDialogueScene(): void {
 		isDialogueActive = true;
@@ -501,7 +484,6 @@ export async function runScene(
 					activeBubbles.set(blockUuid, bubbleHandle);
 				}
 
-				trackDialogueShown("condition-dispatch", blockUuid, characterId);
 
 				if (needsUserInput) {
 					// Main track or waitInput=true: wait for user click.
@@ -595,27 +577,18 @@ export async function runScene(
 
 		sceneHandle.onExit(() => {
 			isDialogueActive = false;
+			cleanupAllActiveBubbles();
 			blocksWaitingForInput.clear();
-			activeBubbles.clear();
 			partyFollowHandle.resume();
-			trackSceneCompleted("condition-dispatch");
 		});
 
 		sceneHandle.start();
 	}
 
-	// Clicking the ritual carrot starts the scene (proximity + not already active).
-	bigCarrotSprite.eventMode = "static";
-	bigCarrotSprite.cursor = "pointer";
-	bigCarrotSprite.on("pointerdown", () => {
-		if (isDialogueActive || !isPlayerNearBigCarrot()) return;
-		startDialogueScene();
-	});
-
 	// --- Broadcast click: advance all waiting dialogue blocks at once ---
 	// First click skips all typewriters still animating.
 	// Second click (or first if all complete) advances every waiting block.
-	const onPointerDownForDialogue = () => {
+	function onPointerDownForDialogue(): void {
 		if (blocksWaitingForInput.size === 0) return;
 
 		for (const blockUuid of blocksWaitingForInput.keys()) {
@@ -634,17 +607,24 @@ export async function runScene(
 		for (const advance of toAdvance) {
 			advance();
 		}
-	};
+	}
+
+	// ===========================================================================
+	// Wiring: carrot trigger + pointer listener
+	// ===========================================================================
+
+	// Clicking the ritual carrot starts the scene (proximity + not already active).
+	bigCarrotSprite.eventMode = "static";
+	bigCarrotSprite.cursor = "pointer";
+	bigCarrotSprite.on("pointerdown", () => {
+		if (isDialogueActive || !isPlayerNearBigCarrot()) return;
+		startDialogueScene();
+	});
 
 	sceneContext.addStageListener(
 		"pointerdown",
 		onPointerDownForDialogue as (...args: unknown[]) => void,
 	);
 
-	return {
-		teardown: () => {
-			sceneContext.dispose();
-			characters.clear();
-		},
-	};
+	return cleanup;
 }

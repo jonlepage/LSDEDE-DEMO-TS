@@ -5,108 +5,68 @@
  * Walk to the red bunny and press Enter to trigger.
  */
 
-import { createSceneContext } from "../../shared/scene-context";
-import { setupCharacters } from "../shared/setup-characters";
-import { setupPlayerMovement } from "../shared/setup-player-movement";
-import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
-import {
-	createGameActionFacade,
-	type CharacterReference,
-} from "../../game/game-actions";
+import type { CharacterReference } from "../../game/game-actions";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
-import {
-	createDebugPanel,
-	registerLiveMonitorTicker,
-	registerActionButtons,
-} from "../../debug/debug-panel";
-import { createGameStore, GAME_ACTORS } from "../../game/game-store";
-import { currentLanguage, setCurrentLanguage } from "../../engine/i18n";
+import { GAME_ACTORS } from "../../game/game-store";
+import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import {
-	trackDialogueShown,
 	trackDialogueAdvanced,
-	trackSceneCompleted,
 } from "../../analytics/posthog";
 import { translate } from "../shared/translate";
+import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
 import type { DemoDependencies, SceneCleanup } from "../shared/types";
+import { setupScene } from "../shared/setup-scene";
 
-const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
 const SCENE_UUID = LSDE_SCENES.multiTracks;
 
 export async function runScene(
 	dependencies: DemoDependencies,
 ): Promise<SceneCleanup> {
-	const { pixiApplication, cameraState, worldContainer, dialogueEngine } =
-		dependencies;
+	const { pixiApplication, dialogueEngine } = dependencies;
 
-	const sceneContext = createSceneContext(pixiApplication);
 	const screenCenterX = pixiApplication.screen.width / 2;
 	const screenCenterY = pixiApplication.screen.height / 2;
 
-	// --- Characters ---
-	const { characters, playerReference, npcObstacles } = await setupCharacters({
-		characterConfigurations: [
-			{
-				characterId: GAME_ACTORS.l1,
-				displayName: GAME_ACTORS.l1,
-				tintColor: 0xff6b6b,
-				startX: screenCenterX - 200,
-				startY: screenCenterY - 60,
-			},
-			{
-				characterId: GAME_ACTORS.l2,
-				displayName: GAME_ACTORS.l2,
-				tintColor: 0x4ecdc4,
-				startX: screenCenterX - 5,
-				startY: screenCenterY - 5,
-			},
-			{
-				characterId: GAME_ACTORS.l3,
-				displayName: GAME_ACTORS.l3,
-				tintColor: 0xffe66d,
-				startX: screenCenterX - 500,
-				startY: screenCenterY - 33,
-			},
-			{
-				characterId: GAME_ACTORS.l4,
-				displayName: GAME_ACTORS.l4,
-				tintColor: 0x666666,
-				startX: screenCenterX - 444,
-				startY: screenCenterY + 22,
-			},
-		],
-		playerCharacterId: PLAYER_CHARACTER_ID,
-		worldContainer,
-		sceneContext,
-	});
-
-	// --- Player movement + collision + camera ---
-	setupPlayerMovement({
-		pixiApplication,
-		cameraState,
-		worldContainer,
-		playerReference,
-		npcObstacles,
-		sceneContext,
-	});
-
-	// --- Facade + debug ---
-	const gameStore = createGameStore();
-	const gameActions = createGameActionFacade({
-		pixiApplication,
-		cameraState,
-		worldContainer,
-		gameStore,
-		characters,
-	});
-
-	const debugPanelState = createDebugPanel({
-		onLanguageChanged: setCurrentLanguage,
-	});
-	registerLiveMonitorTicker(debugPanelState, pixiApplication);
-	registerActionButtons(debugPanelState, gameActions, TRIGGER_NPC_CHARACTER_ID);
-	sceneContext.addDisposable(() => debugPanelState.pane.dispose());
+	// --- Scene setup (characters, movement, debug panel) ---
+	const { characters, playerReference, gameActions, sceneContext, cleanup } =
+		await setupScene({
+			characterConfigurations: [
+				{
+					characterId: GAME_ACTORS.l1,
+					displayName: GAME_ACTORS.l1,
+					tintColor: 0xff6b6b,
+					startX: screenCenterX - 200,
+					startY: screenCenterY - 60,
+				},
+				{
+					characterId: GAME_ACTORS.l2,
+					displayName: GAME_ACTORS.l2,
+					tintColor: 0x4ecdc4,
+					startX: screenCenterX - 5,
+					startY: screenCenterY - 5,
+				},
+				{
+					characterId: GAME_ACTORS.l3,
+					displayName: GAME_ACTORS.l3,
+					tintColor: 0xffe66d,
+					startX: screenCenterX - 500,
+					startY: screenCenterY - 33,
+				},
+				{
+					characterId: GAME_ACTORS.l4,
+					displayName: GAME_ACTORS.l4,
+					tintColor: 0x666666,
+					startX: screenCenterX - 444,
+					startY: screenCenterY + 22,
+				},
+			],
+			triggerId: TRIGGER_NPC_CHARACTER_ID,
+			pixiApplication,
+			cameraState: dependencies.cameraState,
+			worldContainer: dependencies.worldContainer,
+		});
 
 	// ---------------------------------------------------------------------------
 	// Dialogue state — multi-track aware
@@ -139,6 +99,21 @@ export async function runScene(
 	// reacts to the same player interaction at once.
 	const blocksWaitingForInput = new Map<string, () => void>();
 
+	// ---------------------------------------------------------------------------
+	// Cleanup helpers
+	// ---------------------------------------------------------------------------
+
+	function cleanupAllActiveBubbles(): void {
+		for (const handle of activeBubbles.values()) {
+			gameActions.removeBubbleFromWorld(handle);
+		}
+		activeBubbles.clear();
+	}
+
+	// ---------------------------------------------------------------------------
+	// Dialogue handlers
+	// ---------------------------------------------------------------------------
+
 	function startDialogueScene(): void {
 		const sceneHandle = dialogueEngine.scene(SCENE_UUID);
 
@@ -162,7 +137,6 @@ export async function runScene(
 				activeBubbles.set(block.uuid, bubbleHandle);
 			}
 
-			trackDialogueShown("multi-tracks", block.uuid, characterId);
 
 			// --- Decide how to advance based on block properties ---
 			//
@@ -232,28 +206,12 @@ export async function runScene(
 		});
 
 		sceneHandle.onExit(() => {
-			// Scene complete — clear any remaining state.
-			// LSDE cancels async tracks automatically on scene exit, but our
-			// local references should be cleaned up for good measure.
+			cleanupAllActiveBubbles();
 			blocksWaitingForInput.clear();
-			activeBubbles.clear();
-			trackSceneCompleted("multi-tracks");
 		});
 
 		sceneHandle.start();
 	}
-
-	// --- Dialogue trigger: proximity + Enter ---
-	const triggerNpcReference = characters.get(
-		TRIGGER_NPC_CHARACTER_ID,
-	) as CharacterReference;
-
-	setupDialogueTrigger({
-		playerReference,
-		triggerNpcReference,
-		sceneContext,
-		onTrigger: startDialogueScene,
-	});
 
 	// --- Click: broadcast advance to ALL blocks waiting for input ---
 	//
@@ -265,7 +223,7 @@ export async function runScene(
 	//
 	// If any bubble's typewriter is still animating, the first click
 	// skips all typewriters to full text. The second click advances.
-	const onPointerDownForDialogue = () => {
+	function onPointerDownForDialogue(): void {
 		if (blocksWaitingForInput.size === 0) return;
 
 		// First pass: if any waiting bubble is still typing, skip them all.
@@ -290,17 +248,26 @@ export async function runScene(
 		for (const advance of toAdvance) {
 			advance();
 		}
-	};
+	}
+
+	// ---------------------------------------------------------------------------
+	// Wiring: connect dialogue trigger + pointer listener
+	// ---------------------------------------------------------------------------
+	const triggerNpcReference = characters.get(
+		TRIGGER_NPC_CHARACTER_ID,
+	) as CharacterReference;
+
+	setupDialogueTrigger({
+		playerReference,
+		triggerNpcReference,
+		sceneContext,
+		onTrigger: startDialogueScene,
+	});
 
 	sceneContext.addStageListener(
 		"pointerdown",
 		onPointerDownForDialogue as (...args: unknown[]) => void,
 	);
 
-	return {
-		teardown: () => {
-			sceneContext.dispose();
-			characters.clear();
-		},
-	};
+	return cleanup;
 }

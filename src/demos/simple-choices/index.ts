@@ -7,96 +7,56 @@
  */
 
 import type { Container } from "pixi.js";
-import { createSceneContext } from "../../shared/scene-context";
-import { setupCharacters } from "../shared/setup-characters";
-import { setupPlayerMovement } from "../shared/setup-player-movement";
-import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
-import {
-	createGameActionFacade,
-	type CharacterReference,
-} from "../../game/game-actions";
+import type { CharacterReference } from "../../game/game-actions";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
-import {
-	createDebugPanel,
-	registerLiveMonitorTicker,
-	registerActionButtons,
-} from "../../debug/debug-panel";
-import { createGameStore, GAME_ACTORS } from "../../game/game-store";
-import { currentLanguage, setCurrentLanguage } from "../../engine/i18n";
+import { GAME_ACTORS } from "../../game/game-store";
+import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import {
-	trackDialogueShown,
 	trackDialogueAdvanced,
 	trackChoicesPresented,
 	trackChoiceSelected,
-	trackSceneCompleted,
 } from "../../analytics/posthog";
 import { translate } from "../shared/translate";
+import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
 import type { DemoDependencies, SceneCleanup } from "../shared/types";
+import { setupScene } from "../shared/setup-scene";
 
-const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
 const SCENE_UUID = LSDE_SCENES.simpleChoices;
 
 export async function runScene(
 	dependencies: DemoDependencies,
 ): Promise<SceneCleanup> {
-	const { pixiApplication, cameraState, worldContainer, dialogueEngine } =
-		dependencies;
+	const { pixiApplication, dialogueEngine } = dependencies;
 
-	const sceneContext = createSceneContext(pixiApplication);
 	const screenCenterX = pixiApplication.screen.width / 2;
 	const screenCenterY = pixiApplication.screen.height / 2;
 
-	// --- Characters: only l1 and l4 in this scene ---
-	const { characters, playerReference, npcObstacles } = await setupCharacters({
-		characterConfigurations: [
-			{
-				characterId: GAME_ACTORS.l1,
-				displayName: GAME_ACTORS.l1,
-				tintColor: 0xff6b6b,
-				startX: screenCenterX - 120,
-				startY: screenCenterY - 30,
-			},
-			{
-				characterId: GAME_ACTORS.l4,
-				displayName: GAME_ACTORS.l4,
-				tintColor: 0xffffff,
-				startX: screenCenterX + 80,
-				startY: screenCenterY + 40,
-			},
-		],
-		playerCharacterId: PLAYER_CHARACTER_ID,
-		worldContainer,
-		sceneContext,
-	});
-
-	// --- Player movement + collision + camera ---
-	setupPlayerMovement({
-		pixiApplication,
-		cameraState,
-		worldContainer,
-		playerReference,
-		npcObstacles,
-		sceneContext,
-	});
-
-	// --- Facade + debug ---
-	const gameStore = createGameStore();
-	const gameActions = createGameActionFacade({
-		pixiApplication,
-		cameraState,
-		worldContainer,
-		gameStore,
-		characters,
-	});
-
-	const debugPanelState = createDebugPanel({
-		onLanguageChanged: setCurrentLanguage,
-	});
-	registerLiveMonitorTicker(debugPanelState, pixiApplication);
-	registerActionButtons(debugPanelState, gameActions, TRIGGER_NPC_CHARACTER_ID);
-	sceneContext.addDisposable(() => debugPanelState.pane.dispose());
+	// --- Scene setup (characters, movement, debug panel) ---
+	const { characters, playerReference, gameActions, sceneContext, cleanup } =
+		await setupScene({
+			characterConfigurations: [
+				{
+					characterId: GAME_ACTORS.l1,
+					displayName: GAME_ACTORS.l1,
+					tintColor: 0xff6b6b,
+					startX: screenCenterX - 120,
+					startY: screenCenterY - 30,
+				},
+				{
+					characterId: GAME_ACTORS.l4,
+					displayName: GAME_ACTORS.l4,
+					tintColor: 0xffffff,
+					startX: screenCenterX + 80,
+					startY: screenCenterY + 40,
+				},
+			],
+			triggerId: TRIGGER_NPC_CHARACTER_ID,
+			pixiApplication,
+			cameraState: dependencies.cameraState,
+			worldContainer: dependencies.worldContainer,
+		});
 
 	// ---------------------------------------------------------------------------
 	// Dialogue + choice state
@@ -112,6 +72,28 @@ export async function runScene(
 	let currentBubbleHandle: BubbleTextHandle | null = null;
 	let currentAdvanceFunction: (() => void) | null = null;
 	let currentChoiceBoxContainer: Container | null = null;
+
+	// ---------------------------------------------------------------------------
+	// Cleanup helpers
+	// ---------------------------------------------------------------------------
+
+	function cleanupCurrentBubble(): void {
+		if (currentBubbleHandle) {
+			gameActions.removeBubbleFromWorld(currentBubbleHandle);
+			currentBubbleHandle = null;
+		}
+	}
+
+	function cleanupCurrentChoiceBox(): void {
+		if (currentChoiceBoxContainer) {
+			currentChoiceBoxContainer.destroy({ children: true });
+			currentChoiceBoxContainer = null;
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// Dialogue handlers
+	// ---------------------------------------------------------------------------
 
 	function startDialogueScene(): void {
 		const sceneHandle = dialogueEngine.scene(SCENE_UUID);
@@ -129,7 +111,6 @@ export async function runScene(
 
 			currentAdvanceFunction = next;
 
-			trackDialogueShown("simple-choices", block.uuid, characterId);
 
 			if (characterId && characters.has(characterId)) {
 				currentBubbleHandle = gameActions.showBubbleOnCharacter(
@@ -140,10 +121,7 @@ export async function runScene(
 			}
 
 			return () => {
-				if (currentBubbleHandle) {
-					gameActions.removeBubbleFromWorld(currentBubbleHandle);
-					currentBubbleHandle = null;
-				}
+				cleanupCurrentBubble();
 				currentAdvanceFunction = null;
 			};
 		});
@@ -207,41 +185,25 @@ export async function runScene(
 			}
 
 			return () => {
-				if (currentChoiceBoxContainer) {
-					currentChoiceBoxContainer.destroy({ children: true });
-					currentChoiceBoxContainer = null;
-				}
+				cleanupCurrentChoiceBox();
 			};
 		});
 
 		sceneHandle.onExit(() => {
+			cleanupCurrentBubble();
+			cleanupCurrentChoiceBox();
 			currentAdvanceFunction = null;
-			currentBubbleHandle = null;
-			currentChoiceBoxContainer = null;
-			trackSceneCompleted("simple-choices");
 		});
 
 		sceneHandle.start();
 	}
-
-	// --- Dialogue trigger: proximity + click on NPC ---
-	const triggerNpcReference = characters.get(
-		TRIGGER_NPC_CHARACTER_ID,
-	) as CharacterReference;
-
-	setupDialogueTrigger({
-		playerReference,
-		triggerNpcReference,
-		sceneContext,
-		onTrigger: startDialogueScene,
-	});
 
 	// --- Click: advance dialogue or skip typewriter ---
 	//
 	// This handler only fires for DIALOG blocks (not CHOICE blocks).
 	// When a choice-box is on screen, the player interacts with it directly
 	// via the choice buttons — no need to handle clicks here.
-	const onPointerDownForDialogue = () => {
+	function onPointerDownForDialogue(): void {
 		if (!currentAdvanceFunction) return;
 
 		if (
@@ -253,17 +215,26 @@ export async function runScene(
 			trackDialogueAdvanced("simple-choices", "broadcast");
 			currentAdvanceFunction();
 		}
-	};
+	}
+
+	// ---------------------------------------------------------------------------
+	// Wiring: connect dialogue trigger + pointer listener
+	// ---------------------------------------------------------------------------
+	const triggerNpcReference = characters.get(
+		TRIGGER_NPC_CHARACTER_ID,
+	) as CharacterReference;
+
+	setupDialogueTrigger({
+		playerReference,
+		triggerNpcReference,
+		sceneContext,
+		onTrigger: startDialogueScene,
+	});
 
 	sceneContext.addStageListener(
 		"pointerdown",
 		onPointerDownForDialogue as (...args: unknown[]) => void,
 	);
 
-	return {
-		teardown: () => {
-			sceneContext.dispose();
-			characters.clear();
-		},
-	};
+	return cleanup;
 }

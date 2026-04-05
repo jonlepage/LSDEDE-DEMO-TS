@@ -10,16 +10,13 @@ import { createGameActionFacade } from "../../game/game-actions";
 import { GAME_ACTORS, createGameStore } from "../../game/game-store";
 import { setupPlayerMovement } from "./setup-player-movement";
 import type { CollidableSprite } from "../../renderer/collision";
-import { setupDialogueTrigger } from "./setup-dialogue-trigger";
 import type { SceneCleanup } from "./types";
 interface SetupSceneParams {
 	pixiApplication: Application;
 	cameraState: CameraState;
 	worldContainer: Container;
 	triggerId: string;
-	characterConfigurations: ReadonlyArray<CharacterConfiguration>
-	startDialogueScene: () => void;
-	onPointerDownForDialogue: (event: unknown) => void;
+	characterConfigurations: ReadonlyArray<CharacterConfiguration>;
 }
 
 interface SetupSceneResult {
@@ -37,10 +34,9 @@ interface SetupSceneResult {
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 
 export async function setupScene(params: SetupSceneParams): Promise<SetupSceneResult> {
-	const { 
-		pixiApplication, 
-		cameraState, worldContainer, triggerId, characterConfigurations, 
-		startDialogueScene, onPointerDownForDialogue, 
+	const {
+		pixiApplication,
+		cameraState, worldContainer, triggerId, characterConfigurations,
 	} = params;
 	const sceneContext = createSceneContext(pixiApplication);
 
@@ -80,27 +76,7 @@ export async function setupScene(params: SetupSceneParams): Promise<SetupSceneRe
 	sceneContext.addDisposable(() => debugPanelState.pane.dispose());
 
 
-	// --- Dialogue trigger: proximity + Enter ---
-	const triggerNpcReference = characters.get(
-		triggerId,
-	) as CharacterReference;
-
-	setupDialogueTrigger({
-		playerReference,
-		triggerNpcReference,
-		sceneContext,
-		onTrigger: startDialogueScene,
-	});
-
-
-	sceneContext.addStageListener(
-		"pointerdown",
-		onPointerDownForDialogue,
-	);
-
-	
-	
-	return{
+	return {
 		characters,
 		playerReference,
 		npcObstacles,

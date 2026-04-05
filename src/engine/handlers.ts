@@ -14,7 +14,7 @@ import type {
 	RuntimeChoiceItem,
 	CleanupFn,
 } from "@lsde/dialog-engine";
-import { trackDialogueShown } from "../analytics/posthog";
+import { trackDialogueShown, trackSceneCompleted } from "../analytics/posthog";
 
 export interface DialogueDisplayRequest {
 	readonly characterId: string | undefined;
@@ -96,7 +96,6 @@ export function registerGlobalHandlers(
 	// A timeout of 0ms still defers to the next microtask, keeping the flow async-safe.
 	dialogueEngine.onBeforeBlock(({ block, resolve }) => {
 		const delayMs = block.nativeProperties?.delay ?? 0;
-		trackDialogueShown("simple-dialog-flow", block.label || block.uuid );
 		setTimeout(() => resolve(), delayMs);
 	});
 

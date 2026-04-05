@@ -29,23 +29,24 @@
 import { Graphics, Sprite, Text } from "pixi.js";
 import type { ConditionBlock } from "@lsde/dialog-engine";
 import { LsdeUtils } from "@lsde/dialog-engine";
-import { createSceneContext } from "../../shared/scene-context";
-import { setupCharacters } from "../shared/setup-characters";
-import { setupPlayerMovement } from "../shared/setup-player-movement";
-import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
-import { createGameActionFacade, type CharacterReference, type GameActionFacade } from "../../game/game-actions";
+import type { CharacterReference, GameActionFacade } from "../../game/game-actions";
 import { createMovementState } from "../../renderer/movement";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
-import { createDebugPanel, registerLiveMonitorTicker, registerActionButtons, refreshGameStoreBindings } from "../../debug/debug-panel";
-import { createGameStore, GAME_ACTORS } from "../../game/game-store";
-import { currentLanguage, setCurrentLanguage } from "../../engine/i18n";
+import { refreshGameStoreBindings } from "../../debug/debug-panel";
+import { GAME_ACTORS } from "../../game/game-store";
+import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
 import type { ExportCondition } from "../../../public/blueprints/blueprint.types";
-import { trackDialogueShown, trackDialogueAdvanced, trackConditionEvaluated, trackItemPickedUp, trackSceneCompleted } from "../../analytics/posthog";
+import {
+	trackDialogueAdvanced,
+	trackConditionEvaluated,
+	trackItemPickedUp,
+} from "../../analytics/posthog";
 import { translate } from "../shared/translate";
+import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
 import type { DemoDependencies, SceneCleanup } from "../shared/types";
+import { setupScene } from "../shared/setup-scene";
 
-const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
 const SCENE_UUID = LSDE_SCENES.simpleCondition;
 const CARROT_ID = "carrot";
@@ -102,14 +103,16 @@ function evaluateGameCondition(condition: ExportCondition, gameActions: GameActi
 }
 
 export async function runScene(dependencies: DemoDependencies): Promise<SceneCleanup> {
-	const { pixiApplication, cameraState, worldContainer, dialogueEngine } = dependencies;
+	const { pixiApplication, dialogueEngine } = dependencies;
 
-	const sceneContext = createSceneContext(pixiApplication);
 	const screenCenterX = pixiApplication.screen.width / 2;
 	const screenCenterY = pixiApplication.screen.height / 2;
 
-	// --- Characters: l1 (NPC) + l4 (player) ---
-	const { characters, playerReference, npcObstacles } = await setupCharacters({
+	// --- Scene setup (characters, movement, debug panel) ---
+	const {
+		characters, playerReference, gameStore, gameActions,
+		debugPanelState, sceneContext, cleanup,
+	} = await setupScene({
 		characterConfigurations: [
 			{
 				characterId: GAME_ACTORS.l1,
@@ -126,39 +129,15 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 				startY: screenCenterY + 40,
 			},
 		],
-		playerCharacterId: PLAYER_CHARACTER_ID,
-		worldContainer,
-		sceneContext,
-	});
-
-	// --- Player movement + collision + camera ---
-	setupPlayerMovement({
+		triggerId: TRIGGER_NPC_CHARACTER_ID,
 		pixiApplication,
-		cameraState,
-		worldContainer,
-		playerReference,
-		npcObstacles,
-		sceneContext,
+		cameraState: dependencies.cameraState,
+		worldContainer: dependencies.worldContainer,
 	});
 
-	// --- Facade + debug ---
-	const gameStore = createGameStore();
-	const gameActions = createGameActionFacade({
-		pixiApplication,
-		cameraState,
-		worldContainer,
-		gameStore,
-		characters,
-	});
-
-	const debugPanelState = createDebugPanel({
-		onLanguageChanged: setCurrentLanguage,
-	});
-	registerLiveMonitorTicker(debugPanelState, pixiApplication);
-	registerActionButtons(debugPanelState, gameActions, TRIGGER_NPC_CHARACTER_ID);
+	// --- Demo-specific setup: inventory debug + carrot pickup ---
 	refreshGameStoreBindings(debugPanelState, gameStore);
 
-	// --- Inventory debug buttons ---
 	const inventoryFolder = debugPanelState.pane.addFolder({
 		title: "Inventory",
 		expanded: true,
@@ -171,8 +150,6 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 		gameActions.removeItem(CARROT_ID);
 		refreshGameStoreBindings(debugPanelState, gameStore);
 	});
-
-	sceneContext.addDisposable(() => debugPanelState.pane.dispose());
 
 	// --- Carrot item: a pickable orange rectangle on the scene ---
 	// The carrot is registered as a "character" so the facade can camera-target it.
@@ -187,7 +164,7 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 	carrotSprite.position.set(screenCenterX + 200, screenCenterY + 10);
 	carrotSprite.scale.set(2);
 	carrotSprite.label = CARROT_ID;
-	sceneContext.addSprite(carrotSprite, worldContainer);
+	sceneContext.addSprite(carrotSprite, dependencies.worldContainer);
 
 	const carrotReference: CharacterReference = {
 		characterId: CARROT_ID,
@@ -234,10 +211,26 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 		carrotSprite.destroy({ children: true });
 	});
 
-	// --- Dialogue state ---
-	let isDialogueActive = false;
+	// ---------------------------------------------------------------------------
+	// Dialogue state
+	// ---------------------------------------------------------------------------
 	let currentBubbleHandle: BubbleTextHandle | null = null;
 	let currentAdvanceFunction: (() => void) | null = null;
+
+	// ---------------------------------------------------------------------------
+	// Cleanup helpers
+	// ---------------------------------------------------------------------------
+
+	function cleanupCurrentBubble(): void {
+		if (currentBubbleHandle) {
+			gameActions.removeBubbleFromWorld(currentBubbleHandle);
+			currentBubbleHandle = null;
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// Dialogue handlers
+	// ---------------------------------------------------------------------------
 
 	function startDialogueScene(): void {
 		const sceneHandle = dialogueEngine.scene(SCENE_UUID);
@@ -253,20 +246,14 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 				return;
 			}
 
-			isDialogueActive = true;
 			currentAdvanceFunction = next;
 
-		
 			if (characterId && characters.has(characterId)) {
 				currentBubbleHandle = gameActions.showBubbleOnCharacter(characterId, characterName, dialogueText);
 			}
 
 			return () => {
-				if (currentBubbleHandle) {
-					gameActions.removeBubbleFromWorld(currentBubbleHandle);
-					currentBubbleHandle = null;
-				}
-				isDialogueActive = false;
+				cleanupCurrentBubble();
 				currentAdvanceFunction = null;
 			};
 		});
@@ -294,17 +281,28 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 		});
 
 		sceneHandle.onExit(() => {
-			isDialogueActive = false;
+			cleanupCurrentBubble();
 			currentAdvanceFunction = null;
-			currentBubbleHandle = null;
 			dialogueTriggerHandle.resetTrigger();
-			trackSceneCompleted("simple-condition");
 		});
 
 		sceneHandle.start();
 	}
 
-	// --- Dialogue trigger ---
+	function onPointerDownForDialogue(): void {
+		if (!currentAdvanceFunction) return;
+
+		if (currentBubbleHandle && !currentBubbleHandle.typewriterState.isComplete) {
+			currentBubbleHandle.skipTypewriter();
+		} else {
+			trackDialogueAdvanced("simple-condition", "broadcast");
+			currentAdvanceFunction();
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// Wiring: connect dialogue trigger + pointer listener
+	// ---------------------------------------------------------------------------
 	const triggerNpcReference = characters.get(TRIGGER_NPC_CHARACTER_ID) as CharacterReference;
 
 	const dialogueTriggerHandle = setupDialogueTrigger({
@@ -314,24 +312,7 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 		onTrigger: startDialogueScene,
 	});
 
-	// --- Click: advance dialogue when active ---
-	const onPointerDownForDialogue = () => {
-		if (!isDialogueActive || !currentAdvanceFunction) return;
-
-		if (currentBubbleHandle && !currentBubbleHandle.typewriterState.isComplete) {
-			currentBubbleHandle.skipTypewriter();
-		} else {
-			trackDialogueAdvanced("simple-condition", "broadcast");
-			currentAdvanceFunction();
-		}
-	};
-
 	sceneContext.addStageListener("pointerdown", onPointerDownForDialogue as (...args: unknown[]) => void);
 
-	return {
-		teardown: () => {
-			sceneContext.dispose();
-			characters.clear();
-		},
-	};
+	return cleanup;
 }
