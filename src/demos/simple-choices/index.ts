@@ -12,11 +12,6 @@ import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
 import { GAME_ACTORS } from "../../game/game-store";
 import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
-import {
-	trackDialogueAdvanced,
-	trackChoicesPresented,
-	trackChoiceSelected,
-} from "../../analytics/posthog";
 import { translate } from "../shared/translate";
 import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
 import type { DemoDependencies, SceneCleanup } from "../shared/types";
@@ -73,10 +68,6 @@ export async function runScene(
 	let currentAdvanceFunction: (() => void) | null = null;
 	let currentChoiceBoxContainer: Container | null = null;
 
-	// ---------------------------------------------------------------------------
-	// Cleanup helpers
-	// ---------------------------------------------------------------------------
-
 	function cleanupCurrentBubble(): void {
 		if (currentBubbleHandle) {
 			gameActions.removeBubbleFromWorld(currentBubbleHandle);
@@ -90,18 +81,14 @@ export async function runScene(
 			currentChoiceBoxContainer = null;
 		}
 	}
-
-	// ---------------------------------------------------------------------------
-	// Dialogue handlers
-	// ---------------------------------------------------------------------------
-
+ 
 	function startDialogueScene(): void {
-		const sceneHandle = dialogueEngine.scene(SCENE_UUID);
+		const scene = dialogueEngine.scene(SCENE_UUID);
 
 		// --- DIALOG handler: show speech bubble, wait for click to advance ---
-		sceneHandle.onDialog(({ block, context, next }) => {
+		scene.onDialog(({ block, context, next }) => {
 			const dialogueText = translate(block.dialogueText, currentLanguage);
-			const characterId = context.character?.id;
+			const characterId = context.character?.id ?? "";
 			const characterName = context.character?.name ?? "???";
 
 			if (!dialogueText.trim()) {
@@ -112,7 +99,7 @@ export async function runScene(
 			currentAdvanceFunction = next;
 
 
-			if (characterId && characters.has(characterId)) {
+			if (characters.has(characterId)) {
 				currentBubbleHandle = gameActions.showBubbleOnCharacter(
 					characterId,
 					characterName,
@@ -120,7 +107,7 @@ export async function runScene(
 				);
 			}
 
-			return () => {
+			return function cleanup() {
 				cleanupCurrentBubble();
 				currentAdvanceFunction = null;
 			};
@@ -134,75 +121,53 @@ export async function runScene(
 		//   1. context.selectChoice(uuid) — tells LSDE which port to follow
 		//   2. next() — advances the flow along the selected branch
 		//
-		// The cleanup function removes the choice-box when the block advances.
-		sceneHandle.onChoice(({ context, next }) => {
-			const characterId = context.character?.id;
+		
+		// This handler is called to resolve the choices and conditions of your game
+		// for simple choices we dont have condition to evaluate so we just return true or remove the handler entirely to show all choices by default
+		dialogueEngine.onResolveCondition(()=> true);
+
+		scene.onChoice(({ context, next }) => {
+			const characterId = context.character?.id ?? "";
 
 			// Filter to visible choices only (invisible choices have visible === false)
-			const visibleChoices = context.choices.filter(
-				(choice) => choice.visible !== false,
-			);
+			// The RuntimeChoice have already been processed by your handler onResolveCondition()
+			const choiceEntries = context.choices
+				.filter((choice) => choice.visible)
+				.map(({ uuid:choiceUuid, dialogueText }) => {
+					const text = translate(dialogueText, currentLanguage);
+					return { choiceUuid, text };
+				});
 
-			trackChoicesPresented(
-				"simple-choices",
-				"choice-block",
-				visibleChoices.length,
-			);
-
-			// RuntimeChoiceItem has dialogueText (localized map) and label.
-			// Some blueprints only export "content" (raw text) without localized maps,
-			// so we fall back through all available text sources.
-			const choiceEntries = visibleChoices.map((choice) => ({
-				choiceUuid: choice.uuid,
-				text:
-					choice.dialogueText?.[currentLanguage] ||
-					choice.label ||
-					(choice as unknown as { content?: string }).content ||
-					choice.uuid,
-			}));
+		
+			
 
 			// Show the choice-box above the character who is presenting the choice
-			if (characterId && characters.has(characterId)) {
+			// the demo dont handle system choice without game character
+			if ( characters.has(characterId)) {
 				currentChoiceBoxContainer = gameActions.showChoicesOnCharacter(
 					characterId,
 					choiceEntries,
-					(selectedChoiceUuid: string) => {
-						// Tell LSDE which choice was picked — the engine follows the
-						// connection whose fromPort matches this UUID.
-						const choiceIndex = choiceEntries.findIndex(
-							(entry) => entry.choiceUuid === selectedChoiceUuid,
-						);
-						trackChoiceSelected(
-							"simple-choices",
-							"choice-block",
-							selectedChoiceUuid,
-							choiceIndex,
-						);
-						context.selectChoice(selectedChoiceUuid);
+					function onSelectChoice(uuid) {
+						// register the choice uuid in the LSDEDE runtime and call next() to advance the flow
+						context.selectChoice(uuid);
 						next();
 					},
 				);
 			}
 
-			return () => {
+			return function cleanup() {
 				cleanupCurrentChoiceBox();
 			};
 		});
 
-		sceneHandle.onExit(() => {
+		scene.onExit(() => {
 			cleanupCurrentBubble();
 			cleanupCurrentChoiceBox();
 			currentAdvanceFunction = null;
 		});
 
-		sceneHandle.start();
+		scene.start();
 	}
-
-	// --- Click: advance dialogue or skip typewriter ---
-	//
-	// This handler only fires for DIALOG blocks (not CHOICE blocks).
-	// When a choice-box is on screen, the player interacts with it directly
-	// via the choice buttons — no need to handle clicks here.
 	function onPointerDownForDialogue(): void {
 		if (!currentAdvanceFunction) return;
 
@@ -212,7 +177,6 @@ export async function runScene(
 		) {
 			currentBubbleHandle.skipTypewriter();
 		} else {
-			trackDialogueAdvanced("simple-choices", "broadcast");
 			currentAdvanceFunction();
 		}
 	}
@@ -233,7 +197,7 @@ export async function runScene(
 
 	sceneContext.addStageListener(
 		"pointerdown",
-		onPointerDownForDialogue as (...args: unknown[]) => void,
+		onPointerDownForDialogue,
 	);
 
 	return cleanup;

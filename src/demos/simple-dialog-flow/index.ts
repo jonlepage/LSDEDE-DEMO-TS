@@ -11,9 +11,6 @@ import type { CharacterReference } from "../../game/game-actions";
 import { GAME_ACTORS } from "../../game/game-store";
 import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
-import {
-	trackDialogueAdvanced,
-} from "../../analytics/posthog";
 import { translate } from "../shared/translate";
 import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
 import type { DemoDependencies, SceneCleanup } from "../shared/types";
@@ -71,6 +68,8 @@ export async function runScene(
 
 	// ---------------------------------------------------------------------------
 	// Dialogue state usually linked to your game states machine ECS,Store, etc.
+	// This architecture is suitable for a demo, but not for a real game.
+	// no cleancode or SOLID, but it has the advantage of being straightforward and easy to understand.
 	// ---------------------------------------------------------------------------
 	let activeBubbleHandle: BubbleTextHandle | null = null;
 	let advanceDialogue: (() => void) | null = null;
@@ -87,12 +86,12 @@ export async function runScene(
 
 		scene.onDialog(({ block, context, next }) => {
 			const dialogueText = translate(block.dialogueText, currentLanguage);
-			const characterId = context.character?.id;
+			const characterId = context.character?.id ?? "";
 			const characterName = context.character?.name ?? "???";
 
 			advanceDialogue = next;
 
-			if (characterId && characters.has(characterId)) {
+			if ( characters.has(characterId) ) {
 				activeBubbleHandle = gameActions.showBubbleOnCharacter(
 					characterId,
 					characterName,
@@ -100,7 +99,7 @@ export async function runScene(
 				);
 			}
 
-			return () => {
+			return function cleanup() {
 				cleanupCurrentBubble();
 				advanceDialogue = null;
 			};
@@ -123,7 +122,6 @@ export async function runScene(
 		) {
 			activeBubbleHandle.skipTypewriter();
 		} else {
-			trackDialogueAdvanced("simple-dialog-flow", "broadcast");
 			advanceDialogue();
 		}
 	}
@@ -144,7 +142,7 @@ export async function runScene(
 
 	sceneContext.addStageListener(
 		"pointerdown",
-		onPointerDownForDialogue as (...args: unknown[]) => void,
+		onPointerDownForDialogue,
 	);
 
 	return cleanup;

@@ -60,7 +60,6 @@ import { refreshGameStoreBindings } from "../../debug/debug-panel";
 import { GAME_ACTORS } from "../../game/game-store";
 import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
-import type { ExportCondition } from "../../../public/blueprints/blueprint.types";
 import {
 	trackDialogueAdvanced,
 	trackConditionEvaluated,
@@ -69,6 +68,7 @@ import {
 	trackPartyMemberRecruited,
 } from "../../analytics/posthog";
 import { translate } from "../shared/translate";
+import { evaluateGameCondition } from "../shared/evaluate-game-condition";
 import type { DemoDependencies, SceneCleanup } from "../shared/types";
 import { setupScene } from "../shared/setup-scene";
 
@@ -141,87 +141,6 @@ const NPC_MOVEMENT_PROFILES: Record<
 	[GAME_ACTORS.l2]: { speed: 3.2, hopStride: 34, hopHeight: 4 },
 	[GAME_ACTORS.l3]: { speed: 3.9, hopStride: 22, hopHeight: 5.5 },
 };
-
-// ---------------------------------------------------------------------------
-// Condition evaluator — maps LSDE condition keys to game facade lookups.
-// ---------------------------------------------------------------------------
-// This demo adds the "party" dictionary group alongside the standard ones.
-// Blueprint conditions use operator "=" (single equals) for boolean equality.
-// ---------------------------------------------------------------------------
-
-function evaluateGameCondition(
-	condition: ExportCondition,
-	gameActions: GameActionFacade,
-): boolean {
-	const { key, operator, value } = condition;
-	const dotIndex = key.indexOf(".");
-	const dictionaryGroup = dotIndex !== -1 ? key.slice(0, dotIndex) : "";
-	const itemKey = dotIndex !== -1 ? key.slice(dotIndex + 1) : key;
-
-	switch (dictionaryGroup) {
-	case "party": {
-		const isMember = gameActions.isInParty(itemKey);
-		const expectedTrue = value === "true" || value === "1";
-		switch (operator) {
-		case "=":
-		case "==":
-			return isMember === expectedTrue;
-		case "!=":
-			return isMember !== expectedTrue;
-		default:
-			console.warn(
-				`[condition-dispatch] Unknown party operator: "${operator}"`,
-			);
-			return false;
-		}
-	}
-	case "inventory": {
-		const currentValue = gameActions.getItemQuantity(itemKey);
-		const targetValue = Number(value);
-		switch (operator) {
-		case "=":
-		case "==":
-			return currentValue === targetValue;
-		case "!=":
-			return currentValue !== targetValue;
-		case ">=":
-			return currentValue >= targetValue;
-		case "<=":
-			return currentValue <= targetValue;
-		case ">":
-			return currentValue > targetValue;
-		case "<":
-			return currentValue < targetValue;
-		default:
-			return false;
-		}
-	}
-	default: {
-		const currentValue = gameActions.getVariable(key);
-		const targetValue = Number(value);
-		switch (operator) {
-		case "=":
-		case "==":
-			return currentValue === targetValue;
-		case "!=":
-			return currentValue !== targetValue;
-		case ">=":
-			return currentValue >= targetValue;
-		case "<=":
-			return currentValue <= targetValue;
-		case ">":
-			return currentValue > targetValue;
-		case "<":
-			return currentValue < targetValue;
-		default:
-			console.warn(
-				`[condition-dispatch] Unknown operator: "${operator}" in key "${key}"`,
-			);
-			return false;
-		}
-	}
-	}
-}
 
 export async function runScene(
 	dependencies: DemoDependencies,

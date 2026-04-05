@@ -26,84 +26,29 @@
  * ---------------------------------------------------------------------------
  */
 
-import { Graphics, Sprite, Text } from "pixi.js";
 import type { ConditionBlock } from "@lsde/dialog-engine";
 import { LsdeUtils } from "@lsde/dialog-engine";
-import type { CharacterReference, GameActionFacade } from "../../game/game-actions";
-import { createMovementState } from "../../renderer/movement";
+import type { CharacterReference } from "../../game/game-actions";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
-import { refreshGameStoreBindings } from "../../debug/debug-panel";
 import { GAME_ACTORS } from "../../game/game-store";
 import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
-import type { ExportCondition } from "../../../public/blueprints/blueprint.types";
 import {
 	trackDialogueAdvanced,
 	trackConditionEvaluated,
-	trackItemPickedUp,
 } from "../../analytics/posthog";
 import { translate } from "../shared/translate";
+import { evaluateGameCondition } from "../shared/evaluate-game-condition";
 import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
 import type { DemoDependencies, SceneCleanup } from "../shared/types";
 import { setupScene } from "../shared/setup-scene";
+import { setupPickableCarrot } from "./setup-pickable-carrot";
 
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
 const SCENE_UUID = LSDE_SCENES.simpleCondition;
-const CARROT_ID = "carrot";
-const CARROT_PICKUP_DISTANCE = 60;
-
-// ---------------------------------------------------------------------------
-// Condition evaluator — maps LSDE condition keys to game facade lookups.
-// ---------------------------------------------------------------------------
-// Each condition from the blueprint has: { key, operator, value }
-//   - key:      a dot-separated path like "inventory.carrot" or "variables.score"
-//   - operator: a comparison string like ">=", "==", "!="
-//   - value:    the expected value as a string (always string in the export)
-//
-// The first segment of the key identifies the dictionary group (inventory,
-// variables, switches). The second segment is the item/variable name.
-// This is the bridge between LSDE's abstract conditions and your game's state.
-// ---------------------------------------------------------------------------
-
-function evaluateGameCondition(condition: ExportCondition, gameActions: GameActionFacade): boolean {
-	const { key, operator, value } = condition;
-	const dotIndex = key.indexOf(".");
-	const dictionaryGroup = dotIndex !== -1 ? key.slice(0, dotIndex) : "";
-	const itemKey = dotIndex !== -1 ? key.slice(dotIndex + 1) : key;
-
-	let currentValue: number;
-	switch (dictionaryGroup) {
-	case "inventory":
-		currentValue = gameActions.getItemQuantity(itemKey);
-		break;
-	default:
-		// Fall back to game variables for any non-inventory key.
-		currentValue = gameActions.getVariable(key);
-		break;
-	}
-
-	const targetValue = Number(value);
-	switch (operator) {
-	case ">=":
-		return currentValue >= targetValue;
-	case "<=":
-		return currentValue <= targetValue;
-	case ">":
-		return currentValue > targetValue;
-	case "<":
-		return currentValue < targetValue;
-	case "==":
-		return currentValue === targetValue;
-	case "!=":
-		return currentValue !== targetValue;
-	default:
-		console.warn(`[simple-condition] Unknown operator: "${operator}" in condition key "${key}"`);
-		return false;
-	}
-}
 
 export async function runScene(dependencies: DemoDependencies): Promise<SceneCleanup> {
-	const { pixiApplication, dialogueEngine } = dependencies;
+	const { pixiApplication, dialogueEngine, worldContainer, cameraState } = dependencies;
 
 	const screenCenterX = pixiApplication.screen.width / 2;
 	const screenCenterY = pixiApplication.screen.height / 2;
@@ -131,84 +76,22 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 		],
 		triggerId: TRIGGER_NPC_CHARACTER_ID,
 		pixiApplication,
-		cameraState: dependencies.cameraState,
-		worldContainer: dependencies.worldContainer,
+		cameraState,
+		worldContainer,
 	});
 
-	// --- Demo-specific setup: inventory debug + carrot pickup ---
-	refreshGameStoreBindings(debugPanelState, gameStore);
-
-	const inventoryFolder = debugPanelState.pane.addFolder({
-		title: "Inventory",
-		expanded: true,
-	});
-	inventoryFolder.addButton({ title: "Add Carrot" }).on("click", () => {
-		gameActions.addItem(CARROT_ID, "Carrot");
-		refreshGameStoreBindings(debugPanelState, gameStore);
-	});
-	inventoryFolder.addButton({ title: "Remove Carrot" }).on("click", () => {
-		gameActions.removeItem(CARROT_ID);
-		refreshGameStoreBindings(debugPanelState, gameStore);
-	});
-
-	// --- Carrot item: a pickable orange rectangle on the scene ---
-	// The carrot is registered as a "character" so the facade can camera-target it.
-	// Walking near it and clicking picks it up → adds to inventory.
-	const carrotGraphics = new Graphics();
-	carrotGraphics.rect(0, 0, 14, 22).fill(0xff8800);
-	const carrotTexture = pixiApplication.renderer.generateTexture(carrotGraphics);
-	carrotGraphics.destroy();
-
-	const carrotSprite = new Sprite(carrotTexture);
-	carrotSprite.anchor.set(0.5, 1);
-	carrotSprite.position.set(screenCenterX + 200, screenCenterY + 10);
-	carrotSprite.scale.set(2);
-	carrotSprite.label = CARROT_ID;
-	sceneContext.addSprite(carrotSprite, dependencies.worldContainer);
-
-	const carrotReference: CharacterReference = {
-		characterId: CARROT_ID,
-		sprite: carrotSprite,
-		movementState: createMovementState(0),
-	};
-	characters.set(CARROT_ID, carrotReference);
-
-	// Pickup hint — shown only when the player is in range.
-	const pickupHint = new Text({
-		text: "🥕 pick up!",
-		style: { fontSize: 12, fill: "#ffffff" },
-	});
-	pickupHint.anchor.set(0.5, 1);
-	pickupHint.position.set(0, -(carrotSprite.height / 2 + 4));
-	pickupHint.visible = false;
-	carrotSprite.addChild(pickupHint);
-
-	let carrotPickedUp = false;
-
-	function isPlayerNearCarrot(): boolean {
-		const deltaX = playerReference.sprite.x - carrotSprite.x;
-		const deltaY = playerReference.sprite.y - carrotSprite.y;
-		return Math.sqrt(deltaX * deltaX + deltaY * deltaY) < CARROT_PICKUP_DISTANCE;
-	}
-
-	// Show/hide hint based on proximity each frame.
-	sceneContext.addTickerCallback(() => {
-		if (!carrotPickedUp) {
-			pickupHint.visible = isPlayerNearCarrot();
-		}
-	});
-
-	// Click on carrot while in range to pick it up.
-	carrotSprite.eventMode = "static";
-	carrotSprite.cursor = "pointer";
-	carrotSprite.on("pointerdown", () => {
-		if (carrotPickedUp || !isPlayerNearCarrot()) return;
-		carrotPickedUp = true;
-		gameActions.addItem(CARROT_ID, "Carrot");
-		refreshGameStoreBindings(debugPanelState, gameStore);
-		trackItemPickedUp("simple-condition", CARROT_ID);
-		characters.delete(CARROT_ID);
-		carrotSprite.destroy({ children: true });
+	// --- Demo-specific: pickable carrot item + inventory debug buttons ---
+	setupPickableCarrot({
+		pixiApplication,
+		worldContainer,
+		playerReference,
+		characters,
+		sceneContext,
+		gameActions,
+		gameStore,
+		debugPanelState,
+		screenCenterX,
+		screenCenterY,
 	});
 
 	// ---------------------------------------------------------------------------
@@ -216,10 +99,6 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 	// ---------------------------------------------------------------------------
 	let currentBubbleHandle: BubbleTextHandle | null = null;
 	let currentAdvanceFunction: (() => void) | null = null;
-
-	// ---------------------------------------------------------------------------
-	// Cleanup helpers
-	// ---------------------------------------------------------------------------
 
 	function cleanupCurrentBubble(): void {
 		if (currentBubbleHandle) {
@@ -238,17 +117,12 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 		// --- DIALOG handler ---
 		sceneHandle.onDialog(({ block, context, next }) => {
 			const dialogueText = translate(block.dialogueText, currentLanguage);
-			const characterId = context.character?.id;
+			const characterId = context.character?.id ?? "";
 			const characterName = context.character?.name ?? "???";
-
-			if (!dialogueText.trim()) {
-				next();
-				return;
-			}
 
 			currentAdvanceFunction = next;
 
-			if (characterId && characters.has(characterId)) {
+			if (characters.has(characterId)) {
 				currentBubbleHandle = gameActions.showBubbleOnCharacter(characterId, characterName, dialogueText);
 			}
 
