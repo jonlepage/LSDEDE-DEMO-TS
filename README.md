@@ -73,7 +73,3 @@ Strict layer separation: `engine/`, `renderer/`, and `game/` never import from e
     <td align="center"><a href="https://jonlepage.github.io/LSDEDE-DEMO-TS/lsde-blueprint-6.webp"><img src="public/lsde-blueprint-sm-6.webp" alt="condition-dispatch" width="250"><br><b>condition-dispatch</b></a></td>
   </tr>
 </table>
-
-## License
-
-**Proprietary** — All rights reserved. This code is provided as educational reference material for LSDE Dialog Engine integration patterns. No permission is granted to use, copy, modify, or distribute this software without explicit written consent from the author.
