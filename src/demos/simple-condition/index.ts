@@ -26,17 +26,11 @@
  * ---------------------------------------------------------------------------
  */
 
-import type { ConditionBlock } from "@lsde/dialog-engine";
-import { LsdeUtils } from "@lsde/dialog-engine";
 import type { CharacterReference } from "../../game/game-actions";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
 import { GAME_ACTORS } from "../../game/game-store";
 import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
-import {
-	trackDialogueAdvanced,
-	trackConditionEvaluated,
-} from "../../analytics/posthog";
 import { translate } from "../shared/translate";
 import { evaluateGameCondition } from "../shared/evaluate-game-condition";
 import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
@@ -112,10 +106,10 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 	// ---------------------------------------------------------------------------
 
 	function startDialogueScene(): void {
-		const sceneHandle = dialogueEngine.scene(SCENE_UUID);
+		const scene = dialogueEngine.scene(SCENE_UUID);
 
 		// --- DIALOG handler ---
-		sceneHandle.onDialog(({ block, context, next }) => {
+		scene.onDialog(({ block, context, next }) => {
 			const dialogueText = translate(block.dialogueText, currentLanguage);
 			const characterId = context.character?.id ?? "";
 			const characterName = context.character?.name ?? "???";
@@ -132,35 +126,13 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 			};
 		});
 
-		// --- CONDITION handler ---
-		// This is the core of this demo. When LSDE dispatches a CONDITION block:
-		//   1. We receive block.conditions[] — a 2D array of ExportCondition groups
-		//   2. We evaluate each condition against our game state via evaluateGameCondition()
-		//   3. We use LsdeUtils.evaluateConditionGroups() to handle AND/OR chaining + group logic
-		//   4. We call context.resolve(result) to tell the engine which port to follow
-		//   5. We call next() to advance the flow
-		//
-		// For a single condition group (our case): resolve(true) → true port, resolve(false) → false port.
-		// For multiple groups (switch mode): resolve(matchingIndex) or resolve(-1) for default.
-		sceneHandle.onCondition(({ block, context, next }) => {
-			context.preventGlobalHandler();
-
-			const conditionBlock = block as ConditionBlock;
-
-			const result = LsdeUtils.evaluateConditionGroups(conditionBlock.conditions ?? [], (condition) => evaluateGameCondition(condition, gameActions), !!block.nativeProperties?.enableDispatcher);
-
-			context.resolve(result);
-			trackConditionEvaluated("simple-condition", block.uuid, result);
-			next();
-		});
-
-		sceneHandle.onExit(() => {
+		scene.onExit(() => {
 			cleanupCurrentBubble();
 			currentAdvanceFunction = null;
 			dialogueTriggerHandle.resetTrigger();
 		});
 
-		sceneHandle.start();
+		scene.start();
 	}
 
 	function onPointerDownForDialogue(): void {
@@ -169,14 +141,16 @@ export async function runScene(dependencies: DemoDependencies): Promise<SceneCle
 		if (currentBubbleHandle && !currentBubbleHandle.typewriterState.isComplete) {
 			currentBubbleHandle.skipTypewriter();
 		} else {
-			trackDialogueAdvanced("simple-condition", "broadcast");
 			currentAdvanceFunction();
 		}
 	}
 
-	// ---------------------------------------------------------------------------
-	// Wiring: connect dialogue trigger + pointer listener
-	// ---------------------------------------------------------------------------
+
+	// --- Condition resolver: pre-evaluates each atomic condition for CONDITION blocks ---
+	dialogueEngine.onResolveCondition(
+		(condition) => evaluateGameCondition(condition, gameActions),
+	);
+
 	const triggerNpcReference = characters.get(TRIGGER_NPC_CHARACTER_ID) as CharacterReference;
 
 	const dialogueTriggerHandle = setupDialogueTrigger({

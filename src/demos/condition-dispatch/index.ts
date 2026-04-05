@@ -45,9 +45,7 @@
  */
 
 import { Graphics, Sprite, Text } from "pixi.js";
-import type { ConditionBlock } from "@lsde/dialog-engine";
-import { LsdeUtils } from "@lsde/dialog-engine";
-import type { CharacterReference, GameActionFacade } from "../../game/game-actions";
+import type { CharacterReference } from "../../game/game-actions";
 import {
 	registerMovementTicker,
 	createMovementState,
@@ -60,69 +58,12 @@ import { refreshGameStoreBindings } from "../../debug/debug-panel";
 import { GAME_ACTORS } from "../../game/game-store";
 import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
-import {
-	trackDialogueAdvanced,
-	trackConditionEvaluated,
-	trackActionExecuted,
-	trackNpcInteraction,
-	trackPartyMemberRecruited,
-} from "../../analytics/posthog";
+
 import { translate } from "../shared/translate";
 import { evaluateGameCondition } from "../shared/evaluate-game-condition";
+import { executeAction, type BlueprintAction } from "../shared/execute-action";
 import type { DemoDependencies, SceneCleanup } from "../shared/types";
 import { setupScene } from "../shared/setup-scene";
-
-// ---------------------------------------------------------------------------
-// Lightweight action type — mirrors the shape LSDE puts in block.actions[].
-// ---------------------------------------------------------------------------
-interface BlueprintAction {
-	readonly actionId: string;
-	readonly params: readonly (string | number | boolean | null)[];
-}
-
-function executeAction(
-	action: BlueprintAction,
-	gameActions: GameActionFacade,
-): Promise<void> {
-	switch (action.actionId) {
-	case "shakeCamera": {
-		const intensity = action.params[0] as number;
-		const duration = action.params[1] as number;
-		return gameActions.shakeCamera(intensity, duration);
-	}
-
-	case "moveCameraToLabel": {
-		const targetLabel = action.params[0] as string;
-		const durationSeconds = action.params[1] as number | undefined;
-		return gameActions.moveCameraToCharacter(targetLabel, durationSeconds);
-	}
-
-	case "moveCharacterAt": {
-		const characterId = action.params[0] as string;
-		const offsetX = action.params[1] as number;
-		const offsetY = (action.params[2] as number) ?? 0;
-		const isAbsolute = action.params[3] === true;
-
-		if (isAbsolute) {
-			// Absolute mode: offsets are relative to the world center (screen center).
-			const worldCenterX = gameActions.getWorldCenter().x;
-			const worldCenterY = gameActions.getWorldCenter().y;
-			return gameActions.moveCharacterToWorldPosition(
-				characterId,
-				worldCenterX + offsetX,
-				worldCenterY + offsetY,
-			);
-		}
-		return gameActions.moveCharacterRelative(characterId, offsetX, offsetY);
-	}
-
-	default:
-		console.warn(
-			`[condition-dispatch] Unknown actionId: "${action.actionId}"`,
-		);
-		return Promise.resolve();
-	}
-}
 
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const SCENE_UUID = LSDE_SCENES.conditionDispatch;
@@ -141,6 +82,7 @@ const NPC_MOVEMENT_PROFILES: Record<
 	[GAME_ACTORS.l2]: { speed: 3.2, hopStride: 34, hopHeight: 4 },
 	[GAME_ACTORS.l3]: { speed: 3.9, hopStride: 22, hopHeight: 5.5 },
 };
+
 
 export async function runScene(
 	dependencies: DemoDependencies,
@@ -324,10 +266,8 @@ export async function runScene(
 		npcObstacles,
 		sceneContext,
 		gameActions,
-		onMemberRecruited: (characterId) => {
+		onMemberRecruited: () => {
 			refreshGameStoreBindings(debugPanelState, gameStore);
-			trackPartyMemberRecruited("condition-dispatch", characterId);
-			trackNpcInteraction("condition-dispatch", characterId, "recruitment");
 		},
 	});
 
@@ -338,9 +278,9 @@ export async function runScene(
 	const activeBubbles = new Map<string, BubbleTextHandle>();
 	const blocksWaitingForInput = new Map<string, () => void>();
 
-	// ---------------------------------------------------------------------------
-	// Cleanup helpers
-	// ---------------------------------------------------------------------------
+	dialogueEngine.onResolveCondition(
+		(condition) => evaluateGameCondition(condition, gameActions),
+	);
 
 	function cleanupAllActiveBubbles(): void {
 		for (const handle of activeBubbles.values()) {
@@ -357,7 +297,7 @@ export async function runScene(
 		isDialogueActive = true;
 		partyFollowHandle.pause();
 
-		const sceneHandle = dialogueEngine.scene(SCENE_UUID);
+		const scene = dialogueEngine.scene(SCENE_UUID);
 
 		// --- DIALOG handler (multi-track + delay-aware) ---
 		//
@@ -371,7 +311,7 @@ export async function runScene(
 		//
 		// Pattern matches multi-tracks demo: distinguish isAsync vs main track,
 		// and handle delay + timeout + waitInput correctly per block.
-		sceneHandle.onDialog(({ block, context, next }) => {
+		scene.onDialog(({ block, context, next }) => {
 			const dialogueText = translate(block.dialogueText, currentLanguage);
 			// DIALOG-004 has no character in blueprint metadata; fall back to player.
 			const characterId = context.character?.id ?? PLAYER_CHARACTER_ID;
@@ -446,38 +386,14 @@ export async function runScene(
 				}
 			};
 		});
-
-		// --- CONDITION handler ---
-		// Evaluates party membership for CONDITION-002 (gate) and CONDITION-001 (dispatcher).
-		// preventGlobalHandler() stops the global onCondition from resolving true by default.
-		sceneHandle.onCondition(({ block, context, next }) => {
-			context.preventGlobalHandler();
-
-			const conditionBlock = block as ConditionBlock;
-			const result = LsdeUtils.evaluateConditionGroups(
-				conditionBlock.conditions ?? [],
-				(condition) => evaluateGameCondition(condition, gameActions),
-				!!block.nativeProperties?.enableDispatcher,
-			);
-
-			context.resolve(result);
-			trackConditionEvaluated("condition-dispatch", block.uuid, result);
-			next();
-		});
-
+	
 		// --- ACTION handler ---
 		// Executes blueprint-defined actions (moveCharacterAt, shakeCamera, etc.)
 		// and waits for all of them to complete before advancing.
-		sceneHandle.onAction(({ block, context, next }) => {
+		scene.onAction(({ block, context, next }) => {
 			context.preventGlobalHandler();
 
-			trackActionExecuted(
-				"condition-dispatch",
-				block.uuid,
-				(block.actions ?? []).map(
-					(action) => (action as BlueprintAction).actionId,
-				),
-			);
+		
 
 			const actionPromises = (block.actions ?? []).map((action) =>
 				executeAction(action as BlueprintAction, gameActions),
@@ -494,14 +410,14 @@ export async function runScene(
 				.finally(() => next());
 		});
 
-		sceneHandle.onExit(() => {
+		scene.onExit(() => {
 			isDialogueActive = false;
 			cleanupAllActiveBubbles();
 			blocksWaitingForInput.clear();
 			partyFollowHandle.resume();
 		});
 
-		sceneHandle.start();
+		scene.start();
 	}
 
 	// --- Broadcast click: advance all waiting dialogue blocks at once ---
@@ -520,7 +436,6 @@ export async function runScene(
 			}
 		}
 
-		trackDialogueAdvanced("condition-dispatch", "broadcast");
 		const toAdvance = [...blocksWaitingForInput.values()];
 		blocksWaitingForInput.clear();
 		for (const advance of toAdvance) {
@@ -528,9 +443,7 @@ export async function runScene(
 		}
 	}
 
-	// ===========================================================================
-	// Wiring: carrot trigger + pointer listener
-	// ===========================================================================
+
 
 	// Clicking the ritual carrot starts the scene (proximity + not already active).
 	bigCarrotSprite.eventMode = "static";

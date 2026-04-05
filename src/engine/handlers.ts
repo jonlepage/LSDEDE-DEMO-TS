@@ -99,8 +99,20 @@ export function registerGlobalHandlers(
 		setTimeout(() => resolve(), delayMs);
 	});
 
-	dialogueEngine.onCondition(({ context, next }) => {
-		context.resolve(true);
+	// LSDEDE runtime manage this auto but we can also manualy hack and dispatch manualy
+	dialogueEngine.onCondition(({ block, context, next }) => {
+		const isDispatcher = !!block.nativeProperties?.enableDispatcher;
+
+		const matched = context.conditionGroups
+			.filter((c) => c.result)
+			.map((c) => c.portIndex);
+
+		const result = isDispatcher
+			? matched
+			: matched.at(0) ?? -1;
+
+		context.resolve(result);
+		
 		next();
 	});
 

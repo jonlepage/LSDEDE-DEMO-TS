@@ -28,9 +28,8 @@
  */
 
 import type { Container } from "pixi.js";
-import type { CharacterReference, GameActionFacade } from "../../game/game-actions";
+import type { CharacterReference } from "../../game/game-actions";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
-import { registerMovementTicker } from "../../renderer/movement";
 import { GAME_ACTORS } from "../../game/game-store";
 import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
@@ -41,6 +40,7 @@ import {
 	trackActionExecuted,
 } from "../../analytics/posthog";
 import { translate } from "../shared/translate";
+import { executeAction, type BlueprintAction } from "../shared/execute-action";
 import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
 import type { DemoDependencies, SceneCleanup } from "../shared/types";
 import { setupScene } from "../shared/setup-scene";
@@ -48,60 +48,6 @@ import { setupScene } from "../shared/setup-scene";
 const PLAYER_CHARACTER_ID = GAME_ACTORS.l4;
 const TRIGGER_NPC_CHARACTER_ID = GAME_ACTORS.l1;
 const SCENE_UUID = LSDE_SCENES.simpleAction;
-
-// ---------------------------------------------------------------------------
-// Action executor — maps LSDE actionIds to game facade calls.
-// ---------------------------------------------------------------------------
-// Each action from the blueprint has: { actionId, params[] }
-// The executor returns a Promise so the handler can await completion.
-// This is the bridge between LSDE's abstract actions and your game's concrete API.
-//
-// If you add a new action signature in LSDE, you add a case here.
-// The params array order matches the signature definition in your LSDE project.
-// ---------------------------------------------------------------------------
-
-interface BlueprintAction {
-	// string instead of lsdeActionId — native LSDE actions (e.g. "shakeCamera")
-	// are not included in the auto-generated lsdeActionId union type.
-	readonly actionId: string;
-	readonly params: readonly (string | number | boolean)[];
-}
-
-function executeAction(
-	action: BlueprintAction,
-	gameActions: GameActionFacade,
-): Promise<void> {
-	switch (action.actionId) {
-	case "shakeCamera": {
-		const intensity = action.params[0] as number;
-		const duration = action.params[1] as number;
-		return gameActions.shakeCamera(intensity, duration);
-	}
-
-	case "moveCameraToLabel": {
-		// In our demo, "labels" are character IDs — the narrative designer
-		// placed camera targets on characters. A real game might have named
-		// waypoints, but for this demo characters ARE the labels.
-		// params[1] is an optional duration in seconds from the blueprint.
-		const targetLabel = action.params[0] as string;
-		const durationSeconds = action.params[1] as number | undefined;
-		return gameActions.moveCameraToCharacter(targetLabel, durationSeconds);
-	}
-
-	case "moveCharacterAt": {
-		// Moves a character relative to its current position.
-		// params[0] = characterId, params[1] = offsetX, params[2] = offsetY (optional)
-		const characterId = action.params[0] as string;
-		const offsetX = action.params[1] as number;
-		const offsetY = (action.params[2] as number) ?? 0;
-		return gameActions.moveCharacterRelative(characterId, offsetX, offsetY);
-	}
-
-	default:
-		console.warn(`[simple-action] Unknown actionId: "${action.actionId}"`);
-		return Promise.resolve();
-	}
-}
 
 export async function runScene(
 	dependencies: DemoDependencies,
@@ -139,25 +85,11 @@ export async function runScene(
 				},
 			],
 			triggerId: TRIGGER_NPC_CHARACTER_ID,
+			registerNpcMovementTickers: true,
 			pixiApplication,
 			cameraState: dependencies.cameraState,
 			worldContainer: dependencies.worldContainer,
 		});
-
-	// --- NPC movement tickers ---
-	// The player gets a movement ticker via setupPlayerMovement (with collision).
-	// NPCs need their own ticker so moveCharacterRelative() actually moves them.
-	// Without this, setMovementTarget() sets a target but nothing processes it.
-	for (const [characterId, characterRef] of characters) {
-		if (characterId !== PLAYER_CHARACTER_ID) {
-			const unregisterNpcMovement = registerMovementTicker(
-				pixiApplication,
-				characterRef.sprite,
-				characterRef.movementState,
-			);
-			sceneContext.addDisposable(unregisterNpcMovement);
-		}
-	}
 
 	// ---------------------------------------------------------------------------
 	// Dialogue + action state — multi-track aware

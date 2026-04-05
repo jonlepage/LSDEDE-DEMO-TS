@@ -9,6 +9,7 @@ import type { CharacterReference } from "../../game/game-actions";
 import { createGameActionFacade } from "../../game/game-actions";
 import { GAME_ACTORS, createGameStore } from "../../game/game-store";
 import { setupPlayerMovement } from "./setup-player-movement";
+import { registerMovementTicker } from "../../renderer/movement";
 import type { CollidableSprite } from "../../renderer/collision";
 import type { SceneCleanup } from "./types";
 interface SetupSceneParams {
@@ -17,6 +18,8 @@ interface SetupSceneParams {
 	worldContainer: Container;
 	triggerId: string;
 	characterConfigurations: ReadonlyArray<CharacterConfiguration>;
+	/** When true, registers a movement ticker for each NPC so moveCharacterRelative() works. */
+	registerNpcMovementTickers?: boolean;
 }
 
 interface SetupSceneResult {
@@ -37,6 +40,7 @@ export async function setupScene(params: SetupSceneParams): Promise<SetupSceneRe
 	const {
 		pixiApplication,
 		cameraState, worldContainer, triggerId, characterConfigurations,
+		registerNpcMovementTickers = false,
 	} = params;
 	const sceneContext = createSceneContext(pixiApplication);
 
@@ -47,6 +51,22 @@ export async function setupScene(params: SetupSceneParams): Promise<SetupSceneRe
 		worldContainer,
 		sceneContext,
 	});
+
+	// --- NPC movement tickers (optional) ---
+	// When enabled, each NPC gets a movement ticker so moveCharacterRelative() works.
+	// Without this, setMovementTarget() sets a target but nothing processes it.
+	if (registerNpcMovementTickers) {
+		for (const [characterId, characterRef] of characters) {
+			if (characterId !== PLAYER_CHARACTER_ID) {
+				const unregisterNpcMovement = registerMovementTicker(
+					pixiApplication,
+					characterRef.sprite,
+					characterRef.movementState,
+				);
+				sceneContext.addDisposable(unregisterNpcMovement);
+			}
+		}
+	}
 
 	// --- Player movement + collision + camera ---
 	setupPlayerMovement({
