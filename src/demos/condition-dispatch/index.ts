@@ -44,21 +44,17 @@
  * ---------------------------------------------------------------------------
  */
 
-import { Graphics, Sprite, Text } from "pixi.js";
+import { Graphics, Sprite } from "pixi.js";
 import type { CharacterReference } from "../../game/game-actions";
-import {
-	registerMovementTicker,
-	createMovementState,
-} from "../../renderer/movement";
-import { createCollidable, resolveCollisions } from "../../renderer/collision";
+import { createMovementState } from "../../renderer/movement";
 import type { BubbleTextHandle } from "../../renderer/ui/bubble-text";
 import { setupPartyRecruitment } from "../shared/setup-party-recruitment";
 import { setupPartyFollow } from "../shared/setup-party-follow";
+import { setupDialogueTrigger } from "../shared/setup-dialogue-trigger";
 import { refreshGameStoreBindings } from "../../debug/debug-panel";
 import { GAME_ACTORS } from "../../game/game-store";
 import { currentLanguage } from "../../engine/i18n";
 import { LSDE_SCENES } from "../../../public/blueprints/blueprint.enums";
-
 import { translate } from "../shared/translate";
 import { evaluateGameCondition } from "../shared/evaluate-game-condition";
 import { executeAction, type BlueprintAction } from "../shared/execute-action";
@@ -70,19 +66,6 @@ const SCENE_UUID = LSDE_SCENES.conditionDispatch;
 const PARTY_NPC_IDS = [
 	GAME_ACTORS.l1, GAME_ACTORS.l2, GAME_ACTORS.l3,
 ] as const;
-const BIG_CARROT_INTERACT_DISTANCE = 90;
-
-// Per-NPC movement personalities — varied speed and hop parameters so
-// followers don't all bounce in lockstep.
-const NPC_MOVEMENT_PROFILES: Record<
-	string,
-	{ speed: number; hopStride: number; hopHeight: number }
-> = {
-	[GAME_ACTORS.l1]: { speed: 3.6, hopStride: 26, hopHeight: 6 },
-	[GAME_ACTORS.l2]: { speed: 3.2, hopStride: 34, hopHeight: 4 },
-	[GAME_ACTORS.l3]: { speed: 3.9, hopStride: 22, hopHeight: 5.5 },
-};
-
 
 export async function runScene(
 	dependencies: DemoDependencies,
@@ -92,7 +75,7 @@ export async function runScene(
 	const screenCenterX = pixiApplication.screen.width / 2;
 	const screenCenterY = pixiApplication.screen.height / 2;
 
-	// --- Scene setup (characters, movement, debug panel) ---
+	// --- Scene setup (characters with movement profiles, movement, debug panel) ---
 	const {
 		characters, playerReference, npcObstacles,
 		gameStore, gameActions, debugPanelState, sceneContext, cleanup,
@@ -104,6 +87,7 @@ export async function runScene(
 				tintColor: 0xff4444,
 				startX: screenCenterX - 560,
 				startY: screenCenterY + 60,
+				movementProfile: { speed: 3.6, hopStride: 26, hopHeight: 6 },
 			},
 			{
 				characterId: GAME_ACTORS.l2,
@@ -111,6 +95,7 @@ export async function runScene(
 				tintColor: 0xffcc00,
 				startX: screenCenterX - 740,
 				startY: screenCenterY + 20,
+				movementProfile: { speed: 3.2, hopStride: 34, hopHeight: 4 },
 			},
 			{
 				characterId: GAME_ACTORS.l3,
@@ -118,6 +103,7 @@ export async function runScene(
 				tintColor: 0x4488ff,
 				startX: screenCenterX + -850,
 				startY: screenCenterY - 80,
+				movementProfile: { speed: 3.9, hopStride: 22, hopHeight: 5.5 },
 			},
 			{
 				characterId: GAME_ACTORS.l4,
@@ -134,61 +120,10 @@ export async function runScene(
 	});
 
 	// ===========================================================================
-	// Demo-specific setup (party mechanics, NPC movement, ritual carrot)
+	// Demo-specific setup (party mechanics, ritual carrot)
 	// ===========================================================================
 
-	// --- NPC movement tickers (with per-character hop variation + collision) ---
-	// Build per-NPC collidable list: each NPC collides with the player + other NPCs.
-	const playerCollidable = createCollidable(playerReference.sprite);
-
-	for (const characterId of PARTY_NPC_IDS) {
-		const characterRef = characters.get(characterId) as CharacterReference;
-		const profile = NPC_MOVEMENT_PROFILES[characterId];
-		if (profile) {
-			const customMovementState = createMovementState({
-				movementSpeed: profile.speed,
-				hopStrideDistance: profile.hopStride,
-				hopMaxHeight: profile.hopHeight,
-			});
-			// Seed a random distanceSinceLastHop so hops start at different phases.
-			customMovementState.distanceSinceLastHop =
-				Math.random() * customMovementState.hopStrideDistance;
-			characters.set(characterId, {
-				characterId: characterRef.characterId,
-				sprite: characterRef.sprite,
-				movementState: customMovementState,
-			});
-		}
-
-		const finalRef = characters.get(characterId) as CharacterReference;
-		const npcCollidable = createCollidable(finalRef.sprite);
-
-		// Obstacles for this NPC: every other NPC + the player.
-		const obstaclesForThisNpc = [
-			playerCollidable,
-			...PARTY_NPC_IDS.filter((id) => id !== characterId)
-				.map((id) => characters.get(id))
-				.filter((ref): ref is CharacterReference => !!ref)
-				.map((ref) => createCollidable(ref.sprite)),
-		];
-
-		const unregisterNpcMovement = registerMovementTicker(
-			pixiApplication,
-			finalRef.sprite,
-			finalRef.movementState,
-			(proposedX: number, proposedY: number) =>
-				resolveCollisions(
-					npcCollidable,
-					proposedX,
-					proposedY,
-					obstaclesForThisNpc,
-				),
-		);
-		sceneContext.addDisposable(unregisterNpcMovement);
-	}
-
 	// --- Game store pre-population ---
-	// Pre-populate party entries so the debug panel shows them from the start.
 	for (const characterId of PARTY_NPC_IDS) {
 		gameStore.party.set(characterId, false);
 	}
@@ -208,6 +143,7 @@ export async function runScene(
 
 	// --- Party follow — single-file chain (breadcrumb trail) ---
 	const partyFollowHandle = setupPartyFollow({
+		pixiApplication,
 		playerReference,
 		partyNpcIds: PARTY_NPC_IDS,
 		characters,
@@ -216,8 +152,7 @@ export async function runScene(
 		followDistance: 99,
 	});
 
-	// --- Big ritual carrot ---
-	// Clicking it starts the dialogue. It stays in the scene permanently.
+	// --- Big ritual carrot sprite ---
 	const bigCarrotGraphics = new Graphics();
 	bigCarrotGraphics.rect(0, 0, 18, 32).fill(0xff6600);
 	const bigCarrotTexture =
@@ -229,34 +164,6 @@ export async function runScene(
 	bigCarrotSprite.position.set(screenCenterX, screenCenterY - 10);
 	bigCarrotSprite.scale.set(3);
 	sceneContext.addSprite(bigCarrotSprite, dependencies.worldContainer);
-
-	const carrotHint = new Text({
-		text: "🥕 invoke!",
-		style: { fontSize: 12, fill: "#ffcc00" },
-	});
-	carrotHint.anchor.set(0.5, 1);
-	// Position in local space: above the top edge of the texture (height=32 local units).
-	carrotHint.position.set(0, -(32 + 6));
-	bigCarrotSprite.addChild(carrotHint);
-	sceneContext.addDisposable(() => {
-		if (!carrotHint.destroyed) carrotHint.destroy();
-	});
-
-	function isPlayerNearBigCarrot(): boolean {
-		const deltaX = playerReference.sprite.x - bigCarrotSprite.x;
-		const deltaY = playerReference.sprite.y - bigCarrotSprite.y;
-		return (
-			Math.sqrt(deltaX * deltaX + deltaY * deltaY) <
-			BIG_CARROT_INTERACT_DISTANCE
-		);
-	}
-
-	// Show hint only when player is in range and no dialogue is running.
-	sceneContext.addTickerCallback(() => {
-		if (!carrotHint.destroyed) {
-			carrotHint.visible = !isDialogueActive && isPlayerNearBigCarrot();
-		}
-	});
 
 	// --- Party recruitment ---
 	setupPartyRecruitment({
@@ -343,9 +250,7 @@ export async function runScene(
 					activeBubbles.set(blockUuid, bubbleHandle);
 				}
 
-
 				if (needsUserInput) {
-					// Main track or waitInput=true: wait for user click.
 					blocksWaitingForInput.set(blockUuid, next);
 
 					if (timeoutMs && timeoutMs > 0) {
@@ -357,7 +262,6 @@ export async function runScene(
 						timers.push(autoAdvanceTimer);
 					}
 				} else {
-					// Async track without waitInput: auto-advance after timeout.
 					if (timeoutMs && timeoutMs > 0) {
 						const autoTimer = setTimeout(() => next(), timeoutMs);
 						timers.push(autoTimer);
@@ -386,14 +290,10 @@ export async function runScene(
 				}
 			};
 		});
-	
+
 		// --- ACTION handler ---
-		// Executes blueprint-defined actions (moveCharacterAt, shakeCamera, etc.)
-		// and waits for all of them to complete before advancing.
 		scene.onAction(({ block, context, next }) => {
 			context.preventGlobalHandler();
-
-		
 
 			const actionPromises = (block.actions ?? []).map((action) =>
 				executeAction(action as BlueprintAction, gameActions),
@@ -415,14 +315,12 @@ export async function runScene(
 			cleanupAllActiveBubbles();
 			blocksWaitingForInput.clear();
 			partyFollowHandle.resume();
+			carrotTriggerHandle.resetTrigger();
 		});
 
 		scene.start();
 	}
 
-	// --- Broadcast click: advance all waiting dialogue blocks at once ---
-	// First click skips all typewriters still animating.
-	// Second click (or first if all complete) advances every waiting block.
 	function onPointerDownForDialogue(): void {
 		if (blocksWaitingForInput.size === 0) return;
 
@@ -443,14 +341,23 @@ export async function runScene(
 		}
 	}
 
+	// ===========================================================================
+	// Wiring: carrot trigger + pointer listener
+	// ===========================================================================
+	const bigCarrotReference: CharacterReference = {
+		characterId: "ritual-carrot",
+		sprite: bigCarrotSprite,
+		movementState: createMovementState(0),
+	};
 
-
-	// Clicking the ritual carrot starts the scene (proximity + not already active).
-	bigCarrotSprite.eventMode = "static";
-	bigCarrotSprite.cursor = "pointer";
-	bigCarrotSprite.on("pointerdown", () => {
-		if (isDialogueActive || !isPlayerNearBigCarrot()) return;
-		startDialogueScene();
+	const carrotTriggerHandle = setupDialogueTrigger({
+		playerReference,
+		triggerNpcReference: bigCarrotReference,
+		interactionDistance: 90,
+		hintText: "🥕 invoke!",
+		canTrigger: () => !isDialogueActive,
+		sceneContext,
+		onTrigger: startDialogueScene,
 	});
 
 	sceneContext.addStageListener(

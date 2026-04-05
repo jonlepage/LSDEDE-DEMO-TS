@@ -16,6 +16,10 @@ export interface SetupDialogueTriggerOptions {
 	readonly interactionDistance?: number;
 	readonly sceneContext: SceneContext;
 	readonly onTrigger: () => void;
+	/** Custom hint text displayed above the trigger. Defaults to "👇 click me!" */
+	readonly hintText?: string;
+	/** Additional guard checked before showing the hint and allowing trigger. */
+	readonly canTrigger?: () => boolean;
 }
 
 export interface DialogueTriggerHandle {
@@ -32,6 +36,8 @@ export function setupDialogueTrigger(
 		interactionDistance = DEFAULT_INTERACTION_DISTANCE,
 		sceneContext,
 		onTrigger,
+		hintText = "👇 click me!",
+		canTrigger,
 	} = options;
 
 	let hasTriggered = false;
@@ -39,7 +45,7 @@ export function setupDialogueTrigger(
 
 	function createInteractionHint(): Text {
 		const hint = new Text({
-			text: "👇 click me!",
+			text: hintText,
 			style: { fontSize: 12, fill: "#ffffff" },
 		});
 		hint.anchor.set(0.5, 1);
@@ -50,10 +56,25 @@ export function setupDialogueTrigger(
 
 	interactionHint = createInteractionHint();
 
+	// When canTrigger is provided, toggle hint visibility each frame
+	// based on proximity AND the external guard (e.g. !isDialogueActive).
+	if (canTrigger) {
+		interactionHint.visible = false;
+		sceneContext.addTickerCallback(() => {
+			if (interactionHint && !interactionHint.destroyed) {
+				interactionHint.visible = !hasTriggered && isPlayerNearTriggerNpc() && canTrigger();
+			}
+		});
+	}
+
 	function isPlayerNearTriggerNpc(): boolean {
 		const deltaX = playerReference.sprite.x - triggerNpcReference.sprite.x;
 		const deltaY = playerReference.sprite.y - triggerNpcReference.sprite.y;
 		return Math.sqrt(deltaX * deltaX + deltaY * deltaY) < interactionDistance;
+	}
+
+	function isAllowedToTrigger(): boolean {
+		return !hasTriggered && isPlayerNearTriggerNpc() && (!canTrigger || canTrigger());
 	}
 
 	function trigger(): void {
@@ -66,12 +87,12 @@ export function setupDialogueTrigger(
 	}
 
 	function onKeyDown(event: KeyboardEvent) {
-		if (event.key === "Enter" && !hasTriggered && isPlayerNearTriggerNpc()) {
+		if (event.key === "Enter" && isAllowedToTrigger()) {
 			trigger();
 		}
 	}
 	function onClick() {
-		if (!hasTriggered && isPlayerNearTriggerNpc()) {
+		if (isAllowedToTrigger()) {
 			trigger();
 		}
 	}

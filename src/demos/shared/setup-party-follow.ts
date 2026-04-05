@@ -9,13 +9,17 @@
  * The partyNpcIds order defines queue priority: index 0 is closest to the
  * player, index 1 follows index 0's trail, etc.
  *
- * Prerequisites:
- *  - Each party NPC must have its own registerMovementTicker already registered
- *    so the movement system can process the targets set here.
- *  - gameActions.isInParty() is checked each frame — only recruited members move.
+ * Each party NPC's movement ticker (with cross-collision against the player and
+ * sibling NPCs) is registered here. gameActions.isInParty() is checked each
+ * frame — only recruited members receive trail targets.
  */
 
-import { setMovementTarget } from "../../renderer/movement";
+import type { Application } from "pixi.js";
+import {
+	setMovementTarget,
+	registerMovementTicker,
+} from "../../renderer/movement";
+import { createCollidable, resolveCollisions } from "../../renderer/collision";
 import type {
 	CharacterReference,
 	GameActionFacade,
@@ -39,6 +43,7 @@ interface TrailPoint {
 }
 
 export interface SetupPartyFollowOptions {
+	readonly pixiApplication: Application;
 	readonly playerReference: CharacterReference;
 	/** Ordered list — index 0 is first in queue (closest to player). */
 	readonly partyNpcIds: ReadonlyArray<string>;
@@ -92,6 +97,7 @@ export function setupPartyFollow(
 	options: SetupPartyFollowOptions,
 ): PartyFollowHandle {
 	const {
+		pixiApplication,
 		playerReference,
 		partyNpcIds,
 		characters,
@@ -100,6 +106,34 @@ export function setupPartyFollow(
 		followDistance = DEFAULT_FOLLOW_DISTANCE,
 		updateDistanceThreshold = DEFAULT_UPDATE_DISTANCE_THRESHOLD,
 	} = options;
+
+	// Register a movement ticker with cross-collision for each party NPC.
+	// Each NPC collides against the player and all sibling NPCs simultaneously.
+	const playerCollidable = createCollidable(playerReference.sprite);
+
+	for (const npcId of partyNpcIds) {
+		const characterRef = characters.get(npcId);
+		if (!characterRef) continue;
+
+		const npcCollidable = createCollidable(characterRef.sprite);
+		const obstaclesForThisNpc = [
+			playerCollidable,
+			...partyNpcIds
+				.filter((id) => id !== npcId)
+				.map((id) => characters.get(id))
+				.filter((ref): ref is CharacterReference => !!ref)
+				.map((ref) => createCollidable(ref.sprite)),
+		];
+
+		const unregisterNpcMovement = registerMovementTicker(
+			pixiApplication,
+			characterRef.sprite,
+			characterRef.movementState,
+			(proposedX: number, proposedY: number) =>
+				resolveCollisions(npcCollidable, proposedX, proposedY, obstaclesForThisNpc),
+		);
+		sceneContext.addDisposable(unregisterNpcMovement);
+	}
 
 	// Trail stores positions from newest (index 0) to oldest.
 	const trail: TrailPoint[] = [];

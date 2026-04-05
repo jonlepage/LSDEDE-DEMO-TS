@@ -11,6 +11,12 @@ import type { CollidableSprite } from "../../renderer/collision";
 import type { CharacterReference } from "../../game/game-actions";
 import type { SceneContext } from "../../shared/scene-context";
 
+export interface MovementProfile {
+	readonly speed: number;
+	readonly hopStride: number;
+	readonly hopHeight: number;
+}
+
 export interface CharacterConfiguration {
 	readonly characterId: string;
 	readonly displayName: string;
@@ -18,6 +24,7 @@ export interface CharacterConfiguration {
 	readonly startX: number;
 	readonly startY: number;
 	readonly scale?: number;
+	readonly movementProfile?: MovementProfile;
 }
 
 export interface SetupCharactersOptions {
@@ -47,7 +54,20 @@ export async function setupCharacters(
 	const npcObstacles: CollidableSprite[] = [];
 
 	for (const config of characterConfigurations) {
-		const movementState = createMovementState();
+		const movementState = config.movementProfile
+			? createMovementState({
+				movementSpeed: config.movementProfile.speed,
+				hopStrideDistance: config.movementProfile.hopStride,
+				hopMaxHeight: config.movementProfile.hopHeight,
+			})
+			: createMovementState();
+
+		// Randomize hop phase so characters with profiles don't bounce in lockstep.
+		if (config.movementProfile) {
+			movementState.distanceSinceLastHop =
+				Math.random() * movementState.hopStrideDistance;
+		}
+
 		const sprite = await createCharacterSprite({
 			characterId: config.characterId,
 			displayName: config.displayName,
