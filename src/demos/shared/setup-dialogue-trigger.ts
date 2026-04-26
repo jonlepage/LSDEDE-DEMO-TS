@@ -96,16 +96,16 @@ export function setupDialogueTrigger(
 			trigger();
 		}
 	}
-	triggerNpcReference.sprite.interactive = true;
+	triggerNpcReference.sprite.eventMode = "static";
 	triggerNpcReference.sprite.cursor = "pointer";
-	triggerNpcReference.sprite.onclick = onClick;
+	triggerNpcReference.sprite.on("pointerdown", onClick);
 
 	window.addEventListener("keydown", onKeyDown);
 	sceneContext.addDisposable(() =>
 		window.removeEventListener("keydown", onKeyDown),
 	);
 	sceneContext.addDisposable(() => {
-		triggerNpcReference.sprite.onclick = null;
+		triggerNpcReference.sprite.off("pointerdown", onClick);
 	});
 
 	return {
